@@ -2,7 +2,6 @@ package org.monarchinitiative.fenominal.hpo;
 
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;

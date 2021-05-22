@@ -27,6 +27,26 @@ To set Oracle JDK 16 as default, install the "oracle-java16-set-default" package
 E.g.: sudo apt install oracle-java16-set-default.
 ```
 
+Note that if you get the error ``error: invalid target release: 16``, this probably means
+that your JAVA_HOME is not set and maven sees the wrong JDK. This is the problem
+```bazaar
+$ java -version
+java version "16.0.1" 2021-04-20
+Java(TM) SE Runtime Environment (build 16.0.1+9-24)
+Java HotSpot(TM) 64-Bit Server VM (build 16.0.1+9-24, mixed mode, sharing)
+$ mvn -version
+Apache Maven 3.6.3
+Maven home: /usr/share/maven
+Java version: 11.0.11, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "5.4.0-73-generic", arch: "amd64", family: "unix"
+```
+Here, we need to find the location of the Java 16 installation, e.g., ``/usr/lib/jvm/java-16-oracle/``
+and then add the following to .bashrc
+```bazaar
+export JAVA_HOME=/usr/lib/jvm/java-16-oracle/
+```
+
 
 # Running CLI app
 
@@ -47,3 +67,8 @@ all (HP:0000001;533-536)
 cardiomyopathy (HP:0001638;99-113) means that cardiomyopathy (HP:0001638) 
 was found at positions 99-113 of the original text (zero-based).
 
+## Running the GUI
+I am having sime issues building this from the command line, I think maven 3.6.3 may not support Java 16, and I 
+am figuring out how to best update on ubuntu. For now, start `StockUiApplication` from the IDE.
+Click on the HPO button to point to the ``hp.obo`` file. Then paste in a clinical text and click the
+``Parse`` button. The basic results of mining appear.
