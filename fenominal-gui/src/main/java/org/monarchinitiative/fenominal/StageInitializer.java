@@ -1,31 +1,42 @@
 package org.monarchinitiative.fenominal;
 
 
-import org.monarchinitiative.fenominal.ChartApplication.StageReadyEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import org.monarchinitiative.fenominal.FenominalApplication.StageReadyEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
-
+    @Value("classpath:/fenominal-main.fxml")
+    private Resource fenominalFxmResource;
     private final String applicationTitle;
-    private final FxWeaver fxWeaver;
 
-    public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle,
-                            FxWeaver fxWeaver) {
+
+    public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle) {
         this.applicationTitle = applicationTitle;
-        this.fxWeaver = fxWeaver;
+
     }
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
-        Stage stage = event.getStage();
-       // stage.setScene(new Scene(fxWeaver.loadView(ChartController.class), 800, 600));
-        stage.setTitle(applicationTitle);
-        stage.show();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(fenominalFxmResource.getURL());
+            Parent parent = fxmlLoader.load();
+            Stage stage = event.getStage();
+            stage.setScene(new Scene(parent, 800, 600));
+            stage.setTitle(applicationTitle);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
