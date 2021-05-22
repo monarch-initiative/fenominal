@@ -28,3 +28,22 @@ E.g.: sudo apt install oracle-java16-set-default.
 ```
 
 
+# Running CLI app
+
+To kick the tires with an example file, do the following
+```bazaar
+mvn package
+java -jar fenominal-cli/target/fenominal.jar download
+java -jar fenominal-cli/target/fenominal.jar parse -i fenominal-cli/src/main/resources/noonan6vignette.txt 
+(you should see)
+...
+cardiomyopathy (HP:0001638;99-113)
+hypertelorism (HP:0000316;327-340)
+bilateral (HP:0012832;375-384)
+ptosis (HP:0000508;385-391)
+all (HP:0000001;533-536)
+```
+
+cardiomyopathy (HP:0001638;99-113) means that cardiomyopathy (HP:0001638) 
+was found at positions 99-113 of the original text (zero-based).
+

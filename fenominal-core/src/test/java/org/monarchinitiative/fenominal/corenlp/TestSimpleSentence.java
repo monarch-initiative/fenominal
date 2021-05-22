@@ -2,7 +2,11 @@ package org.monarchinitiative.fenominal.corenlp;
 
 import org.junit.jupiter.api.Test;
 
-public class TestCoreNlp {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestSimpleSentence {
 
     @Test
     public void testSentenceSplit() {
@@ -11,9 +15,9 @@ public class TestCoreNlp {
         String s3 = "Owing to its brevity and coherence, it has become widely known.";
         String mytext = s1 + " " + s2 + " " + s3;
 
-        System.out.println(s1.length());
+        //System.out.println(s1.length());
 
-        CoreNlp coreNlp = new CoreNlp();
-        coreNlp.splitInputSimple(mytext);
+        List<SimpleSentence> sentences = SimpleSentence.splitInputSimple(mytext);
+        assertEquals(3, sentences.size());
     }
 }
