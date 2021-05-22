@@ -23,3 +23,7 @@
 hs_err_pid*
 /.idea/
 /fenominal-cli/fenominal-cli.iml
+/fenominal-gui/fenominal-gui.iml
+/fenominal.iml
+/fenominal-core/fenominal-core.iml
+/fenominal-cli/dependency-reduced-pom.xml
