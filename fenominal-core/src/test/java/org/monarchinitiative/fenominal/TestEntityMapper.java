@@ -20,7 +20,7 @@ public class TestEntityMapper {
     @Test
     public void testNer() {
         String hpo="/home/peter/GIT/human-phenotype-ontology/hp.obo";
-        EntityMapper mapper = new EntityMapper(hpo);
+        TextToHpoMapper mapper = new TextToHpoMapper(hpo);
         List<MappedSentencePart>  mappedSentenceParts = mapper.mapText(clinicalVignette);
         for (var mp : mappedSentenceParts) {
             System.out.println(mp);

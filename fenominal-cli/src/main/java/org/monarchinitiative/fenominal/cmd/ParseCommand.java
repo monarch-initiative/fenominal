@@ -1,6 +1,6 @@
 package org.monarchinitiative.fenominal.cmd;
 
-import org.monarchinitiative.fenominal.EntityMapper;
+import org.monarchinitiative.fenominal.TextToHpoMapper;
 import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
 import picocli.CommandLine;
@@ -28,7 +28,7 @@ public class ParseCommand implements Callable<Integer> {
             throw new FenominalRunTimeException("Could not find input file at \"" + input + "\"");
         }
         String content = new String ( Files.readAllBytes( Paths.get(input) ) );
-        EntityMapper mapper = new EntityMapper(hpoOboPath);
+        TextToHpoMapper mapper = new TextToHpoMapper(hpoOboPath);
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(content);
         for (var mp : mappedSentenceParts) {
             System.out.println(mp);
