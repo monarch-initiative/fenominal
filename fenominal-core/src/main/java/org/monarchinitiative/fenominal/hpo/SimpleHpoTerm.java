@@ -47,35 +47,4 @@ public class SimpleHpoTerm {
     }
 
 
-    public static synchronized List<SimpleHpoTerm> loadSimpleHpoTerms(String hpoOboPath) {
-        return loadSimpleHpoTerms(new File((hpoOboPath)));
-    }
-
-
-    public static synchronized Map<String, TermId> textToTermMap(String pathToHpObo) {
-        List<SimpleHpoTerm> terms = loadSimpleHpoTerms(new File(pathToHpObo));
-        return textToTermMap(terms);
-    }
-
-    public static synchronized Map<String, TermId> textToTermMap(List<SimpleHpoTerm> termList) {
-        Map<String, TermId> termmap = new HashMap<>();
-        for (SimpleHpoTerm sht : termList) {
-            TermId tid = sht.getId();
-            termmap.put(sht.name.toLowerCase(), tid);
-            for (String synonym : sht.getSynonyms()) {
-                termmap.put(synonym.toLowerCase(), tid);
-            }
-        }
-        return Map.copyOf(termmap); // make immutable
-    }
-
-    public static synchronized List<SimpleHpoTerm> loadSimpleHpoTerms(File hpoOboFile) {
-        Ontology ontology = OntologyLoader.loadOntology(hpoOboFile);
-        List<SimpleHpoTerm> termList = new ArrayList<>();
-        for (TermId tid : ontology.getNonObsoleteTermIds()) {
-            Term term = ontology.getTermMap().get(tid);
-            termList.add(new SimpleHpoTerm(term));
-        }
-        return List.copyOf(termList); // make immutable
-    }
 }
