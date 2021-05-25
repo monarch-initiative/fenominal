@@ -2,6 +2,9 @@ package org.monarchinitiative.fenominal.corenlp;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MappedSentencePart {
     private final String matchingString;
     private final TermId tid;
@@ -9,11 +12,11 @@ public class MappedSentencePart {
     private final int endpos;
 
 
-    public MappedSentencePart(SimpleToken token, TermId tid) {
-        this.matchingString = token.getToken();
+    public MappedSentencePart(List<SimpleToken> tokens, TermId tid) {
+        this.matchingString = tokens.stream().map(SimpleToken::getToken).collect(Collectors.joining(" "));
         this.tid = tid;
-        this.startpos = token.getStartpos();
-        this.endpos = token.getEndpos();
+        this.startpos = tokens.get(0).getStartpos();
+        this.endpos = tokens.get(tokens.size() -1).getEndpos();
     }
 
     public String getMatchingString() {

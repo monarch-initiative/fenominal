@@ -13,7 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class SimpleHpoTermTest {
 
     private final static File smallHpo = Paths.get("src/test/resources/hpo/hp_head.obo").toFile();
-    private final List<SimpleHpoTerm> hpoTerms = SimpleHpoTerm.loadSimpleHpoTerms(smallHpo);
+    private final static HpoLoader loader = new HpoLoader(smallHpo.getAbsolutePath());
+    private final List<SimpleHpoTerm> hpoTerms = loader.loadSimpleHpoTerms();
 
 
     /**
