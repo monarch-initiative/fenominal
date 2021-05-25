@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.stage.FileChooser;
 import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.textmapper.ClinicalTextMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -23,7 +25,7 @@ public class FenominalMainController {
     @FXML public Button importTextFile;
     @FXML public Button importHpObo;
 
-    private EntityMapper mapper = null;
+    private ClinicalTextMapper mapper = null;
 
 
     public FenominalMainController() {
@@ -63,7 +65,14 @@ public class FenominalMainController {
 
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-            this.mapper = new EntityMapper(file.getAbsolutePath());
+            this.mapper = new ClinicalTextMapper(file.getAbsolutePath());
         }
+    }
+
+    @FXML
+    private void quitApplication(ActionEvent e) {
+        e.consume();
+        Platform.exit();
+
     }
 }

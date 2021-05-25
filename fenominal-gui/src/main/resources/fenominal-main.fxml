@@ -23,7 +23,7 @@
                 <HBox prefHeight="25.0" prefWidth="999.0" BorderPane.alignment="CENTER">
                     <MenuBar>
                         <Menu mnemonicParsing="false" text="File">
-                            <MenuItem mnemonicParsing="false" text="Close"/>
+                            <MenuItem fx:id="quitItem" mnemonicParsing="false" text="Close" onAction="#quitApplication"/>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                             <MenuItem mnemonicParsing="false" text="Delete"/>
