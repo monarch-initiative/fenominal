@@ -2,6 +2,7 @@ package org.monarchinitiative.fenominal;
 
 import org.monarchinitiative.fenominal.cmd.DownloadCommand;
 import org.monarchinitiative.fenominal.cmd.ParseCommand;
+import org.monarchinitiative.fenominal.cmd.SupplementCommand;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
@@ -17,7 +18,8 @@ public class Main implements Callable<Integer> {
         }
         CommandLine cline = new CommandLine(new Main())
                 .addSubcommand("download", new DownloadCommand())
-                .addSubcommand("parse", new ParseCommand());
+                .addSubcommand("parse", new ParseCommand())
+                .addSubcommand("supplement", new SupplementCommand());
         cline.setToggleBooleanFlags(false);
         int exitCode = cline.execute(args);
         System.exit(exitCode);
