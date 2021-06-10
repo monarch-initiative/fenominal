@@ -6,6 +6,7 @@ import org.monarchinitiative.fenominal.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.corenlp.StopWords;
 import org.monarchinitiative.fenominal.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.hpo.HpoMatcher;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -78,6 +79,10 @@ public class ClinicalTextMapper {
             }
         }
         return max;
+    }
+
+    public Ontology getHpo() {
+        return this.hpoMatcher.getHpo();
     }
 
 

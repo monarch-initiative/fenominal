@@ -55,5 +55,7 @@ public class HpoMatcher {
         return this.wordCountToMatcherMap.get(words.size()).getMatch(words);
     }
 
-
+    public Ontology getHpo() {
+        return hpo;
+    }
 }

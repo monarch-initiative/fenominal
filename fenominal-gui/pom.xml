@@ -5,7 +5,7 @@
     <parent>
         <artifactId>fenominal</artifactId>
         <groupId>org.monarchinitiative.fenominal</groupId>
-        <version>0.0.2</version>
+        <version>0.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,6 +40,31 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-web -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>17-ea+11</version>
+        </dependency>
+
+
+        <!-- HpoTextMining GUI interface -->
+        <dependency>
+            <groupId>org.monarchinitiative.hpotextmining</groupId>
+            <artifactId>hpotextmining-core</artifactId>
+            <version>0.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.monarchinitiative.hpotextmining</groupId>
+            <artifactId>hpotextmining-gui</artifactId>
+            <version>0.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.monarchinitiative</groupId>
+            <artifactId>phenotefx</artifactId>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
 
