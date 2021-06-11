@@ -1,6 +1,9 @@
 package org.monarchinitiative.fenominal.cli.io;
 
+import java.io.Serial;
+
 public class FileDownloadException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public FileDownloadException() {

@@ -22,6 +22,9 @@ public class HpoDownloader {
     private final static String HP_OBO = "hp.obo";
     /** URL of the hp.obo file. */
     private final static String HP_OBO_URL ="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo";
+    private final static String HP_JSON = "hp.json";
+    /** URL of the hp.obo file. */
+    private final static String HP_JSON_URL ="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.json";
 
     public HpoDownloader(String path){
         this(path,false);
@@ -38,6 +41,7 @@ public class HpoDownloader {
      */
     public void download() {
         downloadFileIfNeeded(HP_OBO,HP_OBO_URL);
+        downloadFileIfNeeded(HP_JSON,HP_JSON_URL);
         System.out.printf("[INFO] Downloaded hp.obo to \"%s\"" , downloadDirectory);
     }
 

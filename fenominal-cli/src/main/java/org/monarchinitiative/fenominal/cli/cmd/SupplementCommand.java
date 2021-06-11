@@ -1,10 +1,17 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
 
+<<<<<<< HEAD:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cmd/SupplementCommand.java
+import org.monarchinitiative.fenominal.TextToHpoMapper;
+import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.json.JsonHpoParser;
+=======
 import org.monarchinitiative.fenominal.core.TextToHpoMapper;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
+>>>>>>> develop:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cli/cmd/SupplementCommand.java
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import picocli.CommandLine;
@@ -27,7 +34,7 @@ import java.util.concurrent.Callable;
         description = "Parse supplement with multiple affected persons")
 public class SupplementCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"--hp"}, description = "path to HP obo file")
-    private String hpoOboPath="data/hp.obo";
+    private String hpoJsonPath="data/hp.json";
     @CommandLine.Option(names = {"-i","--input"}, description = "path to input file", required = true)
     private String input;
     @CommandLine.Option(names = {"-0","--output"}, description = "path to output file")
@@ -39,8 +46,9 @@ public class SupplementCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         Map<String,String> cohortMap = getCohort();
         Map<TermId, List<String>> termToProbandMap = new HashMap<>();
-        TextToHpoMapper mapper = new TextToHpoMapper(hpoOboPath);
-        Ontology hpo = OntologyLoader.loadOntology(new File(hpoOboPath));
+        TextToHpoMapper mapper = new TextToHpoMapper(hpoJsonPath);
+        JsonHpoParser jparser = new JsonHpoParser(hpoJsonPath);
+        Ontology hpo = jparser.getHpo();
         for (var e : cohortMap.entrySet()) {
             String individualId = e.getKey();
             String clinicalVignette = e.getValue();

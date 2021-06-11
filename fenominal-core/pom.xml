@@ -22,21 +22,60 @@
             <artifactId>stanford-corenlp</artifactId>
             <classifier>models</classifier>
         </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
-        <!-- TODO - we should only need phenol-core here, and phenol-io at most for testing -->
-<!--        <dependency>-->
-<!--            <groupId>org.monarchinitiative.phenol</groupId>-->
-<!--            <artifactId>phenol-core</artifactId>-->
-<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.fasterxml.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.monarchinitiative.phenol</groupId>
-            <artifactId>phenol-io</artifactId>
-            <!--            <scope>test</scope>-->
+            <artifactId>phenol-core</artifactId>
+            <version>${phenol.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.prefixcommons</groupId>
+            <artifactId>curie-util</artifactId>
+            <version>0.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.openrdf.sesame</groupId>
+                    <artifactId>sesame-rio-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.26</version>
+        </dependency>
+
+        <!--################### TESTING ##########################-->
+        <!-- Libraries for testing -->
+
+
     </dependencies>
 
 </project>

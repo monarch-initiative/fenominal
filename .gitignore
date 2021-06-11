@@ -27,3 +27,5 @@ target/
 *.iml
 /fenominal-cli/dependency-reduced-pom.xml
 /supplementDecoded.txt
+/data/hp.json
+/data/hp.obo
