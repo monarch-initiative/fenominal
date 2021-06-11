@@ -1,6 +1,5 @@
-package org.monarchinitiative.fenominal.hpo;
+package org.monarchinitiative.fenominal.core.hpo;
 
-import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
