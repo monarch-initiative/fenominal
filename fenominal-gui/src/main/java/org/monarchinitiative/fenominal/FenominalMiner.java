@@ -4,7 +4,6 @@ import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
 import  org.monarchinitiative.hpotextmining.core.miners.TermMiner;
-import org.monarchinitiative.hpotextmining.core.miners.TermMinerException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.util.Collection;

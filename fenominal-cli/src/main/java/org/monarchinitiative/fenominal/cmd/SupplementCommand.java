@@ -1,7 +1,6 @@
 package org.monarchinitiative.fenominal.cmd;
 
 
-import org.apache.xalan.xsltc.compiler.util.MultiHashtable;
 import org.monarchinitiative.fenominal.TextToHpoMapper;
 import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.except.FenominalRunTimeException;

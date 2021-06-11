@@ -3,6 +3,8 @@ package org.monarchinitiative.fenominal.hpo;
 import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class HpoMatcher {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
 
     private final Map<Integer, HpoConceptMatch> wordCountToMatcherMap;
     private final Ontology hpo;
@@ -40,8 +42,9 @@ public class HpoMatcher {
             // put concept into the correct Map depending on how many non-stop words it has
             int n_words = concept.wordCount();
             if (n_words>14) {
-                throw new FenominalRunTimeException("Maximum current word count is 14 but we got " +
+                LOGGER.error("Maximum current word count is 14 but we got " +
                         n_words + " for \"" + concept.getOriginalConcept() + "\"");
+                continue;
             }
             this.wordCountToMatcherMap.get(n_words).addConcept(concept);
         }

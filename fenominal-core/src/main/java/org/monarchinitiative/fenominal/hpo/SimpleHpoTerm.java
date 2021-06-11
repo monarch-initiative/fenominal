@@ -1,9 +1,7 @@
 package org.monarchinitiative.fenominal.hpo;
 
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.*;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -78,17 +78,6 @@ public class FenominalMainController {
         }
 
 
-
-
-       // FenominalMiner
-
-//        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(contents);
-//        StringBuilder sb = new StringBuilder();
-//        for (var mp : mappedSentenceParts) {
-//            sb.append(mp).append("\n\n");
-//        }
-//        this.parseArea.setText(sb.toString());
-
         e.consume();
     }
     @FXML
