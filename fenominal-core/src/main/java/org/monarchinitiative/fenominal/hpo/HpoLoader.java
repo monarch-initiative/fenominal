@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO - the ontology loader belongs elsewhere, perhaps to IO, or CLI/GUI module, so that we can keep `fenominal-core`
+//  to depend only on `phenol-core`
 public class HpoLoader {
 
     private final Ontology hpo;

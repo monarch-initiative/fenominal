@@ -20,15 +20,10 @@ import java.util.concurrent.Callable;
 public class DownloadCommand implements Callable<Integer>{
     private static final Logger logger = LoggerFactory.getLogger(DownloadCommand.class);
     @CommandLine.Option(names={"-d","--data"}, description ="directory to download data (default: ${DEFAULT-VALUE})" )
-    private String datadir="data";
+    public String datadir="data";
+
     @CommandLine.Option(names={"-w","--overwrite"}, description = "overwrite previously downloaded files (default: ${DEFAULT-VALUE})")
-    private boolean overwrite;
-
-    public DownloadCommand() {
-    }
-
-
-
+    public boolean overwrite;
 
     @Override
     public Integer call() {

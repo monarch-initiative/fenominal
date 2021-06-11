@@ -16,10 +16,11 @@ import java.util.concurrent.Callable;
         mixinStandardHelpOptions = true,
         description = "Parse text")
 public class ParseCommand implements Callable<Integer> {
+
     @CommandLine.Option(names = {"--hp"}, description = "path to HP obo file")
-    private String hpoOboPath="data/hp.obo";
+    public String hpoOboPath="data/hp.obo";
     @CommandLine.Option(names = {"-i","--input"}, description = "path to input file", required = true)
-    private String input;
+    public String input;
 
     @Override
     public Integer call() throws Exception {

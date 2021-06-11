@@ -7,7 +7,9 @@ import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "fenominal", mixinStandardHelpOptions = true, version = "0.0.1",
+@CommandLine.Command(name = "fenominal",
+        mixinStandardHelpOptions = true,
+        version = "0.0.1",
         description = "phenotype/disease NER")
 public class Main implements Callable<Integer> {
 
@@ -24,10 +26,6 @@ public class Main implements Callable<Integer> {
         int exitCode = cline.execute(args);
         System.exit(exitCode);
     }
-
-
-
-
 
     @Override
     public Integer call() {
