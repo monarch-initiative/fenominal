@@ -54,12 +54,12 @@
         <dependency>
             <groupId>org.monarchinitiative.hpotextmining</groupId>
             <artifactId>hpotextmining-core</artifactId>
-            <version>0.2.7</version>
+            <version>0.2.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.monarchinitiative.hpotextmining</groupId>
             <artifactId>hpotextmining-gui</artifactId>
-            <version>0.2.7</version>
+            <version>0.2.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.monarchinitiative</groupId>
