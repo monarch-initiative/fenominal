@@ -28,3 +28,5 @@ hs_err_pid*
 /fenominal-core/fenominal-core.iml
 /fenominal-cli/dependency-reduced-pom.xml
 /supplementDecoded.txt
+/data/hp.json
+/data/hp.obo

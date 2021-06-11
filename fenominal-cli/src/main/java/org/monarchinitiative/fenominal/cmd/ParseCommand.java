@@ -16,8 +16,8 @@ import java.util.concurrent.Callable;
         mixinStandardHelpOptions = true,
         description = "Parse text")
 public class ParseCommand implements Callable<Integer> {
-    @CommandLine.Option(names = {"--hp"}, description = "path to HP obo file")
-    private String hpoOboPath="data/hp.obo";
+    @CommandLine.Option(names = {"--hp"}, description = "path to HP json file")
+    private String hpoJsonPath="data/hp.json";
     @CommandLine.Option(names = {"-i","--input"}, description = "path to input file", required = true)
     private String input;
 
@@ -28,7 +28,7 @@ public class ParseCommand implements Callable<Integer> {
             throw new FenominalRunTimeException("Could not find input file at \"" + input + "\"");
         }
         String content = new String ( Files.readAllBytes( Paths.get(input) ) );
-        TextToHpoMapper mapper = new TextToHpoMapper(hpoOboPath);
+        TextToHpoMapper mapper = new TextToHpoMapper(hpoJsonPath);
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(content);
         for (var mp : mappedSentenceParts) {
             System.out.println(mp);

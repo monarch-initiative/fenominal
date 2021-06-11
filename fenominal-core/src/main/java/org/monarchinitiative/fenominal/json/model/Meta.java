@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.geneontology.obographs.model.meta.*;
+import org.monarchinitiative.fenominal.json.model.meta.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

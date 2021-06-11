@@ -52,10 +52,41 @@
             <version>${jackson.fasterxml.version}</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.monarchinitiative.phenol</groupId>-->
+<!--            <artifactId>phenol-io</artifactId>-->
+<!--            <version>${phenol.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.monarchinitiative.phenol</groupId>
-            <artifactId>phenol-io</artifactId>
+            <artifactId>phenol-core</artifactId>
             <version>${phenol.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.prefixcommons</groupId>
+            <artifactId>curie-util</artifactId>
+            <version>0.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.openrdf.sesame</groupId>
+                    <artifactId>sesame-rio-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.26</version>
         </dependency>
 
         <!--################### TESTING ##########################-->

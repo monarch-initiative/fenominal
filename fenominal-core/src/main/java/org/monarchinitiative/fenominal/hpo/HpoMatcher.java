@@ -1,6 +1,7 @@
 package org.monarchinitiative.fenominal.hpo;
 
 import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
+
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
