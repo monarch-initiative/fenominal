@@ -52,16 +52,18 @@
                 <artifactId>phenol-core</artifactId>
                 <version>${phenol.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.monarchinitiative.phenol</groupId>
-                <artifactId>phenol-io</artifactId>
-                <version>${phenol.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.fasterxml.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.fasterxml.version}</version>
+                <type>bundle</type>
             </dependency>
 
             <dependency>

@@ -11,4 +11,6 @@ module fenominal.gui {
     requires spring.beans;
     requires spring.core;
     requires spring.boot;
+
+    requires lucene.sandbox;
 }

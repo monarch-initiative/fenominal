@@ -1,8 +1,7 @@
 module fenominal.cli {
     requires fenominal.core;
 
-    requires phenol.core;
-    requires phenol.io;
+   // requires org.monarchinitiative.phenol.phenol.core;
     requires info.picocli;
     requires org.apache.commons.net;
 

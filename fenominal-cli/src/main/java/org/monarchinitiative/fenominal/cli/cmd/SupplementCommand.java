@@ -1,19 +1,10 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
 
-<<<<<<< HEAD:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cmd/SupplementCommand.java
-import org.monarchinitiative.fenominal.TextToHpoMapper;
-import org.monarchinitiative.fenominal.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
-=======
 import org.monarchinitiative.fenominal.core.TextToHpoMapper;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
-import org.monarchinitiative.phenol.io.OntologyLoader;
->>>>>>> develop:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cli/cmd/SupplementCommand.java
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import picocli.CommandLine;
 
 import java.io.*;
@@ -45,6 +36,7 @@ public class SupplementCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         Map<String,String> cohortMap = getCohort();
+        /*
         Map<TermId, List<String>> termToProbandMap = new HashMap<>();
         TextToHpoMapper mapper = new TextToHpoMapper(hpoJsonPath);
         JsonHpoParser jparser = new JsonHpoParser(hpoJsonPath);
@@ -83,6 +75,8 @@ public class SupplementCommand implements Callable<Integer> {
                 bw.write(String.format("%s\n%s\n\n#########\n", individualId, clinicalVignette));
             }
         }
+        */
+
         return 0;
     }
 

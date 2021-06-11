@@ -16,14 +16,8 @@ import java.util.concurrent.Callable;
         mixinStandardHelpOptions = true,
         description = "Parse text")
 public class ParseCommand implements Callable<Integer> {
-<<<<<<< HEAD:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cmd/ParseCommand.java
     @CommandLine.Option(names = {"--hp"}, description = "path to HP json file")
     private String hpoJsonPath="data/hp.json";
-=======
-
-    @CommandLine.Option(names = {"--hp"}, description = "path to HP obo file")
-    public String hpoOboPath="data/hp.obo";
->>>>>>> develop:fenominal-cli/src/main/java/org/monarchinitiative/fenominal/cli/cmd/ParseCommand.java
     @CommandLine.Option(names = {"-i","--input"}, description = "path to input file", required = true)
     public String input;
 

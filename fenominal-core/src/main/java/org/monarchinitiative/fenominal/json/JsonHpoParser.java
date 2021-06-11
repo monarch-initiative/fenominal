@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.json;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.monarchinitiative.fenominal.except.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.json.model.GraphDocument;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.prefixcommons.CurieUtil;
