@@ -49,10 +49,10 @@ public class HpoMatcher {
 
     public Optional<HpoConcept> getMatch(List<String> words) {
         if (words.size() > 14) {
-            throw new FenominalRunTimeException("Maximum current word count is 14 but we got " +
+            System.err.println("Maximum current word count is 14 but we got " +
                     words.size() + " for \"" + words + "\"");
         }
-        return this.wordCountToMatcherMap.get(words.size()).getMatch(words);
+        return Optional.empty();
     }
 
     public Ontology getHpo() {
