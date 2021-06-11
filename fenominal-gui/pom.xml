@@ -63,7 +63,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <mainClass>org.monarchinitiative.fenominal.StockUiApplication</mainClass>
+                    <mainClass>org.monarchinitiative.fenominal.gui.StockUiApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

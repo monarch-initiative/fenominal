@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.monarchinitiative.fenominal.FenominalMainController">
+            fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
     <ScrollPane prefHeight="617.0" prefWidth="998.0">
         <BorderPane prefHeight="618.0" prefWidth="999.0">
             <top>

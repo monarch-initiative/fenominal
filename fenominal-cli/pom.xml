@@ -61,7 +61,7 @@
 <!--                        <manifest>-->
 <!--                            <addClasspath>true</addClasspath>-->
 <!--                            <useUniqueVersions>false</useUniqueVersions>-->
-<!--                            <mainClass>org.monarchinitiative.fenominal.Main</mainClass>-->
+<!--                            <mainClass>org.monarchinitiative.fenominal.cli.Main</mainClass>-->
 <!--                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
 <!--                        </manifest>-->
 <!--                    </archive>-->
