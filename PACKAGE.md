@@ -16,7 +16,7 @@ JAR_NAME=fenominal-gui-${VERSION}.jar
 VENDOR="The Monarch Initiative"
 DESCRIPTION="Phenomenal text mining for disease and phenotype concepts"
 COPYRIGHT="Copyright 2021, All rights reserved"
-ICON="fenominal-gui/target/classes/rose.icns" # Update icon once we have a better one
+ICON="fenominal-gui/target/classes/rose" # Update icon once we have a better one
 ```
 
 Having the variables in place, let's build the native apps! 
@@ -28,7 +28,7 @@ To build a DEB installer, run the following command on a Linux machine:
 ```bash
 cd fenominal
 ./mvnw clean package
-jpackage --input fenominal-gui/target --main-jar ${JAR_NAME} --name ${NAME} --app-version ${VERSION} --description "${DESCRIPTION}" --vendor "${VENDOR}" --license-file LICENSE --copyright "${COPYRIGHT}" --linux-menu-group "Science" --linux-shortcut 
+jpackage --input fenominal-gui/target --main-jar ${JAR_NAME} --name ${NAME} --app-version ${VERSION} --description "${DESCRIPTION}" --vendor "${VENDOR}" --license-file LICENSE --copyright "${COPYRIGHT}" --linux-menu-group "Science" --linux-shortcut --icon "${ICON}.png" 
 ```
 
 The command builds a `fenominal_0.0.3-1_amd64.deb` package file in the current directory. To (un)install the package, run:
@@ -61,7 +61,7 @@ Build the DMG application for macOS.
 ```bash
 cd fenominal
 ./mvnw clean package
-jpackage --input fenominal-gui/target --main-jar ${JAR_NAME} --name ${NAME} --app-version ${VERSION} --description "${DESCRIPTION}" --vendor "${VENDOR}" --license-file LICENSE --copyright "${COPYRIGHT}" --mac-package-name "${NAME}" --icon ${ICON}
+jpackage --input fenominal-gui/target --main-jar ${JAR_NAME} --name ${NAME} --app-version ${VERSION} --description "${DESCRIPTION}" --vendor "${VENDOR}" --license-file LICENSE --copyright "${COPYRIGHT}" --mac-package-name "${NAME}" --icon "${ICON}.icns"
 ```
 
 After the run, a DMG file is available in the current working directory. Install the DMG by mounting and/or dragging 
