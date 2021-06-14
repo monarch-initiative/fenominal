@@ -53,6 +53,13 @@
                 <version>${phenol.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.fasterxml.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
@@ -66,23 +73,6 @@
                 <type>bundle</type>
             </dependency>
 
-            <dependency>
-                <groupId>edu.stanford.nlp</groupId>
-                <artifactId>stanford-corenlp</artifactId>
-                <version>3.9.2</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xalan</groupId>
-                        <artifactId>xalan</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>edu.stanford.nlp</groupId>
-                <artifactId>stanford-corenlp</artifactId>
-                <version>3.9.2</version>
-                <classifier>models</classifier>
-            </dependency>
             <dependency>
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
