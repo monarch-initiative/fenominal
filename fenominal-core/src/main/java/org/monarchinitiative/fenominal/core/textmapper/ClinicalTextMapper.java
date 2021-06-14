@@ -1,9 +1,6 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.corenlp.SimpleSentence;
-import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
-import org.monarchinitiative.fenominal.core.corenlp.StopWords;
+import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -21,7 +18,9 @@ public class ClinicalTextMapper {
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
-        List<SimpleSentence> sentences = SimpleSentence. splitInputSimple(text);
+        FmCoreDocument coreDocument = new FmCoreDocument(text);
+        List<SimpleSentence> sentences = coreDocument.getSentences();
+        //List<SimpleSentence> sentences = SimpleSentence. splitInputSimple(text);
         List<MappedSentencePart> mappedParts = new ArrayList<>();
         for (var ss : sentences) {
             List<MappedSentencePart> sentenceParts = mapSentence(ss);

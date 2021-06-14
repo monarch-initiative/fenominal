@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
+import org.monarchinitiative.fenominal.core.corenlp.FmCoreDocument;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleSentence;
 
 import java.util.List;
@@ -12,7 +13,8 @@ public class Vignette {
 
     public Vignette(String text) {
         this.originalText = text;
-        this.sentences = SimpleSentence. splitInputSimple(text);
+        FmCoreDocument coreDocument = new FmCoreDocument(text);
+        this.sentences = coreDocument.getSentences();
     }
 
     public String getOriginalText() {

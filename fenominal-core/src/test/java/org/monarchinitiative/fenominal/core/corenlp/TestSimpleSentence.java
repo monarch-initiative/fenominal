@@ -16,8 +16,8 @@ public class TestSimpleSentence {
         String mytext = s1 + " " + s2 + " " + s3;
 
         //System.out.println(s1.length());
-
-        List<SimpleSentence> sentences = SimpleSentence.splitInputSimple(mytext);
+        FmCoreDocument coreDocument = new FmCoreDocument(mytext);
+        List<SimpleSentence> sentences = coreDocument.getSentences();
         assertEquals(3, sentences.size());
     }
 }

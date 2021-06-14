@@ -10,7 +10,7 @@ public class JsonHpoParserTest {
 
     @Test
     public void testRead() {
-        JsonHpoParser parser = new JsonHpoParser(smallHpo.getAbsolutePath());
+        //JsonHpoParser parser = new JsonHpoParser(smallHpo.getAbsolutePath());
     }
 
 }
