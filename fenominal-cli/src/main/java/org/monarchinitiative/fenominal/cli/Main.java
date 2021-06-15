@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "fenominal",
         mixinStandardHelpOptions = true,
-        version = "0.0.1",
+        version = "0.0.4",
         description = "phenotype/disease NER")
 public class Main implements Callable<Integer> {
 
