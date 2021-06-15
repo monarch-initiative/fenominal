@@ -1,4 +1,4 @@
-package org.monarchinitiative.fenominal.core.except;
+package org.monarchinitiative.fenominal.core;
 
 public class FenominalRunTimeException extends RuntimeException {
     public FenominalRunTimeException() { super();}

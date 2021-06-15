@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.cli.cmd;
 
 import org.monarchinitiative.fenominal.core.TextToHpoMapper;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import picocli.CommandLine;
 
 

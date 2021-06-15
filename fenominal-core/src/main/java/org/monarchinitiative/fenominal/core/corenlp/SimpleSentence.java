@@ -1,9 +1,9 @@
 package org.monarchinitiative.fenominal.core.corenlp;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
+
+import java.util.*;
 
 
 public class SimpleSentence {
@@ -13,37 +13,29 @@ public class SimpleSentence {
     private final int end;
     private final List<SimpleToken> tokens;
 
-    private final static Properties props = new Properties();
+    private final static Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
 
-    static {
-        props.setProperty("annotators","tokenize");
-        props.setProperty("tokenize.options","splitHyphenated=false,americanize=false");
-    }
-
-    //private final static StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
     public SimpleSentence(String text, int start, int end) {
         this.sentence = text;
         this.start = start;
         this.end = end;
-        //CoreDocument doc = new CoreDocument(this.sentence);
-        //pipeline.annotate(doc);
+        if (end-start  != this.sentence.length()) {
+            throw new FenominalRunTimeException(String.format("Incompatible start (%d) and end (%d) for sentence (\"%s\") with length %d",
+                    start, end, sentence, sentence.length()));
+        }
         this.tokens = new ArrayList<>();
-//        for (CoreLabel tok : doc.tokens()) {
-//            SimpleToken stoken = new SimpleToken(tok.word(), tok.beginPosition(), tok.endPosition(), this.start);
-//            this.tokens.add(stoken);
-//        }
         int i = 0;
 
         int len = text.length();
         // move up to first non-whitespace
-        while(Character.isSpaceChar(text.charAt(i))) {
+        while(i < len && Character.isSpaceChar(text.charAt(i))) {
             i++;
         }
         int prev = i;
         while (i<len) {
             char c = text.charAt(i);
-            if (Character.isSpaceChar(c)) {
+            if (Character.isSpaceChar(c) || sentenceEndPunctuation.contains(c)) {
                 if (i > prev) {
                     SimpleToken stoken = new SimpleToken(text
                             .substring(prev, i), prev, i, this.start);
@@ -54,13 +46,16 @@ public class SimpleSentence {
                 while (i + 1 < len && Character.isSpaceChar(text.charAt(i + 1))) {
                     i++;
                 }
+
             }
             ++i;
         }
         if (prev < len) {
-            SimpleToken stoken  = new SimpleToken(text
-                    .substring(prev, i), prev, i, start);
-            this.tokens.add(stoken);
+            String tokenText = text.substring(prev, i);
+            if (! tokenText.trim().isEmpty()) {
+                SimpleToken stoken = new SimpleToken(tokenText, prev, i, start);
+                this.tokens.add(stoken);
+            }
         }
     }
 
@@ -68,7 +63,9 @@ public class SimpleSentence {
         return this.tokens;
     }
 
-
+    public String getText() {
+        return this.sentence;
+    }
 
 
 

@@ -15,7 +15,7 @@ public class FmCoreDocument {
 
     private final List<SimpleSentence> sentences;
 
-    private final Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
+    private final static Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
 
     public FmCoreDocument(String text) {
         this.len = text.length();
@@ -26,22 +26,29 @@ public class FmCoreDocument {
             char c = text.charAt(i);
             if (sentenceEndPunctuation.contains(c)) {
                 if (i>prev) {
-                    SimpleSentence ssentence = new SimpleSentence(text
-                    .substring(prev, i), prev, i);
-                    this.sentences.add(ssentence);
-                    prev = i+1;
+                    // skip empty sentences
+                    String sentenceText = text.substring(prev, i+1).trim();
+                    if (! sentenceText.isEmpty()) {
+                        SimpleSentence ssentence = new SimpleSentence(sentenceText, prev, i+1);
+                        this.sentences.add(ssentence);
+                    }
                 }
+                // first skip to character following the punctuation and check that we are still in bounds
+                ++i;
                 // skip over ws
-                while (i+1<len && Character.isSpaceChar(text.charAt(i+1))){
+                while (i+1<len && Character.isSpaceChar(text.charAt(i))){
                     i++;
                 }
+                prev = i;
             }
             ++i;
         }
         if (prev < len) {
-            SimpleSentence ssentence = new SimpleSentence(text
-                    .substring(prev, i), prev, i);
-            this.sentences.add(ssentence);
+            String sentenceText = text.substring(prev, i).trim();
+            if (! sentenceText.isEmpty()) {
+                SimpleSentence ssentence = new SimpleSentence(sentenceText, prev, i);
+                this.sentences.add(ssentence);
+            }
         }
     }
 

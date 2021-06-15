@@ -1,12 +1,10 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
 import org.monarchinitiative.fenominal.json.JsonHpoParser;
-import org.monarchinitiative.fenominal.json.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

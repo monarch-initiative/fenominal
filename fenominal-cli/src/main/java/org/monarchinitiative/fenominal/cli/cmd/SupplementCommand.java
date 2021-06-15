@@ -1,10 +1,7 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
 
-import org.monarchinitiative.fenominal.core.TextToHpoMapper;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
+import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import picocli.CommandLine;
 
 import java.io.*;
@@ -34,7 +31,7 @@ public class SupplementCommand implements Callable<Integer> {
 
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         Map<String,String> cohortMap = getCohort();
         /*
         Map<TermId, List<String>> termToProbandMap = new HashMap<>();
@@ -87,7 +84,7 @@ public class SupplementCommand implements Callable<Integer> {
         if (! f.isFile()) {
             throw new FenominalRunTimeException("Could not find input file at \"" + input + "\"");
         }
-        String currentProband = null;
+        String currentProband;
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line = "";

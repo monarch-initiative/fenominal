@@ -1,6 +1,6 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
-import org.monarchinitiative.fenominal.core.except.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 
 import java.util.*;
 
