@@ -21,9 +21,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/.idea/
-/fenominal-cli/fenominal-cli.iml
-/fenominal-gui/fenominal-gui.iml
-/fenominal.iml
-/fenominal-core/fenominal-core.iml
+
+target/
+.idea/
+*.iml
 /fenominal-cli/dependency-reduced-pom.xml
+/supplementDecoded.txt
+/data/hp.json
+/data/hp.obo
