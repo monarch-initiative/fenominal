@@ -51,13 +51,12 @@ public class CurieUtilBuilder {
    * https://github.com/monarch-initiative/dipper/blob/master/dipper/curie_map.yaml.
    */
   private static Map<String, String> generate() {
-    try {
-      InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("curie_map.yaml");
+    try (InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("curie_map.yaml")) {
       Yaml yaml = new Yaml();
       return yaml.load(inputStream);
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
     }
-    return ImmutableMap.of();
+    return Map.of();
   }
 }

@@ -24,7 +24,6 @@ public class JsonHpoParser {
             GraphDocument gdoc = mapper.readValue(f, GraphDocument.class);
             //System.out.println(gdoc.toString());
             CurieUtil curieUtil =  CurieUtilBuilder.defaultCurieUtil();
-            curieUtil.getCurieMap().put("HP","hpppp");
             this.hpo = OntologyLoader.loadOntology(gdoc, curieUtil, "HP");
 
             } catch (IOException e) {
