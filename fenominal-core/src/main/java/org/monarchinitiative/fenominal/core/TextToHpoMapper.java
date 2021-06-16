@@ -5,7 +5,9 @@ import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
 
 import java.util.List;
 
-
+/**
+ * all public API calls for fenominal-core should go through this class
+ */
 public class TextToHpoMapper {
 
 

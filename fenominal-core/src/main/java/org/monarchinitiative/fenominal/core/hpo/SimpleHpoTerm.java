@@ -44,5 +44,21 @@ public class SimpleHpoTerm {
         return synonyms;
     }
 
+    @Override
+    public int hashCode() {
+        // sufficient to ensure uniqueness
+        return Objects.hash(this.id, this.name);
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (! (obj instanceof SimpleHpoTerm)) return false;
+        SimpleHpoTerm that = (SimpleHpoTerm) obj;
+        return this.id.equals(that.id) && this.name.equals(that.name);
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleHpoTerm: " + this.name + "(" + this.id +")";
+    }
 }

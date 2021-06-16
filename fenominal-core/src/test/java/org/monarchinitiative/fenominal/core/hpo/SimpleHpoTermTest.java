@@ -1,16 +1,18 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleHpoTermTest {
 
-    private final static File smallHpo = Paths.get("src/test/resources/hpo/hp.small.json").toFile();
+    private final static File smallHpo = Paths.get("src/test/resources/hpo/hp_head.json").toFile();
     private final static HpoLoader loader = new HpoLoader(smallHpo.getAbsolutePath());
     private final List<SimpleHpoTerm> hpoTerms = loader.loadSimpleHpoTerms();
 
@@ -26,12 +28,14 @@ public class SimpleHpoTermTest {
      */
     @Test
     public void testXref() {
-//        TermId tid = TermId.of("HP:0012372");
-//        SimpleHpoTerm sht = hpoTerms.stream().filter(s -> s.getId().equals(tid)).findFirst().orElseThrow();
-//       // assertNotNull(sht);
-//        Set<String> expectedXrefs = Set.of("Fyler:4863", "UMLS:C4022925");
-      //  assertEquals(expectedXrefs, sht.getXrefs());
-        assertTrue(true);
+        TermId tid = TermId.of("HP:0012372");
+        for (var sht : hpoTerms) {
+            System.out.println(sht);
+        }
+        SimpleHpoTerm sht = hpoTerms.stream().filter(s -> s.getId().equals(tid)).findFirst().orElseThrow();
+        assertNotNull(sht);
+        Set<String> expectedXrefs = Set.of("Fyler:4863", "UMLS:C4022925");
+        assertEquals(expectedXrefs, sht.getXrefs());
     }
 
     /**
@@ -49,25 +53,23 @@ public class SimpleHpoTermTest {
      */
     @Test
     public void testSynonyms() {
-//        TermId tid = TermId.of("HP:0100886");
-//        SimpleHpoTerm sht = hpoTerms.stream().filter(s -> s.getId().equals(tid)).findFirst().orElseThrow();
-//        assertNotNull(sht);
-//        Set<String> expectedSynonyms = Set.of("Abnormality of eyeball location",
-//                "Abnormality of eyeball position",
-//                "Abnormality of globe position");
-        //assertEquals(expectedSynonyms, sht.getSynonyms());
-        assertTrue(true);
+        TermId tid = TermId.of("HP:0100886");
+        SimpleHpoTerm sht = hpoTerms.stream().filter(s -> s.getId().equals(tid)).findFirst().orElseThrow();
+        assertNotNull(sht);
+        Set<String> expectedSynonyms = Set.of("Abnormality of eyeball location",
+                "Abnormality of eyeball position",
+                "Abnormality of globe position");
+        assertEquals(expectedSynonyms, sht.getSynonyms());
     }
 
     /**
-     * grep -c '\[Term\]' hp_head.obo
-     * 22
+     * grep \"id\" hp_head.json | grep HP | wc -l
+     *       22
      */
     @Test
     public void testRetrieveAllTerms() {
         int expectedCount = 22;
-       // assertEquals(expectedCount, hpoTerms.size());
-        assertTrue(true);
+        assertEquals(expectedCount, hpoTerms.size());
     }
 
 
