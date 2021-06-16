@@ -62,7 +62,7 @@ public class OboGraphDocumentAdaptor {
 
   public static class Builder {
     // Factory object that adds OBO-typical data to each term.
-    private OboGraphTermFactory factory = new OboGraphTermFactory();
+    private final OboGraphTermFactory factory = new OboGraphTermFactory();
     private CurieUtil curieUtil = CurieUtilBuilder.defaultCurieUtil();
     private Set<String> wantedTermIdPrefixes = Collections.emptySet();
 

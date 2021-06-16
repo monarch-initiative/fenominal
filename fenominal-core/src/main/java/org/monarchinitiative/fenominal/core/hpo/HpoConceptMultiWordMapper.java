@@ -14,7 +14,7 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
     /** The key is a word that appears in the HpoConcept. The value is a list of all concepts that
      * contain the word. Each concept is divided up into words like this for each of searching.
       */
-    private Map<String, List<HpoConcept>> componentWordToConceptMap;
+    private final Map<String, List<HpoConcept>> componentWordToConceptMap;
 
     public HpoConceptMultiWordMapper(int n) {
         this.n_words = n;
