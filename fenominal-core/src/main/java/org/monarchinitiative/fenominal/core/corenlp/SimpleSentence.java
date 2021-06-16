@@ -4,60 +4,38 @@ package org.monarchinitiative.fenominal.core.corenlp;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-
+/**
+ * Split up a sentence in tokens. We extract works that optionally contain an apostrophe or dash
+ * but that start with a letter. Transform the individual words into {@link SimpleToken} objects.
+ */
 public class SimpleSentence {
 
     private final String sentence;
     private final int start;
     private final int end;
     private final List<SimpleToken> tokens;
-
-    private final static Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
-
+    /** Match words with optional non-initial apostrophe/dash. */
+    private final static Pattern wordpattern = Pattern.compile("[a-zA-Z]+('-[a-zA-Z]+)?");
 
     public SimpleSentence(String text, int start, int end) {
         this.sentence = text;
         this.start = start;
         this.end = end;
-        if (end-start  != this.sentence.length()) {
-            throw new FenominalRunTimeException(String.format("Incompatible start (%d) and end (%d) for sentence (\"%s\") with length %d",
-                    start, end, sentence, sentence.length()));
+        if (end-start != this.sentence.length()) {
+            throw new FenominalRunTimeException(String.format("Expected length %d but got %d (=%d-%d) for sentence (\"%s\").",
+                    sentence.length(), (end-start), end, start, sentence));
         }
         this.tokens = new ArrayList<>();
-        int i = 0;
-
-        int len = text.length();
-        // move up to first non-whitespace
-        while(i < len && Character.isSpaceChar(text.charAt(i))) {
-            i++;
-        }
-        int prev = i;
-        while (i<len) {
-            char c = text.charAt(i);
-            if (Character.isSpaceChar(c) || sentenceEndPunctuation.contains(c)) {
-                if (i > prev) {
-                    SimpleToken stoken = new SimpleToken(text
-                            .substring(prev, i), prev, i, this.start);
-                    this.tokens.add(stoken);
-                    prev = i + 1;
-                }
-                // skip over ws
-                while (i + 1 < len && Character.isSpaceChar(text.charAt(i + 1))) {
-                    i++;
-                }
-
-            }
-            ++i;
-        }
-        if (prev < len) {
-            String tokenText = text.substring(prev, i);
-            if (! tokenText.trim().isEmpty()) {
-                SimpleToken stoken = new SimpleToken(tokenText, prev, i, start);
-                this.tokens.add(stoken);
-            }
+        Matcher matcher = wordpattern.matcher(this.sentence);
+        while (matcher.find()) {
+            SimpleToken token = new SimpleToken(matcher.group(), matcher.start(), matcher.end(), this.start);
+            this.tokens.add(token);
         }
     }
+
 
     public List<SimpleToken> getTokens() {
         return this.tokens;
@@ -67,6 +45,26 @@ public class SimpleSentence {
         return this.sentence;
     }
 
+    public String getSentence() {
+        return sentence;
+    }
 
+    public int getStart() {
+        return start;
+    }
 
+    public int getEnd() {
+        return end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sentence, start, end);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SimpleSentence that)) return false;
+        return this.sentence.equals(that.sentence) && this.start == that.start && this.end == that.end;
+    }
 }

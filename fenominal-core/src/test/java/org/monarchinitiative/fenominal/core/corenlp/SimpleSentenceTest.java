@@ -50,4 +50,15 @@ public class SimpleSentenceTest extends TestBase {
         assertEquals("lazy", tokens.get(7).getToken());
         assertEquals("dog", tokens.get(8).getToken());
     }
+
+
+    @Test
+    public void testSimpleSenteance() {
+        String sentence = "Initial diagnostic work-up before panel sequencing excluded large chromosomal aberrations, the most common chromosomal" +
+                "microdeletions/microduplications, Pompe disease, GM1 gangliosidosis, other metabolic myopathies, spinal muscular " +
+                "atrophy, limb-girdle muscular dystrophy 2A (mutations in exon 4 and 11 of the CAPN3 gene) and laminopathy. ";
+        SimpleSentence simpleSentence = new SimpleSentence(sentence, 2550, 2888);
+        assertEquals(2550, simpleSentence.getStart());
+        assertEquals(2888, simpleSentence.getEnd());
+    }
 }
