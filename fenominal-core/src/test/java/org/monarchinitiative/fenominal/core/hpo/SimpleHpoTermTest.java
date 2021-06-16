@@ -65,10 +65,11 @@ public class SimpleHpoTermTest {
     /**
      * grep \"id\" hp_head.json | grep HP | wc -l
      *       22
+     *  But HP_0012374 is deprecated=true, so we expect 21
      */
     @Test
     public void testRetrieveAllTerms() {
-        int expectedCount = 22;
+        int expectedCount = 21;
         assertEquals(expectedCount, hpoTerms.size());
     }
 
