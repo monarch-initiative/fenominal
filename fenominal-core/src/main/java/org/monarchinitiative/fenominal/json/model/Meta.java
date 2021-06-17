@@ -165,7 +165,7 @@ public class Meta {
         }
         public Builder addSubset(String subset) {
             if (this.subsets == null)
-                this.subsets(new ArrayList<String>());
+                this.subsets(new ArrayList<>());
             this.subsets.add(subset);
             return this;
         }

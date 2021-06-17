@@ -15,8 +15,8 @@ public class FenominalMiner implements TermMiner {
 
 
 
-    public FenominalMiner(String hpOboPath) {
-        this.mapper = new ClinicalTextMapper(hpOboPath);
+    public FenominalMiner(Ontology ontology) {
+        this.mapper = new ClinicalTextMapper(ontology);
     }
 
     /**
@@ -26,7 +26,9 @@ public class FenominalMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
+        System.out.println("MAPPING " + query);
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query);
+        System.out.println("We got " + mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
 

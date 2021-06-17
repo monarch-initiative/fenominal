@@ -6,6 +6,13 @@ Phenomenal text mining for disease and phenotype concepts
 
 
 
+# building: tltr
+
+We are using version of https://github.com/monarch-initiative/HpoCaseAnnotator that is on the java16 branch.
+You need to install this locally with mvn install. 
+
+Then build this app for instance with the maven wrapper.
+
 
 
 
@@ -67,11 +74,8 @@ all (HP:0000001;533-536)
 cardiomyopathy (HP:0001638;99-113) means that cardiomyopathy (HP:0001638) 
 was found at positions 99-113 of the original text (zero-based).
 
-## Running the GUI
-I am having sime issues building this from the command line, I think maven 3.6.3 may not support Java 16, and I 
-am figuring out how to best update on ubuntu. For now, start `StockUiApplication` from the IDE.
-Click on the HPO button to point to the ``hp.obo`` file. Then paste in a clinical text and click the
-``Parse`` button. The basic results of mining appear.
+
+
 
 
 

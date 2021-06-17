@@ -27,10 +27,12 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private Resource fenominalFxmResource;
     private final String applicationTitle;
 
+    private final ApplicationContext applicationContext;
+
 
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle) {
         this.applicationTitle = applicationTitle;
-
+        this.applicationContext = context;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     }
 
     private static Optional<Image> readAppIcon() {
-        try (InputStream is = StageInitializer.class.getResourceAsStream("/rose.png")) {
+        try (InputStream is = StageInitializer.class.getResourceAsStream("/img/thumb.png")) {
             if (is != null) {
                 return Optional.of(new Image(is));
             }

@@ -17,6 +17,15 @@ public class FmCoreDocumentTest extends TestBase {
         assertEquals(3, doc1.getSentences().size());
     }
 
+
+    @Test
+    public void testShortSentences() {
+        String text = "The quick. Brown fox. Jumps over. ";
+        FmCoreDocument doc = new FmCoreDocument(text);
+        assertEquals(3, doc.getSentences().size());
+    }
+
+
     /**
      * SimpleSentence should not include trailing whitespace, but should include punctuation
      */

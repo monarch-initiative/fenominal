@@ -10,49 +10,49 @@ import java.util.Set;
  */
 public class FmCoreDocument {
 
-
-    private final int len;
+    private final String originalText;
 
     private final List<SimpleSentence> sentences;
 
     private final static Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
 
     public FmCoreDocument(String text) {
-        this.len = text.length();
+        this.originalText = text;
+        int len = this.originalText.length();
         this.sentences = new ArrayList<>();
+        // get positions of sentence-end punctuations
+        List<Integer> positions = getPunctuationPositions();
+        // get fragments between the positions
+        // do not bother to throw out whitespace, which will not be a problem downstream
         int i = 0;
-        int prev = 0;
-        while (i<len) {
-            char c = text.charAt(i);
-            if (sentenceEndPunctuation.contains(c)) {
-                if (i>prev) {
-                    // skip empty sentences
-                    String sentenceText = text.substring(prev, i+1).trim();
-                    if (! sentenceText.isEmpty()) {
-                        SimpleSentence ssentence = new SimpleSentence(sentenceText, prev, i+1);
-                        this.sentences.add(ssentence);
-                    }
-                }
-                // first skip to character following the punctuation and check that we are still in bounds
-                ++i;
-                // skip over ws
-                while (i+1<len && Character.isSpaceChar(text.charAt(i))){
-                    i++;
-                }
-                prev = i;
+        for (int endpos : positions) {
+            String sentenceText = this.originalText.substring(i, endpos);
+            if (i>=endpos || sentenceText.trim().isEmpty()) {
+                continue; // skip too short fragments
             }
-            ++i;
-        }
-        if (prev < len) {
-            String sentenceText = text.substring(prev, i).trim();
-            if (! sentenceText.isEmpty()) {
-                SimpleSentence ssentence = new SimpleSentence(sentenceText, prev, i);
-                this.sentences.add(ssentence);
-            }
+            SimpleSentence ssentence = new SimpleSentence(sentenceText, i, endpos);
+            this.sentences.add(ssentence);
+            // move past any white space that follows the punctuation
+            i = endpos;
+            while (i<len && Character.isSpaceChar(text.charAt(i))) i++;
         }
     }
 
-
+    private List<Integer> getPunctuationPositions() {
+        int len = this.originalText.length();
+        List<Integer> positions = new ArrayList<>();
+        int i = 0;
+        while (i<len) {
+            if (sentenceEndPunctuation.contains(this.originalText.charAt(i))) {
+                positions.add(i+1); // add position after punctuation, to include it in substring
+            }
+            i++;
+        }
+        // always add the last position (which possibly contains a punctuation
+        // mark or could be whitepaace or something else).
+        positions.add(len);
+        return positions;
+    }
 
 
     public List<SimpleSentence> getSentences() {

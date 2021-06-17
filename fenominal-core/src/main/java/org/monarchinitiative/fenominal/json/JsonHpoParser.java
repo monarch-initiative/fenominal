@@ -21,12 +21,34 @@ public class JsonHpoParser {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             File f = new File(hpoJsonPath);
+            if (! f.isFile()) {
+                throw new FenominalRunTimeException("Could not file hp.json file at " + f.getAbsolutePath());
+            }
             GraphDocument gdoc = mapper.readValue(f, GraphDocument.class);
             //System.out.println(gdoc.toString());
             CurieUtil curieUtil =  CurieUtilBuilder.defaultCurieUtil();
             this.hpo = OntologyLoader.loadOntology(gdoc, curieUtil, "HP");
 
             } catch (IOException e) {
+            throw new FenominalRunTimeException(e.getLocalizedMessage());
+        }
+    }
+
+    public static Ontology loadOntology(String hpoJsonPath) {
+        ObjectMapper mapper = new ObjectMapper();
+        // skip fields not used in OBO such as domainRangeAxioms
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            File f = new File(hpoJsonPath);
+            if (! f.isFile()) {
+                throw new FenominalRunTimeException("Could not file hp.json file at " + f.getAbsolutePath());
+            }
+            GraphDocument gdoc = mapper.readValue(f, GraphDocument.class);
+            //System.out.println(gdoc.toString());
+            CurieUtil curieUtil =  CurieUtilBuilder.defaultCurieUtil();
+            return OntologyLoader.loadOntology(gdoc, curieUtil, "HP");
+
+        } catch (IOException e) {
             throw new FenominalRunTimeException(e.getLocalizedMessage());
         }
     }
