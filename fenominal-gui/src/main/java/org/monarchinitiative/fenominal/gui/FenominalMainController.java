@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Component
@@ -51,8 +50,8 @@ public class FenominalMainController {
     public void initialize() {
         // only enable analyze if Ontology downloaded (enabled property watches
         parseButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
-        optionalResources.ontologyProperty().addListener((a,b,c) -> { if (c==null) {
-            this.hpoReadyLabel.setText("HPO needs to be downloaded (See edit menu)");
+        optionalResources.ontologyProperty().addListener((observable,oldValue,newValue) -> { if (newValue!=null) {
+            this.hpoReadyLabel.setText("");
         }
        });
     }
@@ -106,11 +105,14 @@ public class FenominalMainController {
     @FXML
     private void importHpObo(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open hp.obo");
-
+        fileChooser.setTitle("Open hp.json");
+        FileChooser.ExtensionFilter jsonFilter
+                = new FileChooser.ExtensionFilter("JSON Files", "*.json");
+        fileChooser.getExtensionFilters().add(jsonFilter);
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-            this.fenominalMiner = new FenominalMiner(file.getAbsolutePath());
+            //File hpJsonFile = new FenominalMiner(file.getAbsolutePath());
+            //this.optionalResources.
         }
     }
 

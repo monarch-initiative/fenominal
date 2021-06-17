@@ -1,6 +1,5 @@
 package org.monarchinitiative.fenominal.gui.config;
 
-import org.checkerframework.checker.nullness.Opt;
 import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

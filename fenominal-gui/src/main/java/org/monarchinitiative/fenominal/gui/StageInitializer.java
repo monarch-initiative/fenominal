@@ -51,7 +51,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     }
 
     private static Optional<Image> readAppIcon() {
-        try (InputStream is = StageInitializer.class.getResourceAsStream("/rose.png")) {
+        try (InputStream is = StageInitializer.class.getResourceAsStream("/img/thumb.png")) {
             if (is != null) {
                 return Optional.of(new Image(is));
             }
