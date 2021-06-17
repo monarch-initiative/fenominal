@@ -5,11 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.monarchinitiative.fenominal.gui.config.OptionalResources;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.springframework.stereotype.Component;
 
@@ -34,13 +36,28 @@ public class FenominalMainController {
     @FXML public Button importTextFile;
     @FXML public Button importHpObo;
 
+    public Label needHpoLabel;
     private FenominalMiner fenominalMiner = null;
 
     //private final Executor executor = Executors.newSingleThreadExecutor();
     private final ExecutorService executor;
 
-    public FenominalMainController() {
+    private final OptionalResources optionalResources;
+
+    public FenominalMainController(OptionalResources optionalResources) {
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.optionalResources = optionalResources;
+
+    }
+
+
+    public void initialize() {
+        // only enable analyze if Ontology downloaded (enabled property watches
+        //parseButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
+//        optionalResources.ontologyProperty().addListener((a,b,c) -> { if (c==null) {
+//            needHpoLabel.setText("DOWNLOAD");
+//        }
+//        });
     }
 
 

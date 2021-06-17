@@ -1,6 +1,5 @@
 package org.monarchinitiative.fenominal.gui.config;
 
-import org.monarchinitiative.fenominal.gui.FenominalApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ public class FenominalConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(FenominalConfig.class);
 
 
-    @Bean("appHomeDir")
+    @Bean
     public File appHomeDir() throws IOException {
         String osName = System.getProperty("os.name").toLowerCase();
         File appHomeDir;
@@ -48,21 +47,21 @@ public class FenominalConfig {
     }
 
 
-    @Bean("appNameVersion")
-    String appNameVersion(String appVersion, String appName) {
-        return String.format("%s : %s", appName, appVersion);
-    }
-
-
-    @Bean("appVersion")
-    String appVersion() {
-        // this property is set in FenominalApplication#init()
-        return System.getProperty(FenominalApplication.FENOMINAL_VERSION_PROP_KEY);
-    }
-
-    @Bean("appName")
-    String appName() {
-        // this property is set in FenominalApplication#init()
-        return System.getProperty(FenominalApplication.FENOMINAL_NAME_KEY);
-    }
+//    @Bean("appNameVersion")
+//    String appNameVersion(String appVersion, String appName) {
+//        return String.format("%s : %s", appName, appVersion);
+//    }
+//
+//
+//    @Bean("appVersion")
+//    String appVersion() {
+//        // this property is set in FenominalApplication#init()
+//        return System.getProperty(FenominalApplication.FENOMINAL_VERSION_PROP_KEY);
+//    }
+//
+//    @Bean("appName")
+//    String appName() {
+//        // this property is set in FenominalApplication#init()
+//        return System.getProperty(FenominalApplication.FENOMINAL_NAME_KEY);
+//    }
 }
