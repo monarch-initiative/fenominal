@@ -27,10 +27,12 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private Resource fenominalFxmResource;
     private final String applicationTitle;
 
+    private final ApplicationContext applicationContext;
+
 
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle) {
         this.applicationTitle = applicationTitle;
-
+        this.applicationContext = context;
     }
 
     @Override

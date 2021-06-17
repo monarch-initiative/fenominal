@@ -1,19 +1,64 @@
 package org.monarchinitiative.fenominal.gui.config;
 
+import org.checkerframework.checker.nullness.Opt;
+import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 public class FenominalConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(FenominalConfig.class);
 
+    public static final String CONFIG_FILE_BASENAME = "fenominal.properties";
+
 
     @Bean
+    public OptionalResources optionalResources() {
+        return new OptionalResources();
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    }
+
+    /**
+     * Properties meant to store user configuration within the app's directory
+     *
+     * @param configFilePath path where the properties file is supposed to be present (it's ok if the file itself doesn't exist).
+     * @return {@link Properties} with user configuration
+     */
+    @Bean
+    public Properties pgProperties(@Qualifier("configFilePath") File configFilePath) {
+        Properties properties = new Properties();
+        if (configFilePath.isFile()) {
+            try (InputStream is = Files.newInputStream(configFilePath.toPath().getRoot())) {
+                properties.load(is);
+            } catch (IOException e) {
+                LOGGER.warn("Error during reading `{}`", configFilePath, e);
+            }
+        }
+        return properties;
+    }
+
+    @Bean("configFilePath")
+    public File configFilePath(@Qualifier("appHomeDir") File appHomeDir) {
+        return new File(appHomeDir, CONFIG_FILE_BASENAME);
+    }
+//
+
+    @Bean("appHomeDir")
     public File appHomeDir() throws IOException {
         String osName = System.getProperty("os.name").toLowerCase();
         File appHomeDir;
