@@ -19,9 +19,6 @@ public class HpoDownloader {
     /** If true, download new version whether or not the file is already present. */
     private final boolean overwrite;
 
-    private final static String HP_OBO = "hp.obo";
-    /** URL of the hp.obo file. */
-    private final static String HP_OBO_URL ="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo";
     private final static String HP_JSON = "hp.json";
     /** URL of the hp.obo file. */
     private final static String HP_JSON_URL ="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.json";
@@ -40,7 +37,6 @@ public class HpoDownloader {
      * Download the files unless they are already present.
      */
     public void download() {
-        downloadFileIfNeeded(HP_OBO,HP_OBO_URL);
         downloadFileIfNeeded(HP_JSON,HP_JSON_URL);
         System.out.printf("[INFO] Downloaded hp.obo to \"%s\"" , downloadDirectory);
     }

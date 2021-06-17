@@ -1,6 +1,5 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
-import org.monarchinitiative.fenominal.cli.io.HpoDownloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;

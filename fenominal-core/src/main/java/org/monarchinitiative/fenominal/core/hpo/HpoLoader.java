@@ -21,6 +21,10 @@ public class HpoLoader {
         this.hpo = parser.getHpo();
     }
 
+    HpoLoader(Ontology ontology) {
+        this.hpo = ontology;
+    }
+
     public Ontology getHpo() {
         return hpo;
     }

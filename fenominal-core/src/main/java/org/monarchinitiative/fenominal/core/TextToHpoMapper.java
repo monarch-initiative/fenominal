@@ -2,6 +2,7 @@ package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
+import org.monarchinitiative.fenominal.json.JsonHpoParser;
 
 import java.util.List;
 
@@ -14,8 +15,9 @@ public class TextToHpoMapper {
 
     private final ClinicalTextMapper hpoMatcher;
 
-    public TextToHpoMapper(String pathToHpObo) {
-        hpoMatcher = new ClinicalTextMapper(pathToHpObo);
+    public TextToHpoMapper(String pathToHpJson) {
+        JsonHpoParser parser = new JsonHpoParser(pathToHpJson);
+        hpoMatcher = new ClinicalTextMapper(parser.getHpo());
     }
 
     public synchronized List<MappedSentencePart>  mapText(String text) {

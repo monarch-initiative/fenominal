@@ -17,9 +17,9 @@ public class HpoMatcher {
     private final Ontology hpo;
 
 
-    public HpoMatcher(String pathToHpObo) {
-        HpoLoader loader = new HpoLoader(pathToHpObo);
-        this.hpo = loader.getHpo();
+    public HpoMatcher(Ontology ontology) {
+        this.hpo = ontology;
+        HpoLoader loader = new HpoLoader(ontology);
         Map<String, TermId> textToTermMap = loader.textToTermMap();
         this.wordCountToMatcherMap = new HashMap<>();
         this.wordCountToMatcherMap.put(1, new HpoConceptSingleWordMapper());
@@ -51,8 +51,13 @@ public class HpoMatcher {
 
     public Optional<HpoConcept> getMatch(List<String> words) {
         if (words.size() > 14) {
-            System.err.println("Maximum current word count is 14 but we got " +
+            LOGGER.error("Maximum current word count is 14 but we got " +
                     words.size() + " for \"" + words + "\"");
+        } else if (words.isEmpty()) {
+            LOGGER.error("Empty word list passed");
+        } else {
+            HpoConceptMatch matcher = this.wordCountToMatcherMap.get(words.size());
+            return matcher.getMatch(words);
         }
         return Optional.empty();
     }

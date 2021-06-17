@@ -4,32 +4,35 @@ import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
     private final HpoMatcher hpoMatcher;
 
-    public ClinicalTextMapper(String pathToHpObo) {
-        this.hpoMatcher = new HpoMatcher(pathToHpObo);
+    public ClinicalTextMapper(Ontology ontology) {
+        this.hpoMatcher = new HpoMatcher(ontology);
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
         FmCoreDocument coreDocument = new FmCoreDocument(text);
         List<SimpleSentence> sentences = coreDocument.getSentences();
-        //List<SimpleSentence> sentences = SimpleSentence. splitInputSimple(text);
         List<MappedSentencePart> mappedParts = new ArrayList<>();
         for (var ss : sentences) {
             List<MappedSentencePart> sentenceParts = mapSentence(ss);
             mappedParts.addAll(sentenceParts);
         }
+        LOGGER.error("Got {} mappedParts", mappedParts.size());
         return mappedParts;
     }
 
     private List<MappedSentencePart> mapSentence(SimpleSentence ss) {
+        LOGGER.error("Mapping sentence {}", ss.getSentence());
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
                 .filter(Predicate.not(token ->  StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
@@ -45,6 +48,7 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
+                    LOGGER.error("OPt PRESENT {}}", opt.get());
                     MappedSentencePart mappedSentencePart = new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
@@ -66,6 +70,7 @@ public class ClinicalTextMapper {
             MappedSentencePart longest = getLongestPart(candidatesAtPositionI);
             mappedSentencePartList.add(longest);
         }
+        LOGGER.error("mappedSentencePartList size {}", mappedSentencePartList.size());
         return mappedSentencePartList;
     }
 

@@ -26,7 +26,7 @@
                             <MenuItem fx:id="quitItem" mnemonicParsing="false" onAction="#quitApplication" text="Close" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
-                            <MenuItem mnemonicParsing="false" text="Delete" />
+                            <MenuItem mnemonicParsing="false" onAction="#importHpJson" text="Download hp.json" />
                         </Menu>
                     </MenuBar>
                     <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES" />
@@ -70,10 +70,13 @@
                <Separator prefWidth="200.0" />
                     <HBox prefHeight="34.0" prefWidth="982.0">
                   <children>
-                     <Label fx:id="hpoReadyLabel">
+                     <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
                         <HBox.margin>
                            <Insets bottom="20.0" left="20.0" />
                         </HBox.margin>
+                        <font>
+                           <Font name="System Bold" size="18.0" />
+                        </font>
                      </Label>
                   </children>
                     </HBox>

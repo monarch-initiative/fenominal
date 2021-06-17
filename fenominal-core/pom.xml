@@ -35,6 +35,11 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.prefixcommons</groupId>
             <artifactId>curie-util</artifactId>
             <version>0.0.2</version>

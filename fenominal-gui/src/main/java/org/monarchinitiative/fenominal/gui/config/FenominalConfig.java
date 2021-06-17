@@ -42,7 +42,7 @@ public class FenominalConfig {
     public Properties pgProperties(@Qualifier("configFilePath") File configFilePath) {
         Properties properties = new Properties();
         if (configFilePath.isFile()) {
-            try (InputStream is = Files.newInputStream(configFilePath.toPath().getRoot())) {
+            try (InputStream is = Files.newInputStream(configFilePath.toPath())) {
                 properties.load(is);
             } catch (IOException e) {
                 LOGGER.warn("Error during reading `{}`", configFilePath, e);

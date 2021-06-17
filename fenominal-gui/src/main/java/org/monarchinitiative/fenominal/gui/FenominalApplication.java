@@ -10,6 +10,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 
@@ -28,7 +31,6 @@ public class FenominalApplication extends Application {
 
     @Override
     public void init() {
-
         applicationContext = new SpringApplicationBuilder(StockUiApplication.class).run();
         // export app's version into System properties
         try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
@@ -45,11 +47,23 @@ public class FenominalApplication extends Application {
         System.out.println("HOME DIR=" + f.getAbsolutePath());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void stop() {
-        applicationContext.close();
+    public void stop() throws Exception {
+        super.stop();
+        // save properties
+        final Properties pgProperties = applicationContext.getBean("pgProperties", Properties.class);
+        final Path configFilePath = applicationContext.getBean("configFilePath", Path.class);
+        try (OutputStream os = Files.newOutputStream(configFilePath)) {
+            pgProperties.store(os, "Fenominal properties");
+        }
         Platform.exit();
+        // close the context
+        applicationContext.close();
     }
+
 
     static class StageReadyEvent extends ApplicationEvent {
         public StageReadyEvent(Stage stage) {
