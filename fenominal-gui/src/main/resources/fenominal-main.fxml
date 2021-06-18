@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -16,75 +15,74 @@
 <?import javafx.scene.text.Font?>
 
 <?import org.controlsfx.control.spreadsheet.SpreadsheetView?>
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
-    <ScrollPane prefHeight="617.0" prefWidth="998.0">
-        <BorderPane prefHeight="618.0" prefWidth="999.0">
-            <top>
-                <HBox prefHeight="25.0" prefWidth="999.0" BorderPane.alignment="CENTER">
-                    <MenuBar>
-                        <Menu mnemonicParsing="false" text="File">
-                            <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close" />
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <MenuItem mnemonicParsing="false" onAction="#importHpJson" text="Download hp.json" />
-                        </Menu>
-                    </MenuBar>
-                    <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES" />
-                    <MenuBar HBox.hgrow="NEVER">
-                        <Menu mnemonicParsing="false" text="Help">
-                            <MenuItem mnemonicParsing="false" text="About" />
-                        </Menu>
-                    </MenuBar>
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
+    <BorderPane prefHeight="600.0" prefWidth="1000">
+        <top>
+            <HBox prefHeight="25.0" prefWidth="1000" BorderPane.alignment="CENTER">
+                <MenuBar>
+                    <Menu mnemonicParsing="false" text="File">
+                        <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close"/>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Edit">
+                        <MenuItem mnemonicParsing="false" onAction="#importHpJson" text="Download hp.json"/>
+                    </Menu>
+                </MenuBar>
+                <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES"/>
+                <MenuBar HBox.hgrow="NEVER">
+                    <Menu mnemonicParsing="false" text="Help">
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </Menu>
+                </MenuBar>
+            </HBox>
+        </top>
+        <left>
+            <VBox prefHeight="591.0" prefWidth="1000" BorderPane.alignment="CENTER">
+                <HBox prefHeight="53.0" prefWidth="982.0">
+                    <Label text="FENOMINAL">
+                        <font>
+                            <Font name="System Bold" size="23.0"/>
+                        </font>
+                        <HBox.margin>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                        </HBox.margin>
+                    </Label>
                 </HBox>
-            </top>
-            <left>
-                <VBox prefHeight="591.0" prefWidth="982.0" BorderPane.alignment="CENTER">
-                    <HBox prefHeight="53.0" prefWidth="982.0">
-                        <Label text="FENOMINAL">
-                            <font>
-                                <Font name="System Bold" size="23.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                            </HBox.margin>
-                        </Label>
-                    </HBox>
-                    <HBox prefHeight="400.0" prefWidth="200.0">
-                        <VBox prefHeight="200.0" prefWidth="200.0">
-                            <Button mnemonicParsing="false" onAction="#getStarted" styleClass="bevel-grey"
-                                    stylesheets="@fenominal.css" text="Get started">
-                                <VBox.margin>
-                                    <Insets left="20.0"/>
-                                </VBox.margin>
-                            </Button>
-                            <Button mnemonicParsing="false" onAction="#parseButtonPressed" styleClass="bevel-grey"
-                                    stylesheets="@fenominal.css" text="Mine text" fx:id="parseButton">
-                                <VBox.margin>
-                                    <Insets left="20.0"/>
-                                </VBox.margin>
-                            </Button>
-                        </VBox>
-                        <VBox prefHeight="170.0" prefWidth="908.0">
-                            <SpreadsheetView prefHeight="200.0" prefWidth="200.0" fx:id="spreadSheetView">
-                                <columns>
+                <HBox prefHeight="400.0" prefWidth="200.0">
+                    <VBox prefHeight="200.0" prefWidth="200.0">
+                        <Button mnemonicParsing="false" onAction="#getStarted" styleClass="bevel-grey"
+                                stylesheets="@fenominal.css" text="Get started">
+                            <VBox.margin>
+                                <Insets left="20.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#parseButtonPressed" styleClass="bevel-grey"
+                                stylesheets="@fenominal.css" text="Text mining" fx:id="parseButton">
+                            <VBox.margin>
+                                <Insets left="20.0"/>
+                            </VBox.margin>
+                        </Button>
+                    </VBox>
+                    <VBox prefHeight="170.0" prefWidth="1000">
+                        <SpreadsheetView prefHeight="200.0" prefWidth="200.0" fx:id="spreadSheetView">
+                            <columns>
 
-                                </columns>
-                            </SpreadsheetView>
-                        </VBox>
-                    </HBox>
-               <Separator prefWidth="200.0" />
-                    <HBox prefHeight="34.0" prefWidth="982.0">
-                        <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
-                            <HBox.margin>
-                                <Insets bottom="20.0" left="20.0" />
-                            </HBox.margin>
-                            <font>
-                                <Font name="System Bold" size="18.0" />
-                            </font>
-                        </Label>
-                    </HBox>
-                </VBox>
-            </left>
-        </BorderPane>
-    </ScrollPane>
+                            </columns>
+                        </SpreadsheetView>
+                    </VBox>
+                </HBox>
+                <Separator prefWidth="200.0"/>
+                <HBox prefHeight="34.0" prefWidth="1000">
+                    <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
+                        <HBox.margin>
+                            <Insets bottom="20.0" left="20.0"/>
+                        </HBox.margin>
+                        <font>
+                            <Font name="System Bold" size="18.0"/>
+                        </font>
+                    </Label>
+                </HBox>
+            </VBox>
+        </left>
+    </BorderPane>
 </AnchorPane>
