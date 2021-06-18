@@ -8,7 +8,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -16,6 +17,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import org.controlsfx.control.spreadsheet.SpreadsheetView?>
+<?import org.controlsfx.control.spreadsheet.SpreadsheetColumn?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
     <ScrollPane prefHeight="617.0" prefWidth="998.0">
         <BorderPane prefHeight="618.0" prefWidth="999.0">
@@ -49,18 +52,26 @@
                             </HBox.margin>
                         </Label>
                     </HBox>
-                    <TextArea fx:id="parseArea" prefHeight="326.0" prefWidth="982.0" />
+                    <HBox prefHeight="400.0" prefWidth="200.0">
+                        <VBox prefHeight="200.0" prefWidth="200.0">
+                            <Button mnemonicParsing="false" onAction="#getStarted" styleClass="#ipad-grey"
+                                    stylesheets="@fenominal.css" text="Get started">
+                                <VBox.margin>
+                                    <Insets left="20.0"/>
+                                </VBox.margin>
+                            </Button>
+                        </VBox>
+                  <VBox prefHeight="170.0" prefWidth="908.0">
+                     <children>
+                        <SpreadsheetView prefHeight="200.0" prefWidth="200.0" fx:id="spreadSheetView">
+                          <columns>
+
+                          </columns>
+                        </SpreadsheetView>
+                     </children>
+                  </VBox>
+                    </HBox>
                     <HBox prefHeight="150.0" prefWidth="982.0">
-                        <Button fx:id="importTextFile" mnemonicParsing="false" text="Import text file">
-                            <HBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                            </HBox.margin>
-                        </Button>
-                        <Button fx:id="pasteClipboard" mnemonicParsing="false" onAction="#pasteClipboard" text="Paste clipboard">
-                            <HBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                            </HBox.margin>
-                        </Button>
                         <Button fx:id="parseButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#parseButtonPressed" text="Parse">
                             <HBox.margin>
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -69,16 +80,14 @@
                     </HBox>
                <Separator prefWidth="200.0" />
                     <HBox prefHeight="34.0" prefWidth="982.0">
-                  <children>
-                     <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
-                        <HBox.margin>
-                           <Insets bottom="20.0" left="20.0" />
-                        </HBox.margin>
-                        <font>
-                           <Font name="System Bold" size="18.0" />
-                        </font>
-                     </Label>
-                  </children>
+                        <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
+                            <HBox.margin>
+                                <Insets bottom="20.0" left="20.0" />
+                            </HBox.margin>
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
                     </HBox>
                 </VBox>
             </left>
