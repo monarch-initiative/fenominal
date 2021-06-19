@@ -27,12 +27,10 @@ public class ClinicalTextMapper {
             List<MappedSentencePart> sentenceParts = mapSentence(ss);
             mappedParts.addAll(sentenceParts);
         }
-        LOGGER.error("Got {} mappedParts", mappedParts.size());
         return mappedParts;
     }
 
     private List<MappedSentencePart> mapSentence(SimpleSentence ss) {
-        LOGGER.error("Mapping sentence {}", ss.getSentence());
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
                 .filter(Predicate.not(token ->  StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
@@ -48,7 +46,6 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
-                    LOGGER.error("OPt PRESENT {}}", opt.get());
                     MappedSentencePart mappedSentencePart = new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
@@ -70,7 +67,6 @@ public class ClinicalTextMapper {
             MappedSentencePart longest = getLongestPart(candidatesAtPositionI);
             mappedSentencePartList.add(longest);
         }
-        LOGGER.error("mappedSentencePartList size {}", mappedSentencePartList.size());
         return mappedSentencePartList;
     }
 

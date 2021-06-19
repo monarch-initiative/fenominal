@@ -48,18 +48,27 @@
                         </HBox.margin>
                     </Label>
                 </HBox>
-                <HBox prefHeight="400.0" prefWidth="200.0">
-                    <VBox prefHeight="200.0" prefWidth="200.0">
+                <HBox prefHeight="400.0" prefWidth="400.0">
+                    <VBox prefHeight="200.0" prefWidth="400.0">
                         <Button mnemonicParsing="false" onAction="#getStarted" styleClass="bevel-grey"
-                                stylesheets="@fenominal.css" text="Get started">
+                                stylesheets="@fenominal.css" text="Get started" prefWidth="300" fx:id="setupButton">
                             <VBox.margin>
                                 <Insets left="20.0"/>
                             </VBox.margin>
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </VBox.margin>
                         </Button>
                         <Button mnemonicParsing="false" onAction="#parseButtonPressed" styleClass="bevel-grey"
-                                stylesheets="@fenominal.css" text="Text mining" fx:id="parseButton">
+                                stylesheets="@fenominal.css" text="Text mining" fx:id="parseButton" prefWidth="300">
                             <VBox.margin>
-                                <Insets left="20.0"/>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#parseButtonPressed" styleClass="bevel-grey"
+                                stylesheets="@fenominal.css" text="Output" fx:id="outputButton" prefWidth="300">
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                             </VBox.margin>
                         </Button>
                     </VBox>
@@ -71,7 +80,7 @@
                         </SpreadsheetView>
                     </VBox>
                 </HBox>
-                <Separator prefWidth="200.0"/>
+                <Separator prefWidth="400.0"/>
                 <HBox prefHeight="34.0" prefWidth="1000">
                     <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
                         <HBox.margin>

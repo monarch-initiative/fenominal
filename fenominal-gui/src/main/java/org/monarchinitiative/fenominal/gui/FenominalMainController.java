@@ -9,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.spreadsheet.GridBase;
@@ -19,9 +17,13 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType;
 import org.controlsfx.control.spreadsheet.SpreadsheetView;
 import org.controlsfx.dialog.CommandLinksDialog;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.gui.guitools.MiningTask;
 import org.monarchinitiative.fenominal.gui.guitools.PopUps;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
+import org.monarchinitiative.fenominal.gui.model.CaseReport;
+import org.monarchinitiative.fenominal.gui.model.TextMiningResultsModel;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
+import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,17 +31,23 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+
+import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.CaseReport;
+import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.UNINITIALIZED;
 
 @Component
 public class FenominalMainController {
 
     @FXML
     public Button parseButton;
+
+    @FXML
+    public Button outputButton;
+    @FXML
+    public Button setupButton;
 
     @FXML public Button importTextFile;
 
@@ -49,6 +57,7 @@ public class FenominalMainController {
     @FXML
     public SpreadsheetView spreadSheetView;
 
+
     private FenominalMiner fenominalMiner = null;
     private final ExecutorService executor;
 
@@ -57,6 +66,10 @@ public class FenominalMainController {
     private final Properties pgProperties;
 
     private final File appHomeDirectory;
+
+    private MiningTask miningTaskType = UNINITIALIZED;
+
+    private TextMiningResultsModel model = null;
 
     @Autowired
     public FenominalMainController(OptionalResources optionalResources,
@@ -77,7 +90,7 @@ public class FenominalMainController {
         task.setOnSucceeded(e -> this.hpoReadyLabel.textProperty().unbind());
         this.executor.submit(task);
         // only enable analyze if Ontology downloaded (enabled property watches
-        parseButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
+        this.setupButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
         // set up table view with
         int rowCount = 6;
         int columnCount = 2;
@@ -92,7 +105,9 @@ public class FenominalMainController {
         }
         grid.setRows(rows);
         this.spreadSheetView.setGrid(grid);
-
+        //
+        this.parseButton.setDisable(true);
+        this.outputButton.setDisable(true);
     }
 
 
@@ -105,10 +120,6 @@ public class FenominalMainController {
             return;
         }
         this.fenominalMiner = new FenominalMiner(ontology);
-        if (this.fenominalMiner == null) {
-            System.err.println("[ERROR] hp.json not initialized");
-            return;
-        }
         try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
                     .withTermMiner(this.fenominalMiner)
@@ -126,10 +137,16 @@ public class FenominalMainController {
             secondary.setScene(new Scene(hpoTextMining.getMainParent()));
             secondary.showAndWait();
 
-            // do something with the results
-            System.out.println(hpoTextMining.getApprovedTerms().stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining("\n", "Approved terms:\n", "")));
+            Set<Main.PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
+            switch (this.miningTaskType) {
+                case CaseReport:
+                    model = new CaseReport(approved);
+                    model.output();
+                    break;
+                default:
+                    PopUps.showInfoMessage("Error, minig task not implemented yet", "Error");
+                    return;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -137,22 +154,35 @@ public class FenominalMainController {
 
         e.consume();
     }
+
+
+    private void initCaseReport() {
+        System.out.println("case report");
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine case report");
+        this.miningTaskType = CaseReport;
+    }
+
+
+
+
     @FXML
     private void getStarted(ActionEvent e) {
         var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report","Enter data about one individual, one time point", true);
         var caseReportTemporal = new CommandLinksDialog.CommandLinksButtonType("Case report (multiple time points)","Enter data about one individual, multiple time points", false);
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort","Enter data about cohort", false);
         var cohortOneByOne = new CommandLinksDialog.CommandLinksButtonType("Cohort (enter data about multiple individuals)","Enter data about cohort (one by one)", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(caseReport, caseReportTemporal, cohortTogether, cohortOneByOne);
+        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel","Cancel", false);
+        CommandLinksDialog dialog = new CommandLinksDialog(caseReport, caseReportTemporal, cohortTogether, cohortOneByOne, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
-        dialog.setContentText("Fenominal supports four types of HPO biocuration");
+        dialog.setContentText("Fenominal supports four types of HPO biocuration. This will delete current work (Cancel to return).");
         Optional<ButtonType> opt = dialog.showAndWait();
         if (opt.isPresent()) {
             ButtonType btype = opt.get();
             switch(btype.getText()) {
                 case "Case report":
-                    System.out.println("case report");
+                    initCaseReport();
                     break;
                 case "Case report (multiple time points)":
                     System.out.println("case report temporal");
@@ -163,12 +193,11 @@ public class FenominalMainController {
                 case "Cohort (enter data about multiple individuals)":
                     System.out.println("cohortOneByOne");
                     break;
+                case "Cancel":
                 default:
-                    System.out.println("What button??");
+                    return;
             }
-
         }
-
         e.consume();
     }
 

@@ -31,15 +31,12 @@ public class OntologyLoader {
 
 
   public static Ontology loadOntology(GraphDocument graphDocument, CurieUtil curieUtil, String... termIdPrefixes) {
-    logger.debug("Finished loading ontology");
-    logger.debug("Creating phenol ontology");
     OboGraphDocumentAdaptor graphDocumentAdaptor = OboGraphDocumentAdaptor.builder()
       .curieUtil(curieUtil)
       .wantedTermIdPrefixes(ImmutableSet.copyOf(termIdPrefixes))
       .build(graphDocument);
-
     Ontology ontology = graphDocumentAdaptor.buildOntology();
-    logger.debug("Parsed a total of {} terms", ontology.countAllTerms());
+    logger.trace("Parsed a total of {} terms", ontology.countAllTerms());
     return ontology;
   }
 
