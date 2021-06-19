@@ -6,6 +6,7 @@ import java.util.Optional;
 public interface HpoConceptMatch {
 
     void addConcept(HpoConcept concept);
+
     Optional<HpoConcept> getMatch(List<String> words);
 
 }
