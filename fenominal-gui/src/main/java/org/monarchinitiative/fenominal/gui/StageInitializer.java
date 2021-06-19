@@ -46,6 +46,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
             Stage stage = event.getStage();
             stage.setScene(new Scene(parent, 800, 600));
             stage.setTitle(applicationTitle);
+            stage.setResizable(false);
             readAppIcon().ifPresent(stage.getIcons()::add);
             stage.show();
         } catch (IOException e) {

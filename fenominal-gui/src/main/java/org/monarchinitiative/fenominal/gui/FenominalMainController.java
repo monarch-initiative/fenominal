@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.spreadsheet.GridBase;
@@ -17,6 +18,7 @@ import org.controlsfx.control.spreadsheet.SpreadsheetCellType;
 import org.controlsfx.control.spreadsheet.SpreadsheetView;
 import org.controlsfx.dialog.CommandLinksDialog;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.gui.guitools.DataEntryPane;
 import org.monarchinitiative.fenominal.gui.guitools.MiningTask;
 import org.monarchinitiative.fenominal.gui.guitools.PopUps;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
@@ -48,8 +50,6 @@ public class FenominalMainController {
     public Button outputButton;
     @FXML
     public Button setupButton;
-
-    @FXML public Button importTextFile;
 
     @FXML
     public Label hpoReadyLabel;
@@ -91,24 +91,40 @@ public class FenominalMainController {
         this.executor.submit(task);
         // only enable analyze if Ontology downloaded (enabled property watches
         this.setupButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
-        // set up table view with
-        int rowCount = 6;
+        // Ordered map of data for the table
+        Map<String, String> mp = new LinkedHashMap<>();
+        Ontology hpo = optionalResources.getOntology();
+        if (hpo != null) {
+            String versionInfo = hpo.getMetaInfo().getOrDefault("data-version", "n/a");
+            mp.put("HPO", versionInfo);
+        } else {
+            mp.put("HPO", "not initialized");
+        }
+        setGrid(mp);
+        this.parseButton.setDisable(true);
+        this.outputButton.setDisable(true);
+    }
+
+
+
+    private void setGrid(Map<String, String> data) {
+        int rowCount = data.size();
         int columnCount = 2;
         GridBase grid = new GridBase(rowCount, columnCount);
         ObservableList<ObservableList<SpreadsheetCell>> rows = FXCollections.observableArrayList();
-        for (int row = 0; row < grid.getRowCount(); ++row) {
+        int row = 0;
+        for (Map.Entry<String, String> e :  data.entrySet()) {
             final ObservableList<SpreadsheetCell> list = FXCollections.observableArrayList();
-            for (int column = 0; column < grid.getColumnCount(); ++column) {
-                list.add(SpreadsheetCellType.STRING.createCell(row, column, 1, 1,"value"));
-            }
+            list.add(SpreadsheetCellType.STRING.createCell(row, 0, 1, 1,e.getKey()));
+            list.add(SpreadsheetCellType.STRING.createCell(row, 1, 1, 1,e.getValue()));
             rows.add(list);
         }
         grid.setRows(rows);
         this.spreadSheetView.setGrid(grid);
-        //
-        this.parseButton.setDisable(true);
-        this.outputButton.setDisable(true);
+        this.spreadSheetView.resizeRowsToMaximum();
     }
+
+
 
 
 
@@ -158,9 +174,31 @@ public class FenominalMainController {
 
     private void initCaseReport() {
         System.out.println("case report");
-        this.parseButton.setDisable(false);
-        this.parseButton.setText("Mine case report");
-        this.miningTaskType = CaseReport;
+        DataEntryPane dataEntryPane = new DataEntryPane();
+        GridPane gridPane = dataEntryPane.getPane();
+        Scene scene = new Scene(gridPane, 800, 500);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.showAndWait();
+        if (dataEntryPane.isValid()) {
+            System.out.println(dataEntryPane.getIdentifier() + ":" + dataEntryPane.getYears() + ": " + dataEntryPane.getMonths());
+            Map<String, String> mp = new LinkedHashMap<>();
+            Ontology hpo = optionalResources.getOntology();
+            if (hpo != null) {
+                String versionInfo = hpo.getMetaInfo().getOrDefault("data-version", "n/a");
+                mp.put("HPO", versionInfo);
+            } else {
+                mp.put("HPO", "not initialized");
+            }
+            mp.put("id", dataEntryPane.getIdentifier());
+            mp.put("age", String.format("%d years, %d months", dataEntryPane.getYears(), dataEntryPane.getMonths()));
+            setGrid(mp);
+            this.parseButton.setDisable(false);
+            this.parseButton.setText("Mine case report");
+            this.miningTaskType = CaseReport;
+        } else {
+            PopUps.showInfoMessage("Could not initialize case report", "Error");
+        }
     }
 
 

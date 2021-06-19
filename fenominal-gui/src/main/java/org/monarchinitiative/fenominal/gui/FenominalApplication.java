@@ -44,7 +44,6 @@ public class FenominalApplication extends Application {
             e.printStackTrace();
         }
         File f = applicationContext.getBean("appHomeDir", File.class);
-        System.out.println("HOME DIR=" + f.getAbsolutePath());
     }
 
     /**
