@@ -5,7 +5,7 @@ import java.util.List;
 public interface TextMiningResultsModel {
     void output();
 
-    String getTsv();
+    List<String> getTsv();
 
     void addHpoFeatures(List<FenominalTerm> terms);
 

@@ -57,18 +57,18 @@ public class OneByOneCohort implements TextMiningResultsModel {
     }
 
     @Override
-    public String getTsv() {
+    public List<String> getTsv() {
         Map<TermId, Integer> countsMap = getCountsMap();
         int N = cases.size();
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s\t%s\t%s\t\n", "Term", "Id", "Counts"));
+        List<String> rows = new ArrayList<>();
+        rows.add(String.format("%s\t%s\t%s\t", "Id", "Term", "Counts"));
         for (var e : countsMap.entrySet()) {
             TermId tid = e.getKey();
             String label = labelMap.get(tid);
             String counts = String.format("%d/%d", e.getValue(), N);
-            sb.append(String.format("%s\t%s\t%s\t\n", tid.getValue(), label, counts));
+            rows.add(String.format("%s\t%s\t%s\t", tid.getValue(), label, counts));
         }
-        return sb.toString();
+        return rows;
     }
 
     @Override

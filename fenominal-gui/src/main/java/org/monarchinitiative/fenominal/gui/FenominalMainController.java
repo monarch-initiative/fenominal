@@ -138,10 +138,6 @@ public class FenominalMainController {
         this.tableHiddenProperty().set(false);
     }
 
-
-
-
-
     @FXML
     private void parseButtonPressed(ActionEvent e) {
         Ontology ontology = this.optionalResources.getOntology();
@@ -313,6 +309,7 @@ public class FenominalMainController {
         Platform.exit();
     }
 
+    @FXML
     public void outputButtonPressed(ActionEvent actionEvent) {
         String initialFilename = "fenomimal.txt";
         FileChooser fileChooser = new FileChooser();
@@ -327,9 +324,28 @@ public class FenominalMainController {
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            bw.write(model.getTsv());
+            for (var row : model.getTsv()) {
+                bw.write(row + "\n");
+            }
         } catch (IOException e) {
             PopUps.showInfoMessage("Could not write to file: " + e.getMessage(), "IO Error");
         }
     }
+
+    @FXML
+    public void previewOutput(ActionEvent e) {
+        ListView<String> list = new ListView<>();
+        ObservableList<String> items =FXCollections.observableArrayList ();
+        items.addAll(this.model.getTsv());
+        list.setItems(items);
+        Stage stage = new Stage();
+        Scene listViewScene = new Scene(list);
+        stage.setScene(listViewScene);
+        stage.showAndWait();
+
+        e.consume();
+    }
+
+
+
 }

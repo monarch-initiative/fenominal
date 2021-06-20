@@ -65,6 +65,12 @@
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                             </VBox.margin>
                         </Button>
+                        <Button mnemonicParsing="false" onAction="#previewOutput" styleClass="bevel-grey"
+                                stylesheets="@fenominal.css" text="Preview output" fx:id="previwButton" prefWidth="300">
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </VBox.margin>
+                        </Button>
                         <Button mnemonicParsing="false" onAction="#outputButtonPressed" styleClass="bevel-grey"
                                 stylesheets="@fenominal.css" text="Output" fx:id="outputButton" prefWidth="300">
                             <VBox.margin>

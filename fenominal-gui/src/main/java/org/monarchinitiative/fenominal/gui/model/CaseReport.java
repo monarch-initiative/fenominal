@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.gui.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,12 +21,12 @@ public class CaseReport implements TextMiningResultsModel {
     }
 
     @Override
-    public String getTsv() {
-        StringBuilder sb = new StringBuilder();
+    public List<String> getTsv() {
+        List<String> rows = new ArrayList<>();
         for (var mt : terms) {
-            sb.append(mt.toString());
+            rows.add(mt.toString());
         }
-        return sb.toString();
+        return rows;
     }
 
     @Override
