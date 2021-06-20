@@ -1,5 +1,5 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
 public enum MiningTask {
-    CaseReport, CaseReportMultipleTimePoints,Cohort,CohortOneByOne,UNINITIALIZED
+    CASE_REPORT, CaseReportMultipleTimePoints,Cohort, COHORT_ONE_BY_ONE,UNINITIALIZED
 }

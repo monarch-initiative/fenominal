@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import org.controlsfx.control.spreadsheet.SpreadsheetView?>
+<?import javafx.scene.control.TableView?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
     <BorderPane prefHeight="600.0" prefWidth="1000">
@@ -65,7 +65,7 @@
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                             </VBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" onAction="#parseButtonPressed" styleClass="bevel-grey"
+                        <Button mnemonicParsing="false" onAction="#outputButtonPressed" styleClass="bevel-grey"
                                 stylesheets="@fenominal.css" text="Output" fx:id="outputButton" prefWidth="300">
                             <VBox.margin>
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -73,14 +73,14 @@
                         </Button>
                     </VBox>
                     <VBox prefHeight="170.0" prefWidth="1000">
-                        <SpreadsheetView prefHeight="200.0" prefWidth="200.0" fx:id="spreadSheetView">
+                        <TableView prefHeight="200.0" prefWidth="200.0" fx:id="metaDataTableView">
                             <columns>
 
                             </columns>
-                            <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                            </VBox.margin>
-                        </SpreadsheetView>
+                            <style>
+                                -fx-hgap:20px;
+                            </style>
+                        </TableView>
                     </VBox>
                 </HBox>
                 <Separator prefWidth="400.0"/>

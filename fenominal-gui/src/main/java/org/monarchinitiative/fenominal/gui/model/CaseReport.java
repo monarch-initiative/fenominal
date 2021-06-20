@@ -1,26 +1,45 @@
 package org.monarchinitiative.fenominal.gui.model;
 
-import org.monarchinitiative.hpotextmining.gui.controller.Main;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 public class CaseReport implements TextMiningResultsModel {
 
     private List<FenominalTerm> terms;
 
-    public CaseReport(Set<Main.PhenotypeTerm> terms) {
-        List<FenominalTerm> list = terms.stream().map(FenominalTerm::fromMainPhenotypeTerm).sorted().collect(Collectors.toList());
-        this.terms = List.copyOf(list);
+    public CaseReport() {
     }
 
+    public List<FenominalTerm> getTerms() {
+        return terms;
+    }
 
     @Override
     public void output() {
+        System.out.println(getTsv());
+    }
+
+    @Override
+    public String getTsv() {
+        StringBuilder sb = new StringBuilder();
         for (var mt : terms) {
-            System.out.println(mt.toString());
+            sb.append(mt.toString());
         }
+        return sb.toString();
+    }
+
+    @Override
+    public void addHpoFeatures(List<FenominalTerm> terms) {
+        this.terms = List.copyOf(terms);
+    }
+
+    @Override
+    public int minedSoFar() {
+        return 1;
+    }
+
+    @Override
+    public int getTermCount() {
+        return this.terms.size();
     }
 }
