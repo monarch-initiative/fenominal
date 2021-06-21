@@ -54,6 +54,9 @@ public class FenominalMainController {
     public Button setupButton;
 
     @FXML
+    private Button previwButton;
+
+    @FXML
     public Label hpoReadyLabel;
 
     @FXML
@@ -97,6 +100,7 @@ public class FenominalMainController {
         // only enable analyze if Ontology downloaded (enabled property watches
         this.setupButton.disableProperty().bind(optionalResources.ontologyProperty().isNull());
         this.parseButton.setDisable(true);
+        this.previwButton.setDisable(true);
         this.outputButton.setDisable(true);
         // set up table view
         TableColumn<Map, String> itemColumn = new TableColumn<>("item");
@@ -187,6 +191,7 @@ public class FenominalMainController {
         }
         updateTable();
         // if we get here, we have data that could be output
+        this.previwButton.setDisable(false);
         this.outputButton.setDisable(false);
         e.consume();
     }
