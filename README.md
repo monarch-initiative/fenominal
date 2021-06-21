@@ -11,6 +11,10 @@ Phenomenal text mining for disease and phenotype concepts
 We are using version of https://github.com/monarch-initiative/HpoCaseAnnotator that is on the java16 branch.
 You need to install this locally with mvn install. 
 
+```bazaar
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+```
+
 Then build this app for instance with the maven wrapper.
 
 

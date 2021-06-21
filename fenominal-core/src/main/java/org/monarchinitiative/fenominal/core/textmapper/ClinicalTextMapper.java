@@ -67,6 +67,10 @@ public class ClinicalTextMapper {
             List<MappedSentencePart> candidatesAtPositionI = candidates.get(i);
             MappedSentencePart longest = getLongestPart(candidatesAtPositionI);
             mappedSentencePartList.add(longest);
+            // advance to the last position of the current match
+            // note that this is String position convention, and so the next hist could start at
+            // currentSpan, but cannot be less than currentSpan without overlapping.
+            currentSpan = longest.getEndpos();
         }
         return mappedSentencePartList;
     }
@@ -83,7 +87,7 @@ public class ClinicalTextMapper {
     }
 
     public Ontology getHpo() {
-        return this.hpoMatcher.getHpo();
+        return this.hpoMatcher.getHpoPhenotypicAbnormality();
     }
 
 

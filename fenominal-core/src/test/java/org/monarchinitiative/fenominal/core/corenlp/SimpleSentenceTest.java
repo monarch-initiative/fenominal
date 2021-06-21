@@ -3,7 +3,11 @@ package org.monarchinitiative.fenominal.core.corenlp;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TestBase;
+import org.monarchinitiative.fenominal.core.TextToHpoMapper;
+import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,4 +65,19 @@ public class SimpleSentenceTest extends TestBase {
         assertEquals(2550, simpleSentence.getStart());
         assertEquals(2888, simpleSentence.getEnd());
     }
+
+
+    /**
+     * This can be used to test problems on the full ontology if needed.
+    @Test
+    public void testProblematicSentence() {
+        String sentence = "The patient had subtle dysmorphic features, including a triangular face, broad forehead, plagiocephaly, mild synophrys, and tooth crowding (Figure 1B).";
+        File smallHpo = Paths.get("/home/peter/GIT/human-phenotype-ontology/hp.json").toFile();
+        TextToHpoMapper mapper = new TextToHpoMapper(smallHpo.getAbsolutePath());
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(sentence);
+        for (var mp : mappedSentenceParts) {
+            System.out.println(mp);
+        }
+    }
+    */
 }

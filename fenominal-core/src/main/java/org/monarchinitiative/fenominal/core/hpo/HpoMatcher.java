@@ -16,11 +16,22 @@ public class HpoMatcher {
 
     private final LexicalClustersBuilder lexicalClustersBuilder;
     private final Map<Integer, HpoConceptMatch> wordCountToMatcherMap;
-    private final Ontology hpo;
+
+    private final static TermId PHENOTYPIC_ABN = TermId.of("HP:0000118");
+    private final static TermId CLINICAL_MODIFIER = TermId.of("HP:0012823");
+    /** Note that Clinical course is a subterm of Clinical modifier. */
+    private final static TermId CLINICAL_COURSE = TermId.of("HP:0031797");
+
+    private final Ontology phenotypicAbnormality;
+    private final Ontology clinicalModifierOntology;
+    private final Ontology clinicalCourseOntology;
+
 
 
     public HpoMatcher(Ontology ontology, LexicalClustersBuilder lexicalClustersBuilder) {
-        this.hpo = ontology;
+        this.phenotypicAbnormality = ontology.subOntology(PHENOTYPIC_ABN);
+        this.clinicalModifierOntology = ontology.subOntology(CLINICAL_MODIFIER);
+        this.clinicalCourseOntology = ontology.subOntology(CLINICAL_COURSE);
         this.lexicalClustersBuilder = lexicalClustersBuilder;
         HpoLoader loader = new HpoLoader(ontology);
         Map<String, TermId> textToTermMap = loader.textToTermMap();
@@ -66,7 +77,7 @@ public class HpoMatcher {
         return Optional.empty();
     }
 
-    public Ontology getHpo() {
-        return hpo;
+    public Ontology getHpoPhenotypicAbnormality() {
+        return this.phenotypicAbnormality;
     }
 }
