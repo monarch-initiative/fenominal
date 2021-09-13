@@ -4,7 +4,6 @@ package org.monarchinitiative.fenominal.gui;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
-import org.monarchinitiative.fenominal.gui.FenominalApplication.StageReadyEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 @Component
-public class StageInitializer implements ApplicationListener<StageReadyEvent> {
+public class StageInitializer implements ApplicationListener<FenominalApplication.StageReadyEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StageInitializer.class);
 
@@ -38,7 +37,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 
 
     @Override
-    public void onApplicationEvent(StageReadyEvent event) {
+    public void onApplicationEvent(FenominalApplication.StageReadyEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(fenominalFxmResource.getURL());
             fxmlLoader.setControllerFactory(applicationContext::getBean);
