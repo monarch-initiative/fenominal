@@ -1,5 +1,9 @@
 # Fenominal
 
+![Java CI with Maven](https://github.com/monarch-initiative/fenominal/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/fenominal/badge/?version=latest)](https://fenominal.readthedocs.io/en/latest/?badge=latest)
+
+
 Phenomenal text mining for disease and phenotype concepts
 
 ## How to build
