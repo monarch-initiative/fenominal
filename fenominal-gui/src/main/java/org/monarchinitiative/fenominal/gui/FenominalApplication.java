@@ -43,8 +43,7 @@ public class FenominalApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        File f = applicationContext.getBean(File.class, "appHomeDir");
-        System.out.println("HOME DIR=" + f.getAbsolutePath());
+        File f = applicationContext.getBean("appHomeDir", File.class);
     }
 
     /**

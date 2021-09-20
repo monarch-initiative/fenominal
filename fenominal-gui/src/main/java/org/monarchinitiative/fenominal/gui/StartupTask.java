@@ -57,7 +57,6 @@ public final class StartupTask extends Task<Void> {
         and that the user will be notified about the fact that the ontology is missing.
          */
         String ontologyPath = pgProperties.getProperty(OptionalResources.ONTOLOGY_PATH_PROPERTY);
-        System.out.println("call, op=" + ontologyPath);
         if (ontologyPath != null) {
             final File hpJsonFile = new File(ontologyPath);
             if (hpJsonFile.isFile()) {

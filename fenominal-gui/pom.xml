@@ -5,7 +5,7 @@
     <parent>
         <artifactId>fenominal</artifactId>
         <groupId>org.monarchinitiative.fenominal</groupId>
-        <version>0.0.5</version>
+        <version>0.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,11 +40,6 @@
             <groupId>org.monarchinitiative.hpotextmining</groupId>
             <artifactId>hpotextmining-gui</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.monarchinitiative</groupId>-->
-<!--            <artifactId>phenotefx</artifactId>-->
-<!--            <version>0.7.0</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>

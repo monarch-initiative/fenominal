@@ -6,7 +6,7 @@
 
     <groupId>org.monarchinitiative.fenominal</groupId>
     <artifactId>fenominal</artifactId>
-    <version>0.0.5</version>
+    <version>0.1.1</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -29,12 +29,14 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <javafx.version>${java.version}</javafx.version>
-        <hpotextmining.version>0.2.8-SNAPSHOT</hpotextmining.version>
-        <phenol.version>1.6.2</phenol.version>
+
+        <hpotextmining.version>0.2.8</hpotextmining.version>
+        <phenol.version>1.6.3</phenol.version>
         <phenopacket.version>1.0.0</phenopacket.version>
         <spring.version>4.3.8.RELEASE</spring.version>
         <jackson.fasterxml.version>2.11.4</jackson.fasterxml.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <commons.io>2.8.0</commons.io>
     </properties>
 
     <scm>
@@ -56,6 +58,11 @@
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
                 <version>3.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io}</version>
             </dependency>
 
             <dependency>

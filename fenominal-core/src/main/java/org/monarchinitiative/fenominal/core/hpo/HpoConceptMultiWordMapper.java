@@ -1,5 +1,7 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
+import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+
 import java.util.*;
 
 /**
@@ -11,35 +13,40 @@ import java.util.*;
 public class HpoConceptMultiWordMapper implements HpoConceptMatch {
 
     private final int n_words;
-    /** The key is a word that appears in the HpoConcept. The value is a list of all concepts that
+    /**
+     * The key is a word that appears in the HpoConcept. The value is a list of all concepts that
      * contain the word. Each concept is divided up into words like this for each of searching.
-      */
+     */
     private final Map<String, List<HpoConcept>> componentWordToConceptMap;
+    private final LexicalClustersBuilder lexicalClustersBuilder;
 
-    public HpoConceptMultiWordMapper(int n) {
+    public HpoConceptMultiWordMapper(int n, LexicalClustersBuilder lexicalClustersBuilder) {
         this.n_words = n;
+        this.lexicalClustersBuilder = lexicalClustersBuilder;
         this.componentWordToConceptMap = new HashMap<>();
     }
 
     public void addConcept(HpoConcept concept) {
         for (String w : concept.getNonStopWords()) {
-            this.componentWordToConceptMap.putIfAbsent(w, new ArrayList<>());
-            this.componentWordToConceptMap.get(w).add(concept);
+            String cluster = lexicalClustersBuilder.getCluster(w.toLowerCase());
+            this.componentWordToConceptMap.putIfAbsent(cluster, new ArrayList<>());
+            this.componentWordToConceptMap.get(cluster).add(concept);
         }
     }
 
     /**
      * Returns the first complete match.
-     * @param words list of words from the original text that have been preprocessed to remove stopwords
+     *
+     * @param clusters list of lexical clusters mapped to the original text that have been preprocessed to remove stopwords
      * @return Optionally, the corresponding first match
      */
-    public Optional<HpoConcept> getMatch(List<String> words) {
-        Set<String> wordset = new HashSet<>(words);
-        for (String word : words) {
-            if (this.componentWordToConceptMap.containsKey(word)) {
-                List<HpoConcept> conceptList = this.componentWordToConceptMap.get(word);
+    public Optional<HpoConcept> getMatch(List<String> clusters) {
+        Set<String> clusterSet = new HashSet<>(clusters);
+        for (String cluster : clusters) {
+            if (this.componentWordToConceptMap.containsKey(cluster)) {
+                List<HpoConcept> conceptList = this.componentWordToConceptMap.get(cluster);
                 for (HpoConcept hpoc : conceptList) {
-                    if (hpoc.getNonStopWords().equals(wordset)) {
+                    if (lexicalClustersBuilder.getClusters(hpoc.getNonStopWords()).equals(clusterSet)) {
                         return Optional.of(hpoc);
                     }
                 }
@@ -47,8 +54,6 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
         }
         return Optional.empty();
     }
-
-
 
 
 }

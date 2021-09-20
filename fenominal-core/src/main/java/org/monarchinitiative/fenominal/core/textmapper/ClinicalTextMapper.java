@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.core.textmapper;
 import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
+import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,8 @@ public class ClinicalTextMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
     private final HpoMatcher hpoMatcher;
 
-    public ClinicalTextMapper(Ontology ontology) {
-        this.hpoMatcher = new HpoMatcher(ontology);
+    public ClinicalTextMapper(Ontology ontology, LexicalClustersBuilder lexicalClustersBuilder) {
+        this.hpoMatcher = new HpoMatcher(ontology, lexicalClustersBuilder);
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
@@ -27,19 +28,17 @@ public class ClinicalTextMapper {
             List<MappedSentencePart> sentenceParts = mapSentence(ss);
             mappedParts.addAll(sentenceParts);
         }
-        LOGGER.error("Got {} mappedParts", mappedParts.size());
         return mappedParts;
     }
 
     private List<MappedSentencePart> mapSentence(SimpleSentence ss) {
-        LOGGER.error("Mapping sentence {}", ss.getSentence());
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
-                .filter(Predicate.not(token ->  StopWords.isStop(token.getToken())))
+                .filter(Predicate.not(token -> StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
         // key -- sentence start position, value -- candidate matches.
         Map<Integer, List<MappedSentencePart>> candidates = new HashMap<>();
-        int LEN = Math.min(10,nonStopWords.size()); // check for maximum of 10 words TODO -- what is best option here?
-        for (int i=1; i<=LEN;i++) {
+        int LEN = Math.min(10, nonStopWords.size()); // check for maximum of 10 words TODO -- what is best option here?
+        for (int i = 1; i <= LEN; i++) {
             Partition<SimpleToken> partition = new Partition<>(nonStopWords, i);
             for (List<SimpleToken> chunk : partition) {
                 if (chunk.size() < i) {
@@ -48,7 +47,6 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
-                    LOGGER.error("OPt PRESENT {}}", opt.get());
                     MappedSentencePart mappedSentencePart = new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
@@ -69,15 +67,18 @@ public class ClinicalTextMapper {
             List<MappedSentencePart> candidatesAtPositionI = candidates.get(i);
             MappedSentencePart longest = getLongestPart(candidatesAtPositionI);
             mappedSentencePartList.add(longest);
+            // advance to the last position of the current match
+            // note that this is String position convention, and so the next hist could start at
+            // currentSpan, but cannot be less than currentSpan without overlapping.
+            currentSpan = longest.getEndpos();
         }
-        LOGGER.error("mappedSentencePartList size {}", mappedSentencePartList.size());
         return mappedSentencePartList;
     }
 
     private MappedSentencePart getLongestPart(List<MappedSentencePart> candidatesAtPositionI) {
         // we should be guaranteed to have at least one list entry -- TODO do we need to check?
         MappedSentencePart max = candidatesAtPositionI.get(0);
-        for (int i = 1; i<candidatesAtPositionI.size(); i++) {
+        for (int i = 1; i < candidatesAtPositionI.size(); i++) {
             if (candidatesAtPositionI.get(i).getEndpos() > max.getEndpos()) {
                 max = candidatesAtPositionI.get(i);
             }
@@ -86,7 +87,7 @@ public class ClinicalTextMapper {
     }
 
     public Ontology getHpo() {
-        return this.hpoMatcher.getHpo();
+        return this.hpoMatcher.getHpoPhenotypicAbnormality();
     }
 
 

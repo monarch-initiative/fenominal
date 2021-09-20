@@ -1,34 +1,37 @@
 package org.monarchinitiative.fenominal.gui;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
-import  org.monarchinitiative.hpotextmining.core.miners.TermMiner;
+import org.monarchinitiative.hpotextmining.core.miners.TermMiner;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FenominalMiner implements TermMiner {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMiner.class);
     private final ClinicalTextMapper mapper;
-
-
+    private final LexicalClustersBuilder lexicalClustersBuilder;
 
     public FenominalMiner(Ontology ontology) {
-        this.mapper = new ClinicalTextMapper(ontology);
+        this.lexicalClustersBuilder = new LexicalClustersBuilder();
+        this.mapper = new ClinicalTextMapper(ontology, lexicalClustersBuilder);
     }
 
     /**
-     * TODO -- currently we do not have excluded/negated terms and this function needs to be extended.
-     * @param query
-     * @return
+     * @param query Query string for mining HPO terms.
+     * @return collection of mined HPO terms to display in the GUI
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        System.out.println("MAPPING " + query);
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query);
-        System.out.println("We got " + mappedSentenceParts.size());
+        LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
 
