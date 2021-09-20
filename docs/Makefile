@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = lr2pg
+SPHINXPROJ    = fenominal
 SOURCEDIR     = .
 BUILDDIR      = _build
 html_static_path = ['..']

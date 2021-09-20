@@ -24,7 +24,7 @@ Build the executable from source with maven, and then test the build. ::
     $ git clone https://github.com/monarch-initiative/fenominal
     $ cd fenominal
     $ ./mvnw package
-    $ java -jar fenominal-cli/target/fenominal-cli-v0.1.1.jar
+    $ java -jar fenominal-cli/target/fenominal-cli-${project.version}.jar
     Usage: fenominal [-hV] [COMMAND]
     phenotype/disease NER
       -h, --help      Show this help message and exit.
@@ -62,13 +62,13 @@ called ``data`` in the current working directory. You can change this default wi
 (If you change this, then you will need to pass the location of your directory to all other fenominal commands
 using the ``-d`` flag). Download the files automatically as follows. ::
 
-    $ java -jar fenominal-cli-v0.1.1.jar download
+    $ java -jar fenominal-cli-${project.version}.jar download
 
 fenominal will not download the files if they are already present unless the ``--overwrite`` argument is passed. For
 instance, the following command would download the four files to a directory called datafiles and would
 overwrite any previously downloaded files. ::
 
-    $ java -jar fenominal-cli-v0.1.1.jar download -d datafiles --overwrite
+    $ java -jar fenominal-cli-${project.version}.jar download -d datafiles --overwrite
 
 
 If desired, you can download these files on your own but you need to place them all in the
