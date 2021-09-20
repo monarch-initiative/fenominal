@@ -6,6 +6,10 @@
 
 Phenomenal text mining for disease and phenotype concepts
 
+Most users should download the latest fenominal JAR file from the [Releases page](https://github.com/monarch-initiative/fenominal/releases).
+
+Please consult the Read the docs site for [detailed documentation](https://fenominal.readthedocs.io/en/latest).
+
 ## How to build
 
 Fenominal is written in Java 16, and thus it must be built using Java 16 and newer. We will release the GUI as a standalone
