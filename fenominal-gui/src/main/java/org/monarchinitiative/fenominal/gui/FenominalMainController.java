@@ -20,10 +20,7 @@ import org.monarchinitiative.fenominal.gui.guitools.DataEntryPane;
 import org.monarchinitiative.fenominal.gui.guitools.MiningTask;
 import org.monarchinitiative.fenominal.gui.guitools.PopUps;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
-import org.monarchinitiative.fenominal.gui.model.CaseReport;
-import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
-import org.monarchinitiative.fenominal.gui.model.OneByOneCohort;
-import org.monarchinitiative.fenominal.gui.model.TextMiningResultsModel;
+import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -182,6 +179,11 @@ public class FenominalMainController {
                     int casesSoFar = model.minedSoFar();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
                     break;
+                case PHENOPACKET:
+                    model.output();
+                    int encountersSoFar = model.minedSoFar();
+                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
+                    break;
                 default:
                     PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
                     return;
@@ -258,7 +260,21 @@ public class FenominalMainController {
         this.model = new OneByOneCohort();
     }
 
-
+    /**
+     * Set up parsing for a single individual over one or more time points with the goal of outputting a
+     * GA4GH phenopacket with one or multiple time points
+     */
+    private void initPhenopacket() {
+        System.out.println("Phenopacket");
+        Map<String, String> mp = new LinkedHashMap<>();
+        mp.put("HPO",  getHpoVersion());
+        mp.put("Curated so far", "0");
+        populateTableWithData(mp);
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine time point 1");
+        this.miningTaskType = PHENOPACKET;
+        this.model = new PhenopacketModel();
+    }
 
 
     @FXML
@@ -281,6 +297,7 @@ public class FenominalMainController {
                     break;
                 case "Case report (multiple time points)":
                     System.out.println("case report temporal");
+                    initPhenopacket();
                     break;
                 case "Cohort":
                     System.out.println("cohortTogether");
@@ -295,6 +312,7 @@ public class FenominalMainController {
         }
         e.consume();
     }
+
 
     @FXML
     private void importHpJson(ActionEvent e) {
@@ -320,12 +338,9 @@ public class FenominalMainController {
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
         //String defaultdir = settings.getDefaultDirectory();
-        //Set extension filter
        // FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TAB/TSV files (*.tab)", "*.tab");
         //fileChooser.getExtensionFilters().add(extFilter);
-      //  fileChooser.setInitialFileName(this.currentPhenoteFileBaseName);
        // fileChooser.setInitialDirectory(new File(defaultdir));
-        //Show save file dialog
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -347,7 +362,6 @@ public class FenominalMainController {
         Scene listViewScene = new Scene(list);
         stage.setScene(listViewScene);
         stage.showAndWait();
-
         e.consume();
     }
 

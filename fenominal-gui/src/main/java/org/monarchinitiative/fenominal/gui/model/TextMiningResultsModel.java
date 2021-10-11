@@ -12,4 +12,8 @@ public interface TextMiningResultsModel {
     int minedSoFar();
 
     int getTermCount();
+
+    default String outputAsString() {
+        return "";
+    }
 }

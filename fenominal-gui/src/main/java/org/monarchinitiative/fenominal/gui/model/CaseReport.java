@@ -29,6 +29,8 @@ public class CaseReport implements TextMiningResultsModel {
         return rows;
     }
 
+
+
     @Override
     public void addHpoFeatures(List<FenominalTerm> terms) {
         this.terms = List.copyOf(terms);
