@@ -73,7 +73,7 @@ public class FileDownloader {
         logger.trace("copyURLToFile dest="+dest);
         logger.trace("dest.getParentFile()="+dest.getParentFile());
         if (!dest.getParentFile().exists()) {
-            logger.info("Creating directory {}"+ dest.getParentFile().getAbsolutePath());
+            logger.info("Creating directory {}", dest.getParentFile().getAbsolutePath());
             dest.getParentFile().mkdirs();
         }
 

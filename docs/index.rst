@@ -19,7 +19,4 @@ to access the internet.
    :caption: Contents:
 
    setup
-   running
-
-
 
