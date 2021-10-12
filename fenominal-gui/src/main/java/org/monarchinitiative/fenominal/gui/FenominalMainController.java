@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -150,8 +151,11 @@ public class FenominalMainController {
             PopUps.showInfoMessage("Need to set location to hp.json ontology file first! (See edit menu)", "Error");
             return;
         }
+        LocalDate encounterDate = null;
         if (this.miningTaskType == PHENOPACKET) {
-
+            PhenopacketModel pmodel = (PhenopacketModel) this.model;
+            DatePickerDialog dialog = DatePickerDialog.getEncounterDate(pmodel.getBirthdate(), pmodel.getEncounterDates());
+            encounterDate = dialog.getLocalDate();
         }
         this.fenominalMiner = new FenominalMiner(ontology);
         try {
@@ -176,18 +180,19 @@ public class FenominalMainController {
                     .map(FenominalTerm::fromMainPhenotypeTerm)
                     .sorted()
                     .collect(Collectors.toList());
-            model.addHpoFeatures(approvedTerms);
             switch (this.miningTaskType) {
                 case CASE_REPORT:
-                    // nothing to do
+                    model.addHpoFeatures(approvedTerms);
                     break;
                 case COHORT_ONE_BY_ONE:
                     int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
+                    model.addHpoFeatures(approvedTerms);
                     break;
                 case PHENOPACKET:
                     int encountersSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
+                    model.addHpoFeatures(approvedTerms, encounterDate);
                     break;
                 default:
                     PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
@@ -278,10 +283,9 @@ public class FenominalMainController {
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
-        this.model = new PhenopacketModel();
         DatePickerDialog dialog = DatePickerDialog.getBirthDate();
-        dialog.getLocalDate();
-
+        LocalDate bdate = dialog.getLocalDate();
+        this.model = new PhenopacketModel(bdate);
     }
 
 

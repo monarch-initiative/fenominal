@@ -1,6 +1,7 @@
 package org.monarchinitiative.fenominal.gui.model;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,18 @@ import java.util.List;
  */
 public class PhenopacketModel implements TextMiningResultsModel {
 
+    private final LocalDate birthdate;
+
+    private List<LocalDate> encounterDates;
+
 
     private final List<MedicalEncounter> encounters;
 
 
-    public PhenopacketModel() {
+    public PhenopacketModel(LocalDate bdate) {
+        birthdate = bdate;
         encounters = new ArrayList<>();
+        encounterDates = new ArrayList<>();
     }
 
 
@@ -34,6 +41,14 @@ public class PhenopacketModel implements TextMiningResultsModel {
     @Override
     public int getTermCount() {
         return 0;
+    }
+
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public List<LocalDate> getEncounterDates() {
+        return encounterDates;
     }
 
 }

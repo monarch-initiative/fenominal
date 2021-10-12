@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.gui.guitools;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -36,10 +37,20 @@ public class DatePickerDialog {
 
     private final Browser browser;
 
-    private LocalDate birthdate =null;
+    private LocalDate birthDate =null;
     private List<LocalDate> encounterDates;
 
     private final boolean setBirthDate;
+
+    private final String buttonStyle =
+            " -fx-background-color:" +
+            "        linear-gradient(#f2f2f2, #d6d6d6)," +
+            "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
+            "        linear-gradient(#dddddd 0%, #f6f6f6 50%);" +
+            "    -fx-background-radius: 8,7,6;" +
+            "    -fx-background-insets: 0,1,2;" +
+            "    -fx-text-fill: black;\n" +
+            "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
 
     public DatePickerDialog(String msg) {
         message = msg;
@@ -48,25 +59,25 @@ public class DatePickerDialog {
         encounterDates = new ArrayList<>();
     }
 
-    public DatePickerDialog(LocalDate birthDate, List<LocalDate> previousEncounters) {
+    public DatePickerDialog(LocalDate bDate, List<LocalDate> previousEncounters) {
         message = getHtmlWithDates(birthDate, previousEncounters);
         browser = new Browser(message);
         setBirthDate = false;
-        birthDate = birthdate;
+        birthDate = bDate;
         encounterDates = List.copyOf(previousEncounters);
-        encounterDates = new ArrayList<>();
     }
+
 
     private void setDate(LocalDate d) {
         if (setBirthDate) {
-            this.birthdate = d;
+            this.birthDate = d;
         } else {
             encounterDates.add(d);
         }
     }
 
     public LocalDate getBirthdate() {
-        return birthdate;
+        return birthDate;
     }
 
     public List<LocalDate> getEncounterDates() {
@@ -102,7 +113,7 @@ public class DatePickerDialog {
         datePicker.setOnAction((actionEvent) -> {
             LocalDate date = datePicker.getValue();
             setDate(date);
-            String html = getHtmlWithDates(this.birthdate, this.encounterDates);
+            String html = getHtmlWithDates(this.birthDate, this.encounterDates);
             this.browser.setContent(html);
             actionEvent.consume();
         });
@@ -139,13 +150,15 @@ public class DatePickerDialog {
             if (i>0) {
                 this.encounterDates.remove(i);
             }
-            String html = getHtmlWithDates(this.birthdate, this.encounterDates);
+            String html = getHtmlWithDates(this.birthDate, this.encounterDates);
             this.browser.setContent(html);
         }));
-        closeButton.setStyle("-fx-padding: 20 20 20 20;");
-        clearLatestButton.setStyle("-fx-padding: 20 20 20 20;");
+        closeButton.setStyle(buttonStyle);
+        clearLatestButton.setStyle(buttonStyle);
+        final Separator separator = new Separator();
+        separator.setMaxWidth(40);
         HBox buttonBox = new HBox();
-        buttonBox.getChildren().addAll(clearLatestButton, closeButton);
+        buttonBox.getChildren().addAll(clearLatestButton, separator, closeButton);
 
         VBox root = new VBox();
         root.getChildren().addAll(pickerBox, browser, buttonBox);
@@ -243,6 +256,11 @@ public class DatePickerDialog {
 
     public static DatePickerDialog getBirthDate() {
         return new DatePickerDialog(setupHtml);
+    }
+
+
+    public static DatePickerDialog getEncounterDate(LocalDate birthdate, List<LocalDate> encounterDates) {
+        return new DatePickerDialog(birthdate, encounterDates);
     }
 
 }
