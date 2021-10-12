@@ -19,7 +19,7 @@ public class OneByOneCohort implements TextMiningResultsModel {
     }
 
 
-    private Map<TermId, Integer> getCountsMap() {
+    public Map<TermId, Integer> getCountsMap() {
         Map<TermId, Integer> countsMap = new HashMap<>();
         for (var report : cases) {
             for (var term : report.getTerms()) {
@@ -34,8 +34,12 @@ public class OneByOneCohort implements TextMiningResultsModel {
         return countsMap;
     }
 
+    public Map<TermId, String> getLabelMap() {
+        return labelMap;
+    }
+
     @Override
-    public int minedSoFar() {
+    public int casesMined() {
         return this.cases.size();
     }
 
@@ -48,27 +52,6 @@ public class OneByOneCohort implements TextMiningResultsModel {
             }
         }
         return terms.size();
-    }
-
-
-    @Override
-    public void output() {
-        System.out.println(getTsv());
-    }
-
-    @Override
-    public List<String> getTsv() {
-        Map<TermId, Integer> countsMap = getCountsMap();
-        int N = cases.size();
-        List<String> rows = new ArrayList<>();
-        rows.add(String.format("%s\t%s\t%s\t", "Id", "Term", "Counts"));
-        for (var e : countsMap.entrySet()) {
-            TermId tid = e.getKey();
-            String label = labelMap.get(tid);
-            String counts = String.format("%d/%d", e.getValue(), N);
-            rows.add(String.format("%s\t%s\t%s\t", tid.getValue(), label, counts));
-        }
-        return rows;
     }
 
     @Override

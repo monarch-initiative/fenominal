@@ -11,16 +11,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.dialog.CommandLinksDialog;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.gui.guitools.DataEntryPane;
+import org.monarchinitiative.fenominal.gui.guitools.DatePickerDialog;
 import org.monarchinitiative.fenominal.gui.guitools.MiningTask;
 import org.monarchinitiative.fenominal.gui.guitools.PopUps;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
 import org.monarchinitiative.fenominal.gui.model.*;
+import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -28,10 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -146,6 +150,9 @@ public class FenominalMainController {
             PopUps.showInfoMessage("Need to set location to hp.json ontology file first! (See edit menu)", "Error");
             return;
         }
+        if (this.miningTaskType == PHENOPACKET) {
+
+        }
         this.fenominalMiner = new FenominalMiner(ontology);
         try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
@@ -172,16 +179,14 @@ public class FenominalMainController {
             model.addHpoFeatures(approvedTerms);
             switch (this.miningTaskType) {
                 case CASE_REPORT:
-                    model.output();
+                    // nothing to do
                     break;
                 case COHORT_ONE_BY_ONE:
-                    model.output();
-                    int casesSoFar = model.minedSoFar();
+                    int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
                     break;
                 case PHENOPACKET:
-                    model.output();
-                    int encountersSoFar = model.minedSoFar();
+                    int encountersSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
                     break;
                 default:
@@ -201,7 +206,7 @@ public class FenominalMainController {
     private void updateTable() {
         Map<String, String> data = new LinkedHashMap<>();
         data.put("HPO", getHpoVersion());
-        data.put("patients (n)",  String.valueOf(model.minedSoFar()));
+        data.put("patients (n)",  String.valueOf(model.casesMined()));
         data.put("terms curated (n)", String.valueOf(model.getTermCount()));
         populateTableWithData(data);
     }
@@ -274,13 +279,16 @@ public class FenominalMainController {
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
         this.model = new PhenopacketModel();
+        DatePickerDialog dialog = DatePickerDialog.getBirthDate();
+        dialog.getLocalDate();
+
     }
 
 
     @FXML
     private void getStarted(ActionEvent e) {
         var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report","Enter data about one individual, one time point", true);
-        var caseReportTemporal = new CommandLinksDialog.CommandLinksButtonType("Case report (multiple time points)","Enter data about one individual, multiple time points", false);
+        var caseReportTemporal = new CommandLinksDialog.CommandLinksButtonType("Phenopacket","Enter data about one individual, multiple time points", false);
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort","Enter data about cohort", false);
         var cohortOneByOne = new CommandLinksDialog.CommandLinksButtonType("Cohort (enter data about multiple individuals)","Enter data about cohort (one by one)", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel","Cancel", false);
@@ -295,8 +303,7 @@ public class FenominalMainController {
                 case "Case report":
                     initCaseReport();
                     break;
-                case "Case report (multiple time points)":
-                    System.out.println("case report temporal");
+                case "Phenopacket":
                     initPhenopacket();
                     break;
                 case "Cohort":
@@ -343,10 +350,27 @@ public class FenominalMainController {
        // fileChooser.setInitialDirectory(new File(defaultdir));
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            for (var row : model.getTsv()) {
-                bw.write(row + "\n");
+        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+            PhenoOutputter phenoOutputter;
+
+            switch (this.miningTaskType) {
+                case CASE_REPORT:
+                    phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                    break;
+                case COHORT_ONE_BY_ONE:
+                    int casesSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
+                    phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
+                    break;
+                case PHENOPACKET:
+                    int encountersSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+                    phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                    break;
+                default:
+                    phenoOutputter = new ErrorOutputter();
             }
+            phenoOutputter.output(writer);
         } catch (IOException e) {
             PopUps.showInfoMessage("Could not write to file: " + e.getMessage(), "IO Error");
         }
@@ -354,13 +378,33 @@ public class FenominalMainController {
 
     @FXML
     public void previewOutput(ActionEvent e) {
-        ListView<String> list = new ListView<>();
-        ObservableList<String> items =FXCollections.observableArrayList ();
-        items.addAll(this.model.getTsv());
-        list.setItems(items);
+        PhenoOutputter phenoOutputter;
+        Writer writer = new StringWriter();
+        switch (this.miningTaskType) {
+            case CASE_REPORT:
+                phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                break;
+            case COHORT_ONE_BY_ONE:
+                phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
+                break;
+            case PHENOPACKET:
+                phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                break;
+            default:
+                phenoOutputter = new ErrorOutputter();
+        }
+        try {
+            phenoOutputter.output(writer);
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        Text text1 = new Text(writer.toString());
+        text1.setFill(Color.BLUE);
+        text1.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+        TextFlow textFlow = new TextFlow(text1);
         Stage stage = new Stage();
-        Scene listViewScene = new Scene(list);
-        stage.setScene(listViewScene);
+        Scene testScene = new Scene(textFlow);
+        stage.setScene(testScene);
         stage.showAndWait();
         e.consume();
     }

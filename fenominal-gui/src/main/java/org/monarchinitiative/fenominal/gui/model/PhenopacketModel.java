@@ -20,15 +20,6 @@ public class PhenopacketModel implements TextMiningResultsModel {
     }
 
 
-    @Override
-    public void output() {
-
-    }
-
-    @Override
-    public List<String> getTsv() {
-        return null;
-    }
 
     @Override
     public void addHpoFeatures(List<FenominalTerm> terms) {
@@ -36,7 +27,7 @@ public class PhenopacketModel implements TextMiningResultsModel {
     }
 
     @Override
-    public int minedSoFar() {
+    public int casesMined() {
         return 0;
     }
 
