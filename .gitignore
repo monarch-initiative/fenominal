@@ -1,5 +1,4 @@
-# Compiled class files and resources
-target/
+# Compiled class file
 *.class
 
 # Log file
@@ -23,12 +22,13 @@ target/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-### IntelliJ
-.idea
+target/
+.idea/
 *.iml
-
-# Local copy of Fenominal data
-data/
-
-# Sphinx documentation
-docs/_build/
+/fenominal-cli/dependency-reduced-pom.xml
+/supplementDecoded.txt
+/data/hp.json
+/data/hp.obo
+/fenominal-gui/src/main/resources/.Rhistory
+/fenominal-mined.txt
+/fenomimal.txt

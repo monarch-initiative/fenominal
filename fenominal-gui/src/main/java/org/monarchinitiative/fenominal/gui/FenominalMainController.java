@@ -11,34 +11,36 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.dialog.CommandLinksDialog;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.gui.guitools.DataEntryPane;
-import org.monarchinitiative.fenominal.gui.guitools.MiningTask;
-import org.monarchinitiative.fenominal.gui.guitools.PopUps;
+import org.monarchinitiative.fenominal.gui.guitools.*;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
-import org.monarchinitiative.fenominal.gui.model.CaseReport;
-import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
-import org.monarchinitiative.fenominal.gui.model.OneByOneCohort;
-import org.monarchinitiative.fenominal.gui.model.TextMiningResultsModel;
+import org.monarchinitiative.fenominal.gui.model.*;
+import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
+import static org.monarchinitiative.fenominal.gui.OptionalResources.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -149,6 +151,17 @@ public class FenominalMainController {
             PopUps.showInfoMessage("Need to set location to hp.json ontology file first! (See edit menu)", "Error");
             return;
         }
+        LocalDate encounterDate = null;
+        String isoAge = null;
+        if (this.miningTaskType == PHENOPACKET) {
+            PhenopacketModel pmodel = (PhenopacketModel) this.model;
+            DatePickerDialog dialog = DatePickerDialog.getEncounterDate(pmodel.getBirthdate(), pmodel.getEncounterDates());
+            encounterDate = dialog.showDatePickerDialog();
+        } else if (this.miningTaskType == PHENOPACKET_BY_AGE) {
+            PhenopacketByAgeModel pAgeModel = (PhenopacketByAgeModel) this.model;
+            AgePickerDialog agePickerDialog = new AgePickerDialog(pAgeModel.getEncounterAges());
+            isoAge = agePickerDialog.showAgePickerDialog();
+        }
         this.fenominalMiner = new FenominalMiner(ontology);
         try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
@@ -172,15 +185,24 @@ public class FenominalMainController {
                     .map(FenominalTerm::fromMainPhenotypeTerm)
                     .sorted()
                     .collect(Collectors.toList());
-            model.addHpoFeatures(approvedTerms);
             switch (this.miningTaskType) {
                 case CASE_REPORT:
-                    model.output();
+                    model.addHpoFeatures(approvedTerms);
                     break;
                 case COHORT_ONE_BY_ONE:
-                    model.output();
-                    int casesSoFar = model.minedSoFar();
+                    int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
+                    model.addHpoFeatures(approvedTerms);
+                    break;
+                case PHENOPACKET:
+                    int encountersSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
+                    model.addHpoFeatures(approvedTerms, encounterDate);
+                    break;
+                case PHENOPACKET_BY_AGE:
+                    encountersSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
+                    model.addHpoFeatures(approvedTerms, isoAge);
                     break;
                 default:
                     PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
@@ -199,7 +221,7 @@ public class FenominalMainController {
     private void updateTable() {
         Map<String, String> data = new LinkedHashMap<>();
         data.put("HPO", getHpoVersion());
-        data.put("patients (n)",  String.valueOf(model.minedSoFar()));
+        data.put("patients (n)",  String.valueOf(model.casesMined()));
         data.put("terms curated (n)", String.valueOf(model.getTermCount()));
         populateTableWithData(data);
     }
@@ -247,28 +269,71 @@ public class FenominalMainController {
      * for the HPO terms.
      */
     private void initCohortOneByOne() {
-        System.out.println("cohortOneByOne");
+        if (pgProperties.getProperty(BIOCURATOR_ID_PROPERTY) == null) {
+            PopUps.showInfoMessage("Please enter your biocurator ID (edit menu) before entering cohort data", "Error");
+            return;
+        }
+        CohortDataPane dataPane = new CohortDataPane();
+        dataPane.showDataEntryPane();
+        String pmid = dataPane.getPmid();
+        String omimId = dataPane.getOmimId();
+        String diseasename = dataPane.getDiseaseName();
+        try {
+            TermId tid = TermId.of(omimId);
+        } catch (PhenolRuntimeException e ) {
+            PopUps.showException("Error", "Could not parse OMIM id", "Please start again, OMIM id should be like OMIM:600123", e);
+            return;
+        }
+        Map<String, String> mp = new LinkedHashMap<>();
+        mp.put("HPO",  getHpoVersion());
+        mp.put("Curated so far", "0");
+        mp.put("OMIM id", omimId);
+        mp.put("Disease", diseasename);
+        mp.put("PMID", pmid);
+        populateTableWithData(mp);
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine case report 1");
+        this.miningTaskType = COHORT_ONE_BY_ONE;
+        this.model = new OneByOneCohort(pmid, omimId, diseasename);
+    }
+
+    /**
+     * Set up parsing for a single individual over one or more time points with the goal of outputting a
+     * GA4GH phenopacket with one or multiple time points
+     */
+    private void initPhenopacket() {
         Map<String, String> mp = new LinkedHashMap<>();
         mp.put("HPO",  getHpoVersion());
         mp.put("Curated so far", "0");
         populateTableWithData(mp);
         this.parseButton.setDisable(false);
-        this.parseButton.setText("Mine case report 1");
-        this.miningTaskType = COHORT_ONE_BY_ONE;
-        this.model = new OneByOneCohort();
+        this.parseButton.setText("Mine time point 1");
+        this.miningTaskType = PHENOPACKET;
+        DatePickerDialog dialog = DatePickerDialog.getBirthDate();
+        LocalDate bdate = dialog.showDatePickerDialog();
+        this.model = new PhenopacketModel(bdate);
     }
 
-
+    private void initPhenopacketWithManualAge() {
+        Map<String, String> mp = new LinkedHashMap<>();
+        mp.put("HPO",  getHpoVersion());
+        mp.put("Curated so far", "0");
+        populateTableWithData(mp);
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine encounter 1");
+        this.miningTaskType = PHENOPACKET_BY_AGE;
+        this.model = new PhenopacketByAgeModel();
+    }
 
 
     @FXML
     private void getStarted(ActionEvent e) {
         var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report","Enter data about one individual, one time point", true);
-        var caseReportTemporal = new CommandLinksDialog.CommandLinksButtonType("Case report (multiple time points)","Enter data about one individual, multiple time points", false);
+        var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket","Enter data about one individual, multiple time points", false);
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort","Enter data about cohort", false);
-        var cohortOneByOne = new CommandLinksDialog.CommandLinksButtonType("Cohort (enter data about multiple individuals)","Enter data about cohort (one by one)", false);
+        var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)","Enter data about one individual, multiple ages", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel","Cancel", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(caseReport, caseReportTemporal, cohortTogether, cohortOneByOne, cancel);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
         dialog.setContentText("Fenominal supports four types of HPO biocuration. This will delete current work (Cancel to return).");
@@ -279,13 +344,13 @@ public class FenominalMainController {
                 case "Case report":
                     initCaseReport();
                     break;
-                case "Case report (multiple time points)":
-                    System.out.println("case report temporal");
+                case "Phenopacket":
+                    initPhenopacket();
+                    break;
+                case "Phenopacket (by age at encounter)":
+                    initPhenopacketWithManualAge();
                     break;
                 case "Cohort":
-                    System.out.println("cohortTogether");
-                    break;
-                case "Cohort (enter data about multiple individuals)":
                     initCohortOneByOne();
                     break;
                 case "Cancel":
@@ -295,6 +360,7 @@ public class FenominalMainController {
         }
         e.consume();
     }
+
 
     @FXML
     private void importHpJson(ActionEvent e) {
@@ -320,18 +386,33 @@ public class FenominalMainController {
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
         //String defaultdir = settings.getDefaultDirectory();
-        //Set extension filter
        // FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TAB/TSV files (*.tab)", "*.tab");
         //fileChooser.getExtensionFilters().add(extFilter);
-      //  fileChooser.setInitialFileName(this.currentPhenoteFileBaseName);
        // fileChooser.setInitialDirectory(new File(defaultdir));
-        //Show save file dialog
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            for (var row : model.getTsv()) {
-                bw.write(row + "\n");
+        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+            PhenoOutputter phenoOutputter;
+
+            switch (this.miningTaskType) {
+                case CASE_REPORT:
+                    phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                    break;
+                case COHORT_ONE_BY_ONE:
+                    int casesSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
+                    String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
+                    phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
+                    break;
+                case PHENOPACKET:
+                    int encountersSoFar = model.casesMined();
+                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+                    phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                    break;
+                default:
+                    phenoOutputter = new ErrorOutputter();
             }
+            phenoOutputter.output(writer);
         } catch (IOException e) {
             PopUps.showInfoMessage("Could not write to file: " + e.getMessage(), "IO Error");
         }
@@ -339,17 +420,56 @@ public class FenominalMainController {
 
     @FXML
     public void previewOutput(ActionEvent e) {
-        ListView<String> list = new ListView<>();
-        ObservableList<String> items =FXCollections.observableArrayList ();
-        items.addAll(this.model.getTsv());
-        list.setItems(items);
+        PhenoOutputter phenoOutputter;
+        Writer writer = new StringWriter();
+        switch (this.miningTaskType) {
+            case CASE_REPORT:
+                phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                break;
+            case COHORT_ONE_BY_ONE:
+                phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
+                break;
+            case PHENOPACKET:
+                phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                break;
+            case PHENOPACKET_BY_AGE:
+                phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
+                break;
+            default:
+                phenoOutputter = new ErrorOutputter();
+        }
+        try {
+            phenoOutputter.output(writer);
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        Text text1 = new Text(writer.toString());
+        text1.setFill(Color.BLUE);
+        text1.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
+        TextFlow textFlow = new TextFlow(text1);
         Stage stage = new Stage();
-        Scene listViewScene = new Scene(list);
-        stage.setScene(listViewScene);
+        Scene testScene = new Scene(textFlow);
+        stage.setScene(testScene);
         stage.showAndWait();
-
         e.consume();
     }
+
+
+    @FXML
+    void setBiocuratorMenuItemClicked(ActionEvent event) {
+        String biocurator = PopUps.getStringFromUser("Biocurator ID",
+                "e.g. HPO:rrabbit", "Enter your biocurator ID:");
+        if (biocurator != null) {
+            this.pgProperties.setProperty(BIOCURATOR_ID_PROPERTY, biocurator);
+            PopUps.showInfoMessage(String.format("Biocurator ID set to \n\"%s\"",
+                    biocurator), "Success");
+        } else {
+            PopUps.showInfoMessage("Biocurator ID not set.",
+                    "Information");
+        }
+        event.consume();
+    }
+
 
 
 

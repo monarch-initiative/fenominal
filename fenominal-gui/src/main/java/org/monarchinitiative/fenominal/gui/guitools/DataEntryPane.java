@@ -28,38 +28,21 @@ public class DataEntryPane {
 
 
     private GridPane createDataEntryPane() {
-        // Instantiate a new Grid Pane
         GridPane gridPane = new GridPane();
-
-        // Position the pane at the center of the screen, both vertically and horizontally
+        // Position at  center, both vertically and horizontally
         gridPane.setAlignment(Pos.CENTER);
-
-        // Set a padding of 20px on each side
         gridPane.setPadding(new Insets(40, 40, 40, 40));
-
-        // Set the horizontal gap between columns
         gridPane.setHgap(10);
-
-        // Set the vertical gap between rows
         gridPane.setVgap(10);
-
-        // Add Column Constraints
-
-        // columnOneConstraints will be applied to all the nodes placed in column one.
         ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
         columnOneConstraints.setHalignment(HPos.RIGHT);
-
-        // columnTwoConstraints will be applied to all the nodes placed in column two.
         ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, Double.MAX_VALUE);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
-
         gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-
         return gridPane;
     }
 
     private void addUIControls(GridPane gridPane) {
-        // Add Header
         Label headerLabel = new Label("Data about proband");
         headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         gridPane.add(headerLabel, 0,0,2,1);
@@ -71,13 +54,8 @@ public class DataEntryPane {
         TextField idField = new TextField();
         idField.setPrefHeight(40);
         gridPane.add(idField, 1,1);
-
-
-        // Add Email Label
         Label ageLabel = new Label("Age in years: ");
         gridPane.add(ageLabel, 0, 2);
-
-        // Add Email Text Field
         TextField ageField = new TextField();
         ageField.setPrefHeight(40);
         UnaryOperator<TextFormatter.Change> numberValidationFormatter = change -> {

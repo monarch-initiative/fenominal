@@ -5,12 +5,11 @@
     <parent>
         <artifactId>fenominal</artifactId>
         <groupId>org.monarchinitiative.fenominal</groupId>
-        <version>0.1.1</version>
+        <version>0.1.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>fenominal-cli</artifactId>
-
 
     <dependencies>
         <dependency>
@@ -35,14 +34,10 @@
 
     <build>
         <plugins>
-            <!-- TODO(pnr) - I believe this is the only plugin we need here to build an executable JAR.
-                  Please verify everything works and if yes, please remove the code that is commented out below.
-             -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
         </plugins>
     </build>
 

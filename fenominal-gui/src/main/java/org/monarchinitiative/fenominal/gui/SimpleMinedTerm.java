@@ -4,6 +4,12 @@ import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+/**
+ * This represents one Ontology term that has been mined from the current text, indicating the
+ * (zero-based) position of the words in the original text that correspond to the Ontology term and
+ * whether or not the term was excluded (NOT) in the original text.
+ * @author Peter N Robinson
+ */
 public class SimpleMinedTerm implements MinedTerm  {
 
     private final int begin;

@@ -25,7 +25,7 @@ public class FenominalMiner implements TermMiner {
     }
 
     /**
-     * @param query Query string for mining HPO terms.
+     * @param query Query string for mining HPO terms (for instance, text that was pasted into the GUI window for mining).
      * @return collection of mined HPO terms to display in the GUI
      */
     @Override
