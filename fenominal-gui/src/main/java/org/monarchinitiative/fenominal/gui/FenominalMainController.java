@@ -240,26 +240,19 @@ public class FenominalMainController {
 
 
     private void initCaseReport() {
-        DataEntryPane dataEntryPane = new DataEntryPane();
-        GridPane gridPane = dataEntryPane.getPane();
-        Scene scene = new Scene(gridPane, 800, 500);
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.showAndWait();
-        if (dataEntryPane.isValid()) {
-            System.out.println(dataEntryPane.getIdentifier() + ":" + dataEntryPane.getYears() + ": " + dataEntryPane.getMonths());
-            Map<String, String> mp = new LinkedHashMap<>();
-            mp.put("HPO",  getHpoVersion());
-            mp.put("id", dataEntryPane.getIdentifier());
-            mp.put("age", String.format("%d years, %d months", dataEntryPane.getYears(), dataEntryPane.getMonths()));
-            populateTableWithData(mp);
-            this.parseButton.setDisable(false);
-            this.parseButton.setText("Mine case report");
-            this.miningTaskType = CASE_REPORT;
-            this.model = new CaseReport();
-        } else {
-            PopUps.showInfoMessage("Could not initialize case report", "Error");
-        }
+        CaseDataEntryPane dataEntryPane = new CaseDataEntryPane();
+        dataEntryPane.showAgePickerDialog();
+        String isoAge = dataEntryPane.getIsoAge();
+        String id = dataEntryPane.getCaseId();
+        Map<String, String> mp = new LinkedHashMap<>();
+        mp.put("HPO",  getHpoVersion());
+        mp.put("id", id);
+        mp.put("age", isoAge);
+        populateTableWithData(mp);
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine case report");
+        this.miningTaskType = CASE_REPORT;
+        this.model = new CaseReport(id, isoAge);
     }
 
 
@@ -395,22 +388,19 @@ public class FenominalMainController {
             PhenoOutputter phenoOutputter;
 
             switch (this.miningTaskType) {
-                case CASE_REPORT:
-                    phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
-                    break;
-                case COHORT_ONE_BY_ONE:
+                case CASE_REPORT -> phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                case COHORT_ONE_BY_ONE -> {
                     int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
                     String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
                     phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
-                    break;
-                case PHENOPACKET:
+                }
+                case PHENOPACKET -> {
                     int encountersSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
                     phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
-                    break;
-                default:
-                    phenoOutputter = new ErrorOutputter();
+                }
+                default -> phenoOutputter = new ErrorOutputter();
             }
             phenoOutputter.output(writer);
         } catch (IOException e) {
@@ -422,22 +412,13 @@ public class FenominalMainController {
     public void previewOutput(ActionEvent e) {
         PhenoOutputter phenoOutputter;
         Writer writer = new StringWriter();
-        switch (this.miningTaskType) {
-            case CASE_REPORT:
-                phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
-                break;
-            case COHORT_ONE_BY_ONE:
-                phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
-                break;
-            case PHENOPACKET:
-                phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
-                break;
-            case PHENOPACKET_BY_AGE:
-                phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
-                break;
-            default:
-                phenoOutputter = new ErrorOutputter();
-        }
+        phenoOutputter = switch (this.miningTaskType) {
+            case CASE_REPORT -> new CaseReportTsvOutputter((CaseReport) this.model);
+            case COHORT_ONE_BY_ONE -> new CohortListOutputter((OneByOneCohort) this.model);
+            case PHENOPACKET -> new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+            case PHENOPACKET_BY_AGE -> new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
+            default -> new ErrorOutputter();
+        };
         try {
             phenoOutputter.output(writer);
         } catch (IOException ioe) {

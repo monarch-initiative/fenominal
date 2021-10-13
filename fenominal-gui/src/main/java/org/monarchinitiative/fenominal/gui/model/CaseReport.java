@@ -7,7 +7,16 @@ public class CaseReport implements TextMiningResultsModel {
 
     private List<FenominalTerm> terms;
 
+    private final String caseId;
+    private final String isoAge;
+
+    public CaseReport(String id, String age) {
+        this.caseId = id;
+        this.isoAge = age;
+    }
     public CaseReport() {
+        // used by the OneByOneCohort, this is ugly, refactor
+        this("n/a", "n/a");
     }
 
     public List<FenominalTerm> getTerms() {
