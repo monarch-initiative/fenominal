@@ -9,9 +9,17 @@ public class OneByOneCohort implements TextMiningResultsModel {
     private final List<CaseReport> cases;
     private final Map<TermId, String> labelMap;
 
-    public  OneByOneCohort(){
+    private final String pmid;
+    private final String omimId;
+    private final String diseasename;
+
+
+    public  OneByOneCohort(String pmid, String omimId, String diseasename){
         cases = new ArrayList<>();
         labelMap = new HashMap<>();
+        this.pmid = pmid;
+        this.omimId = omimId;
+        this.diseasename = diseasename;
     }
 
     public void addCase(CaseReport caseReport) {
@@ -59,5 +67,17 @@ public class OneByOneCohort implements TextMiningResultsModel {
         CaseReport caseReport = new CaseReport();
         caseReport.addHpoFeatures(terms);
         this.addCase(caseReport);
+    }
+
+    public String getPmid() {
+        return pmid;
+    }
+
+    public String getOmimId() {
+        return omimId;
+    }
+
+    public String getDiseasename() {
+        return diseasename;
     }
 }

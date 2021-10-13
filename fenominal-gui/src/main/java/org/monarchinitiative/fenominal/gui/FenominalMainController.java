@@ -27,7 +27,9 @@ import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -38,6 +40,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
+import static org.monarchinitiative.fenominal.gui.OptionalResources.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -266,15 +269,32 @@ public class FenominalMainController {
      * for the HPO terms.
      */
     private void initCohortOneByOne() {
-        System.out.println("cohortOneByOne");
+        if (pgProperties.getProperty(BIOCURATOR_ID_PROPERTY) == null) {
+            PopUps.showInfoMessage("Please enter your biocurator ID (edit menu) before entering cohort data", "Error");
+            return;
+        }
+        CohortDataPane dataPane = new CohortDataPane();
+        dataPane.showDataEntryPane();
+        String pmid = dataPane.getPmid();
+        String omimId = dataPane.getOmimId();
+        String diseasename = dataPane.getDiseaseName();
+        try {
+            TermId tid = TermId.of(omimId);
+        } catch (PhenolRuntimeException e ) {
+            PopUps.showException("Error", "Could not parse OMIM id", "Please start again, OMIM id should be like OMIM:600123", e);
+            return;
+        }
         Map<String, String> mp = new LinkedHashMap<>();
         mp.put("HPO",  getHpoVersion());
         mp.put("Curated so far", "0");
+        mp.put("OMIM id", omimId);
+        mp.put("Disease", diseasename);
+        mp.put("PMID", pmid);
         populateTableWithData(mp);
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine case report 1");
         this.miningTaskType = COHORT_ONE_BY_ONE;
-        this.model = new OneByOneCohort();
+        this.model = new OneByOneCohort(pmid, omimId, diseasename);
     }
 
     /**
@@ -313,7 +333,7 @@ public class FenominalMainController {
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort","Enter data about cohort", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)","Enter data about one individual, multiple ages", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel","Cancel", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(caseReport, phenopacketByBirthDate, cohortTogether, phenopacketByIso8601Age, cancel);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
         dialog.setContentText("Fenominal supports four types of HPO biocuration. This will delete current work (Cancel to return).");
@@ -330,7 +350,7 @@ public class FenominalMainController {
                 case "Phenopacket (by age at encounter)":
                     initPhenopacketWithManualAge();
                     break;
-                case "Cohort (enter data about multiple individuals)":
+                case "Cohort":
                     initCohortOneByOne();
                     break;
                 case "Cancel":
@@ -381,7 +401,8 @@ public class FenominalMainController {
                 case COHORT_ONE_BY_ONE:
                     int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
-                    phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
+                    String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
+                    phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
                     break;
                 case PHENOPACKET:
                     int encountersSoFar = model.casesMined();
@@ -432,6 +453,23 @@ public class FenominalMainController {
         stage.showAndWait();
         e.consume();
     }
+
+
+    @FXML
+    void setBiocuratorMenuItemClicked(ActionEvent event) {
+        String biocurator = PopUps.getStringFromUser("Biocurator ID",
+                "e.g. HPO:rrabbit", "Enter your biocurator ID:");
+        if (biocurator != null) {
+            this.pgProperties.setProperty(BIOCURATOR_ID_PROPERTY, biocurator);
+            PopUps.showInfoMessage(String.format("Biocurator ID set to \n\"%s\"",
+                    biocurator), "Success");
+        } else {
+            PopUps.showInfoMessage("Biocurator ID not set.",
+                    "Information");
+        }
+        event.consume();
+    }
+
 
 
 
