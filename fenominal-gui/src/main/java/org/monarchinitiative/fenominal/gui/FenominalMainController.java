@@ -154,8 +154,12 @@ public class FenominalMainController {
         LocalDate encounterDate = null;
         if (this.miningTaskType == PHENOPACKET) {
             PhenopacketModel pmodel = (PhenopacketModel) this.model;
+            System.out.println("Parse button oressed");
+            System.out.println(pmodel);
             DatePickerDialog dialog = DatePickerDialog.getEncounterDate(pmodel.getBirthdate(), pmodel.getEncounterDates());
-            encounterDate = dialog.getLocalDate();
+            encounterDate = dialog.showDatePickerDialog();
+            System.out.println("Parse button oressed 2");
+            System.out.println(pmodel);
         }
         this.fenominalMiner = new FenominalMiner(ontology);
         try {
@@ -192,7 +196,10 @@ public class FenominalMainController {
                 case PHENOPACKET:
                     int encountersSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
+                    PhenopacketModel pmodel = (PhenopacketModel) model;
+                    System.out.println("BEFORE" + pmodel);
                     model.addHpoFeatures(approvedTerms, encounterDate);
+                    System.out.println("AFTER" + pmodel);
                     break;
                 default:
                     PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
@@ -275,7 +282,6 @@ public class FenominalMainController {
      * GA4GH phenopacket with one or multiple time points
      */
     private void initPhenopacket() {
-        System.out.println("Phenopacket");
         Map<String, String> mp = new LinkedHashMap<>();
         mp.put("HPO",  getHpoVersion());
         mp.put("Curated so far", "0");
@@ -284,8 +290,9 @@ public class FenominalMainController {
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
         DatePickerDialog dialog = DatePickerDialog.getBirthDate();
-        LocalDate bdate = dialog.getLocalDate();
+        LocalDate bdate = dialog.showDatePickerDialog();
         this.model = new PhenopacketModel(bdate);
+        PhenopacketModel pmodel = (PhenopacketModel) model;
     }
 
 
@@ -310,8 +317,8 @@ public class FenominalMainController {
                 case "Phenopacket":
                     initPhenopacket();
                     break;
-                case "Cohort":
-                    System.out.println("cohortTogether");
+                case "Phenopacket (Manual age entry)":
+                    initPhenopacketWithManualAge();
                     break;
                 case "Cohort (enter data about multiple individuals)":
                     initCohortOneByOne();
@@ -322,6 +329,9 @@ public class FenominalMainController {
             }
         }
         e.consume();
+    }
+
+    private void initPhenopacketWithManualAge() {
     }
 
 

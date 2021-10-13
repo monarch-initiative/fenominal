@@ -10,9 +10,13 @@ import java.util.List;
  */
 public class MedicalEncounter {
 
-    private List<FenominalTerm> terms;
+    private final List<FenominalTerm> terms;
 
     MedicalEncounter(List<FenominalTerm> termList) {
         terms = List.copyOf(termList);
+    }
+
+    public List<FenominalTerm> getTerms() {
+        return terms;
     }
 }
