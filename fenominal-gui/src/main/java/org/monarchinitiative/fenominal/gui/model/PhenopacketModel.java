@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO RETHINK THE INTERFACE
- * In addition to a list of {@link FenominalTerm} objects we need to pass in the datetime.
- * Ask Daniel how the new HCA does this
+ * Model for building a Phenopacket with multiple time points for a single patient
+ * @author Peter N Robinson
  */
 public class PhenopacketModel implements TextMiningResultsModel {
 
     private final LocalDate birthdate;
 
-    private List<LocalDate> encounterDates;
+    private final List<LocalDate> encounterDates;
 
 
     private final List<MedicalEncounter> encounters;
+
 
 
     public PhenopacketModel(LocalDate bdate) {
@@ -27,10 +27,16 @@ public class PhenopacketModel implements TextMiningResultsModel {
     }
 
 
-
     @Override
     public void addHpoFeatures(List<FenominalTerm> terms) {
-        encounters.add(new MedicalEncounter(terms));
+        // should never happen
+        throw new UnsupportedOperationException("Phenopackets must use overloaded function with LocalDate");
+    }
+
+    public void addHpoFeatures(List<FenominalTerm> terms, LocalDate date) {
+        MedicalEncounter encounter = new MedicalEncounter(terms);
+        encounterDates.add(date);
+        encounters.add(encounter);
     }
 
     @Override
@@ -51,4 +57,13 @@ public class PhenopacketModel implements TextMiningResultsModel {
         return encounterDates;
     }
 
+    public List<MedicalEncounter> getEncounters() {
+        return encounters;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[PhenopacketModel] birthdate=%s; encounters:%d, dates: %d\n",
+               getBirthdate(), encounters.size() ,encounterDates.size());
+    }
 }

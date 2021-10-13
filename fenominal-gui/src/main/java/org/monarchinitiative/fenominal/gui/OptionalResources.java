@@ -3,6 +3,8 @@ package org.monarchinitiative.fenominal.gui;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,8 @@ public class OptionalResources {
     // default value does not harm here
     private final ObjectProperty<Ontology> ontology = new SimpleObjectProperty<>(this, "ontology");
 
+    private final StringProperty biocurator = new SimpleStringProperty(this, "biocurator.id");
+
     public Ontology getOntology() {
         return ontology.get();
     }
@@ -34,6 +38,12 @@ public class OptionalResources {
     public ObjectProperty<Ontology> ontologyProperty() {
         return ontology;
     }
+
+    public void setBiocurator(String id) {
+        biocurator.setValue(id);
+    }
+
+    public StringProperty biocuratorIdProperrty() { return biocurator; }
 
 
 }

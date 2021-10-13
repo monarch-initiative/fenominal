@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.gui.output;
 import com.google.protobuf.util.JsonFormat;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.gui.model.MedicalEncounter;
+import org.monarchinitiative.fenominal.gui.model.PhenopacketByAgeModel;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;
@@ -17,35 +18,31 @@ import org.phenopackets.schema.v2.core.PhenotypicFeature;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 
-public class PhenopacketJsonOutputter implements PhenoOutputter{
+public class PhenopacketByAgeJsonOutputter implements PhenoOutputter{
 
-    private final PhenopacketModel phenopacketModel;
+    private final PhenopacketByAgeModel phenopacketModel;
 
-    public PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) {
+    public PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel) {
         this.phenopacketModel = phenopacketModel;
     }
 
     @Override
     public void output(Writer writer) throws IOException {
-        LocalDate nowDate = LocalDate.now();
         MetaData meta = MetaDataBuilder
                 .create(LocalDate.now().toString(), "TODO-biocurator ID")
                 .resource(Resources.hpoVersion("TODO"))
                 .build();
-        PhenopacketBuilder builder =PhenopacketBuilder.create(generatePhenopacketId(), meta);
+        PhenopacketBuilder builder = PhenopacketBuilder.create(generatePhenopacketId(), meta);
         List<MedicalEncounter> encounters = phenopacketModel.getEncounters();
-        List<LocalDate> encounterDates = phenopacketModel.getEncounterDates();
-        if (encounterDates.size() != encounters.size()) {
+        List<String> encounterAges = phenopacketModel.getEncounterAges();
+        if (encounterAges.size() != encounters.size()) {
             // should never happen, sanity check
             throw new FenominalRunTimeException("Mismatched encounter and encounterDates list");
         }
         for (int i = 0; i < encounters.size(); i++) {
-            LocalDate encounterDate = encounterDates.get(i);
-            String isoAge = iso8601(encounterDate);
-            System.out.println("isSge " + isoAge);
+            String isoAge = encounterAges.get(i);
             MedicalEncounter encounter = encounters.get(i);
             for (var phenotype : encounter.getTerms()) {
                 Term term = phenotype.getTerm();
@@ -69,15 +66,6 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
         Phenopacket phenopacket = builder.build();
         String json =  JsonFormat.printer().print(phenopacket);
         writer.write(json);
-    }
-
-    private String iso8601(LocalDate encounterDate) {
-        // Period.between takes (start, end), inclusive
-        Period diff = Period.between( phenopacketModel.getBirthdate(),encounterDate);
-        int y =diff.getYears();
-        int m = diff.getMonths();
-        int d = diff.getDays();
-        return "P" + y + "Y" + m + "M" + d + "D";
     }
 
     private String generatePhenopacketId() {

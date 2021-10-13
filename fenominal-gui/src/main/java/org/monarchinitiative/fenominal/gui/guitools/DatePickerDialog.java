@@ -1,9 +1,6 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,20 +15,19 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static javafx.stage.StageStyle.DECORATED;
 
 public class DatePickerDialog {
-
-    private final TextArea textArea = new TextArea();
-
-    private LocalDate date;
 
     private final String message;
 
@@ -60,11 +56,11 @@ public class DatePickerDialog {
     }
 
     public DatePickerDialog(LocalDate bDate, List<LocalDate> previousEncounters) {
-        message = getHtmlWithDates(birthDate, previousEncounters);
+        message = getHtmlWithDates(bDate, previousEncounters);
         browser = new Browser(message);
         setBirthDate = false;
         birthDate = bDate;
-        encounterDates = List.copyOf(previousEncounters);
+        encounterDates = new ArrayList<>(previousEncounters);
     }
 
 
@@ -74,14 +70,6 @@ public class DatePickerDialog {
         } else {
             encounterDates.add(d);
         }
-    }
-
-    public LocalDate getBirthdate() {
-        return birthDate;
-    }
-
-    public List<LocalDate> getEncounterDates() {
-        return encounterDates;
     }
 
 
@@ -106,13 +94,15 @@ public class DatePickerDialog {
 
 
 
-    public LocalDate getLocalDate() {
+    public LocalDate showDatePickerDialog() {
         String pattern = "MM/dd/yyyy";
         final DatePicker datePicker = new DatePicker();
         datePicker.setEditable(false);
+        AtomicReference<LocalDate> localDate = new AtomicReference<>();
         datePicker.setOnAction((actionEvent) -> {
             LocalDate date = datePicker.getValue();
             setDate(date);
+            localDate.set(date);
             String html = getHtmlWithDates(this.birthDate, this.encounterDates);
             this.browser.setContent(html);
             actionEvent.consume();
@@ -172,7 +162,7 @@ public class DatePickerDialog {
         Stage stage = new Stage(DECORATED);
         stage.setScene(scene);
         stage.showAndWait();
-        return date;
+        return localDate.get();
     }
 
 
@@ -210,41 +200,6 @@ public class DatePickerDialog {
         }
     }
 
-
-    class Browser extends Region {
-
-        final WebView browser = new WebView();
-        final WebEngine webEngine = browser.getEngine();
-
-        public Browser(String html) {
-            getStyleClass().add("browser");
-            webEngine.loadContent(html);
-            getChildren().add(browser);
-        }
-        private Node createSpacer() {
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            return spacer;
-        }
-
-        @Override protected void layoutChildren() {
-            double w = getWidth();
-            double h = getHeight();
-            layoutInArea(browser,0,0,w,h,0, HPos.CENTER, VPos.CENTER);
-        }
-
-        @Override protected double computePrefWidth(double height) {
-            return 750;
-        }
-
-        @Override protected double computePrefHeight(double width) {
-            return 500;
-        }
-
-        public void setContent(String html) {
-            webEngine.loadContent(html);
-        }
-    }
 
 
     private final static String setupHtml ="<html><body><h3>Fenomimal Phenopacket generator</h3>" +
