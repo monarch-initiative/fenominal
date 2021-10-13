@@ -37,7 +37,6 @@ public class PhenopacketModel implements TextMiningResultsModel {
         MedicalEncounter encounter = new MedicalEncounter(terms);
         encounterDates.add(date);
         encounters.add(encounter);
-        System.out.println("Adding HPO, encounters " + encounters.size() + " dates "+encounterDates.size());
     }
 
     @Override
