@@ -190,9 +190,9 @@ public class FenominalMainController {
                     model.addHpoFeatures(approvedTerms);
                     break;
                 case COHORT_ONE_BY_ONE:
+                    model.addHpoFeatures(approvedTerms);
                     int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
-                    model.addHpoFeatures(approvedTerms);
                     break;
                 case PHENOPACKET:
                     int encountersSoFar = model.casesMined();
@@ -390,16 +390,11 @@ public class FenominalMainController {
             switch (this.miningTaskType) {
                 case CASE_REPORT -> phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
                 case COHORT_ONE_BY_ONE -> {
-                    int casesSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
                     String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
                     phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
                 }
-                case PHENOPACKET -> {
-                    int encountersSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
-                    phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
-                }
+                case PHENOPACKET -> phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                case PHENOPACKET_BY_AGE -> phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
                 default -> phenoOutputter = new ErrorOutputter();
             }
             phenoOutputter.output(writer);
@@ -414,7 +409,7 @@ public class FenominalMainController {
         Writer writer = new StringWriter();
         phenoOutputter = switch (this.miningTaskType) {
             case CASE_REPORT -> new CaseReportTsvOutputter((CaseReport) this.model);
-            case COHORT_ONE_BY_ONE -> new CohortListOutputter((OneByOneCohort) this.model);
+            case COHORT_ONE_BY_ONE -> new PhenoteFxTsvOutputter((OneByOneCohort) this.model, pgProperties.getProperty(BIOCURATOR_ID_PROPERTY));
             case PHENOPACKET -> new PhenopacketJsonOutputter((PhenopacketModel) this.model);
             case PHENOPACKET_BY_AGE -> new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
             default -> new ErrorOutputter();
