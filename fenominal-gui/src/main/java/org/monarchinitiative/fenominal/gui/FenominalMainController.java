@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -30,6 +29,8 @@ import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Component
 public class FenominalMainController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMainController.class);
     @FXML
     public Button parseButton;
 
@@ -67,7 +68,6 @@ public class FenominalMainController {
     private final BooleanProperty tableHidden;
 
 
-    private FenominalMiner fenominalMiner = null;
     private final ExecutorService executor;
 
     private final OptionalResources optionalResources;
@@ -146,6 +146,8 @@ public class FenominalMainController {
 
     @FXML
     private void parseButtonPressed(ActionEvent e) {
+        LOGGER.error("Parse button pressed" );
+
         Ontology ontology = this.optionalResources.getOntology();
         if (ontology == null) {
             PopUps.showInfoMessage("Need to set location to hp.json ontology file first! (See edit menu)", "Error");
@@ -162,11 +164,11 @@ public class FenominalMainController {
             AgePickerDialog agePickerDialog = new AgePickerDialog(pAgeModel.getEncounterAges());
             isoAge = agePickerDialog.showAgePickerDialog();
         }
-        this.fenominalMiner = new FenominalMiner(ontology);
-        try {
+        FenominalMiner fenominalMiner = new FenominalMiner(ontology);
+           try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
-                    .withTermMiner(this.fenominalMiner)
-                    .withOntology(this.fenominalMiner.getHpo())
+                    .withTermMiner(fenominalMiner)
+                    .withOntology(fenominalMiner.getHpo())
                     .withExecutorService(executor)
                     .withPhenotypeTerms(new HashSet<>()) // maybe you want to display some terms from the beginning
                     .build();
@@ -209,7 +211,8 @@ public class FenominalMainController {
                     return;
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            PopUps.showException("Error", "HPO textmining error", ex.getMessage(), ex);
+            LOGGER.error("Error doing HPO Textming: {}", ex.getMessage());
         }
         updateTable();
         // if we get here, we have data that could be output

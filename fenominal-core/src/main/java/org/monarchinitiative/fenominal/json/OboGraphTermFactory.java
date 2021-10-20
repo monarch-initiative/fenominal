@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Factory class for constructing {@link Term} and {@link Relationship} objects from
@@ -181,11 +182,7 @@ public class OboGraphTermFactory {
       Field f = Meta.class.getDeclaredField("deprecated");
       f.setAccessible(true);
       Boolean deprecated = (Boolean) f.get(meta);
-      if (deprecated == null) {
-        return false;
-      } else {
-        return deprecated;
-      }
+      return Objects.requireNonNullElse(deprecated, false);
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
     }

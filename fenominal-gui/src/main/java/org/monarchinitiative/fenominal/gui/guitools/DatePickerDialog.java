@@ -1,22 +1,13 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -34,11 +25,11 @@ public class DatePickerDialog {
     private final Browser browser;
 
     private LocalDate birthDate =null;
-    private List<LocalDate> encounterDates;
+    private final List<LocalDate> encounterDates;
 
     private final boolean setBirthDate;
 
-    private final String buttonStyle =
+    private final static String buttonStyle =
             " -fx-background-color:" +
             "        linear-gradient(#f2f2f2, #d6d6d6)," +
             "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
@@ -111,8 +102,7 @@ public class DatePickerDialog {
         datePicker.setConverter(converter);
         datePicker.setPromptText(pattern.toLowerCase());
 
-        // Create a day cell factory
-        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
                     @Override
@@ -131,9 +121,7 @@ public class DatePickerDialog {
         HBox pickerBox = new HBox(selection, datePicker);
 
         Button closeButton = new Button("Done");
-        closeButton.setOnAction((actionEvent -> {
-            ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
-        }));
+        closeButton.setOnAction((actionEvent -> ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close()));
         Button clearLatestButton = new Button("Clear last date");
         clearLatestButton.setOnAction((actionEvent -> {
             int i = this.encounterDates.size() - 1;

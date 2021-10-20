@@ -55,5 +55,7 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
         return Optional.empty();
     }
 
-
+    public int getN_words() {
+        return n_words;
+    }
 }

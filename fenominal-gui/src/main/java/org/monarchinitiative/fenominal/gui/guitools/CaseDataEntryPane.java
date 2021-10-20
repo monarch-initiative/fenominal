@@ -1,11 +1,7 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
 
-import javafx.beans.binding.BooleanBinding;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -14,11 +10,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.UnaryOperator;
 
 import static javafx.stage.StageStyle.DECORATED;
 
@@ -30,7 +21,7 @@ public class CaseDataEntryPane {
 
     private String caseId = "n/a";
 
-    private final String buttonStyle =
+    private final static String buttonStyle =
             " -fx-background-color:" +
                     "        linear-gradient(#f2f2f2, #d6d6d6)," +
                     "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +

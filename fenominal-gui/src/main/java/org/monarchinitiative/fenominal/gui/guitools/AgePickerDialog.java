@@ -30,7 +30,7 @@ public class AgePickerDialog {
 
     private final List<String> ages;
 
-    private final String buttonStyle =
+    private final static String buttonStyle =
             " -fx-background-color:" +
                     "        linear-gradient(#f2f2f2, #d6d6d6)," +
                     "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
@@ -74,9 +74,7 @@ public class AgePickerDialog {
         hbox.getChildren().addAll(yLab, years, mLab, months, dLab, days);
         HBox pickerBox = new HBox(selection, hbox);
         Button closeButton = new Button("Done");
-        closeButton.setOnAction((actionEvent -> {
-            ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close();
-        }));
+        closeButton.setOnAction((actionEvent -> ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close()));
         Button clearLatestButton = new Button("Clear last age");
         clearLatestButton.setOnAction((actionEvent -> {
             int i = this.ages.size() - 1;

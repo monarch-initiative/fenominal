@@ -20,7 +20,7 @@ public class MultiplePassageParser extends  PassageParser{
 
     private final String input;
 
-    private Map<TermId, Integer> countsMap;
+    private final Map<TermId, Integer> countsMap;
 
     private final int mincount;
 
@@ -62,8 +62,9 @@ public class MultiplePassageParser extends  PassageParser{
                 Optional<String> opt = ontology.getTermLabel(tid);
                 if (opt.isEmpty()) {
                     System.err.println("[ERROR] Could not find label for " + tid.getValue());
+                } else {
+                    writer.write(tid.getValue() + "\t" + opt.get() + "\t" + count + "/" + n_cases + "\n");
                 }
-                writer.write(tid.getValue() + "\t" + opt.get() + "\t" + count + "/" + n_cases + "\n");
             }
             writer.close();
         } catch (IOException e) {

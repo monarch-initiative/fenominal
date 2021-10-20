@@ -37,4 +37,12 @@ public class CaseReport implements TextMiningResultsModel {
     public int getTermCount() {
         return this.terms.size();
     }
+
+    public String getCaseId() {
+        return caseId;
+    }
+
+    public String getIsoAge() {
+        return isoAge;
+    }
 }
