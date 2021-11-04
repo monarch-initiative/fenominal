@@ -1,18 +1,18 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 
 import java.util.*;
 
 public class HpoConceptSingleWordMapper implements HpoConceptMatch {
 
     private final Map<String, HpoConcept> componentWordToConceptMap;
-    private final LexicalClustersBuilder lexicalClustersBuilder;
+    private final LexicalResources lexicalResources;
 
-    public HpoConceptSingleWordMapper(LexicalClustersBuilder lexicalClustersBuilder) {
+    public HpoConceptSingleWordMapper(LexicalResources lexicalResources) {
         componentWordToConceptMap = new HashMap<>();
-        this.lexicalClustersBuilder = lexicalClustersBuilder;
+        this.lexicalResources = lexicalResources;
     }
 
     public void addConcept(HpoConcept concept) {
@@ -21,7 +21,7 @@ public class HpoConceptSingleWordMapper implements HpoConceptMatch {
             throw new FenominalRunTimeException("Error, we were expected a concept with a single word but got "
                     + concept.getOriginalConcept());
         }
-        this.componentWordToConceptMap.put(lexicalClustersBuilder.getCluster(concept.getOriginalConcept().toLowerCase()), concept);
+        this.componentWordToConceptMap.put(lexicalResources.getCluster(concept.getOriginalConcept().toLowerCase()), concept);
     }
 
     /**
