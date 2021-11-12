@@ -1,6 +1,6 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
-import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 
 import java.util.*;
 
@@ -18,17 +18,17 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
      * contain the word. Each concept is divided up into words like this for each of searching.
      */
     private final Map<String, List<HpoConcept>> componentWordToConceptMap;
-    private final LexicalClustersBuilder lexicalClustersBuilder;
+    private final LexicalResources lexicalResources;
 
-    public HpoConceptMultiWordMapper(int n, LexicalClustersBuilder lexicalClustersBuilder) {
+    public HpoConceptMultiWordMapper(int n, LexicalResources lexicalResources) {
         this.n_words = n;
-        this.lexicalClustersBuilder = lexicalClustersBuilder;
+        this.lexicalResources = lexicalResources;
         this.componentWordToConceptMap = new HashMap<>();
     }
 
     public void addConcept(HpoConcept concept) {
         for (String w : concept.getNonStopWords()) {
-            String cluster = lexicalClustersBuilder.getCluster(w.toLowerCase());
+            String cluster = lexicalResources.getCluster(w.toLowerCase());
             this.componentWordToConceptMap.putIfAbsent(cluster, new ArrayList<>());
             this.componentWordToConceptMap.get(cluster).add(concept);
         }
@@ -46,7 +46,7 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
             if (this.componentWordToConceptMap.containsKey(cluster)) {
                 List<HpoConcept> conceptList = this.componentWordToConceptMap.get(cluster);
                 for (HpoConcept hpoc : conceptList) {
-                    if (lexicalClustersBuilder.getClusters(hpoc.getNonStopWords()).equals(clusterSet)) {
+                    if (lexicalResources.getClusters(hpoc.getNonStopWords()).equals(clusterSet)) {
                         return Optional.of(hpoc);
                     }
                 }

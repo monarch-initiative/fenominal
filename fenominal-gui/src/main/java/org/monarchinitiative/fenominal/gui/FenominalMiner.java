@@ -1,7 +1,7 @@
 package org.monarchinitiative.fenominal.gui;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
 import org.monarchinitiative.hpotextmining.core.miners.TermMiner;
@@ -17,11 +17,11 @@ public class FenominalMiner implements TermMiner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMiner.class);
     private final ClinicalTextMapper mapper;
-    private final LexicalClustersBuilder lexicalClustersBuilder;
+    private final LexicalResources lexicalResources;
 
     public FenominalMiner(Ontology ontology) {
-        this.lexicalClustersBuilder = new LexicalClustersBuilder();
-        this.mapper = new ClinicalTextMapper(ontology, lexicalClustersBuilder);
+        this.lexicalResources = new LexicalResources();
+        this.mapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
 
     /**

@@ -5,7 +5,6 @@ import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class HpoConcept {
         this.hpoId = tid;
         // Note that because of the Q/C for HPO, there are only single spaces and no other kind of whitespace
         // in labels or synonyms
-        String [] words = concept.split(" ");
+        String[] words = concept.split(" ");
         this.nonStopWords = Arrays.stream(words)
                 .filter(Predicate.not(StopWords::isStop))
                 .collect(Collectors.toSet());
