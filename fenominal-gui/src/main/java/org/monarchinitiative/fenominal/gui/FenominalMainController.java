@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -30,6 +29,8 @@ import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Component
 public class FenominalMainController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMainController.class);
     @FXML
     public Button parseButton;
 
@@ -67,7 +68,6 @@ public class FenominalMainController {
     private final BooleanProperty tableHidden;
 
 
-    private FenominalMiner fenominalMiner = null;
     private final ExecutorService executor;
 
     private final OptionalResources optionalResources;
@@ -123,8 +123,7 @@ public class FenominalMainController {
         Map<String, String> mp = new LinkedHashMap<>();
         String versionInfo = getHpoVersion();
         mp.put("HPO", versionInfo);
-        // TODO -- for some reason, the Ontology version is not available here.
-      //  populateTableWithData(mp);
+        populateTableWithData(mp);
     }
 
     private BooleanProperty tableHiddenProperty() {
@@ -146,6 +145,8 @@ public class FenominalMainController {
 
     @FXML
     private void parseButtonPressed(ActionEvent e) {
+        LOGGER.error("Parse button pressed" );
+
         Ontology ontology = this.optionalResources.getOntology();
         if (ontology == null) {
             PopUps.showInfoMessage("Need to set location to hp.json ontology file first! (See edit menu)", "Error");
@@ -162,11 +163,11 @@ public class FenominalMainController {
             AgePickerDialog agePickerDialog = new AgePickerDialog(pAgeModel.getEncounterAges());
             isoAge = agePickerDialog.showAgePickerDialog();
         }
-        this.fenominalMiner = new FenominalMiner(ontology);
-        try {
+        FenominalMinerApp fenominalMiner = new FenominalMinerApp(ontology);
+           try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
-                    .withTermMiner(this.fenominalMiner)
-                    .withOntology(this.fenominalMiner.getHpo())
+                    .withTermMiner(fenominalMiner)
+                    .withOntology(fenominalMiner.getHpo())
                     .withExecutorService(executor)
                     .withPhenotypeTerms(new HashSet<>()) // maybe you want to display some terms from the beginning
                     .build();
@@ -190,9 +191,9 @@ public class FenominalMainController {
                     model.addHpoFeatures(approvedTerms);
                     break;
                 case COHORT_ONE_BY_ONE:
+                    model.addHpoFeatures(approvedTerms);
                     int casesSoFar = model.casesMined();
                     this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
-                    model.addHpoFeatures(approvedTerms);
                     break;
                 case PHENOPACKET:
                     int encountersSoFar = model.casesMined();
@@ -209,7 +210,8 @@ public class FenominalMainController {
                     return;
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            PopUps.showException("Error", "HPO textmining error", ex.getMessage(), ex);
+            LOGGER.error("Error doing HPO Textming: {}", ex.getMessage());
         }
         updateTable();
         // if we get here, we have data that could be output
@@ -240,26 +242,19 @@ public class FenominalMainController {
 
 
     private void initCaseReport() {
-        DataEntryPane dataEntryPane = new DataEntryPane();
-        GridPane gridPane = dataEntryPane.getPane();
-        Scene scene = new Scene(gridPane, 800, 500);
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.showAndWait();
-        if (dataEntryPane.isValid()) {
-            System.out.println(dataEntryPane.getIdentifier() + ":" + dataEntryPane.getYears() + ": " + dataEntryPane.getMonths());
-            Map<String, String> mp = new LinkedHashMap<>();
-            mp.put("HPO",  getHpoVersion());
-            mp.put("id", dataEntryPane.getIdentifier());
-            mp.put("age", String.format("%d years, %d months", dataEntryPane.getYears(), dataEntryPane.getMonths()));
-            populateTableWithData(mp);
-            this.parseButton.setDisable(false);
-            this.parseButton.setText("Mine case report");
-            this.miningTaskType = CASE_REPORT;
-            this.model = new CaseReport();
-        } else {
-            PopUps.showInfoMessage("Could not initialize case report", "Error");
-        }
+        CaseDataEntryPane dataEntryPane = new CaseDataEntryPane();
+        dataEntryPane.showAgePickerDialog();
+        String isoAge = dataEntryPane.getIsoAge();
+        String id = dataEntryPane.getCaseId();
+        Map<String, String> mp = new LinkedHashMap<>();
+        mp.put("HPO",  getHpoVersion());
+        mp.put("id", id);
+        mp.put("age", isoAge);
+        populateTableWithData(mp);
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine case report");
+        this.miningTaskType = CASE_REPORT;
+        this.model = new CaseReport(id, isoAge);
     }
 
 
@@ -385,32 +380,24 @@ public class FenominalMainController {
         String initialFilename = "fenomimal.txt";
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
-        //String defaultdir = settings.getDefaultDirectory();
-       // FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TAB/TSV files (*.tab)", "*.tab");
-        //fileChooser.getExtensionFilters().add(extFilter);
-       // fileChooser.setInitialDirectory(new File(defaultdir));
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
+        if (file == null) {
+            PopUps.showInfoMessage("Could not retrieve file name, using default (\" fenomimal.txt\"", "Error");
+            file = new File(initialFilename);
+        }
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
 
             switch (this.miningTaskType) {
-                case CASE_REPORT:
-                    phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
-                    break;
-                case COHORT_ONE_BY_ONE:
-                    int casesSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
+                case CASE_REPORT -> phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
+                case COHORT_ONE_BY_ONE -> {
                     String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
                     phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
-                    break;
-                case PHENOPACKET:
-                    int encountersSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
-                    phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
-                    break;
-                default:
-                    phenoOutputter = new ErrorOutputter();
+                }
+                case PHENOPACKET -> phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+                case PHENOPACKET_BY_AGE -> phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
+                default -> phenoOutputter = new ErrorOutputter();
             }
             phenoOutputter.output(writer);
         } catch (IOException e) {
@@ -422,22 +409,13 @@ public class FenominalMainController {
     public void previewOutput(ActionEvent e) {
         PhenoOutputter phenoOutputter;
         Writer writer = new StringWriter();
-        switch (this.miningTaskType) {
-            case CASE_REPORT:
-                phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
-                break;
-            case COHORT_ONE_BY_ONE:
-                phenoOutputter = new CohortListOutputter((OneByOneCohort) this.model);
-                break;
-            case PHENOPACKET:
-                phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
-                break;
-            case PHENOPACKET_BY_AGE:
-                phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
-                break;
-            default:
-                phenoOutputter = new ErrorOutputter();
-        }
+        phenoOutputter = switch (this.miningTaskType) {
+            case CASE_REPORT -> new CaseReportTsvOutputter((CaseReport) this.model);
+            case COHORT_ONE_BY_ONE -> new PhenoteFxTsvOutputter((OneByOneCohort) this.model, pgProperties.getProperty(BIOCURATOR_ID_PROPERTY));
+            case PHENOPACKET -> new PhenopacketJsonOutputter((PhenopacketModel) this.model);
+            case PHENOPACKET_BY_AGE -> new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
+            default -> new ErrorOutputter();
+        };
         try {
             phenoOutputter.output(writer);
         } catch (IOException ioe) {

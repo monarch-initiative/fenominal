@@ -1,9 +1,11 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
 import org.monarchinitiative.fenominal.core.corenlp.*;
+import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
+import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
-import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +15,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
     private final HpoMatcher hpoMatcher;
+    private TokenDecoratorService tokenDecoratorService;
+    private DecorationProcessorService decorationProcessorService;
 
-    public ClinicalTextMapper(Ontology ontology, LexicalClustersBuilder lexicalClustersBuilder) {
-        this.hpoMatcher = new HpoMatcher(ontology, lexicalClustersBuilder);
+    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
+        this.hpoMatcher = new HpoMatcher(ontology, lexicalResources);
+        this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
+        this.decorationProcessorService = new DecorationProcessorService();
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
@@ -35,6 +42,7 @@ public class ClinicalTextMapper {
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
                 .filter(Predicate.not(token -> StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
+        nonStopWords = this.tokenDecoratorService.decorate(nonStopWords);
         // key -- sentence start position, value -- candidate matches.
         Map<Integer, List<MappedSentencePart>> candidates = new HashMap<>();
         int LEN = Math.min(10, nonStopWords.size()); // check for maximum of 10 words TODO -- what is best option here?
@@ -47,7 +55,10 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
-                    MappedSentencePart mappedSentencePart = new MappedSentencePart(chunk, opt.get().getHpoId());
+                    MappedSentencePart mappedSentencePart =
+                            decorationProcessorService.process(chunk, nonStopWords, opt.get().getHpoId());
+
+//                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
                 }

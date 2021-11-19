@@ -3,11 +3,7 @@ package org.monarchinitiative.fenominal.core.corenlp;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TestBase;
-import org.monarchinitiative.fenominal.core.TextToHpoMapper;
-import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

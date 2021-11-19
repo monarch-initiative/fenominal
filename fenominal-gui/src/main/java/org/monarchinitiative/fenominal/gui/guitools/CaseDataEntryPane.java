@@ -1,34 +1,25 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static javafx.stage.StageStyle.DECORATED;
 
-
-/**
- * TODO Spinner
- * Spinner
- * https://www.tutorialspoint.com/how-to-create-a-spinner-in-javafx
- */
-public class AgePickerDialog {
-
-    private final String message;
+public class CaseDataEntryPane {
 
     private final Browser browser;
 
-    private final List<String> ages;
+    private String isoAge = "";
+
+    private String caseId = "n/a";
 
     private final static String buttonStyle =
             " -fx-background-color:" +
@@ -40,19 +31,20 @@ public class AgePickerDialog {
                     "    -fx-text-fill: black;\n" +
                     "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
 
-    public AgePickerDialog(String msg) {
-        message = msg;
-        ages = new ArrayList<>();
-        browser = new Browser(message);
+    public CaseDataEntryPane() {
+        browser = new Browser(setupHtml);
     }
 
-    public AgePickerDialog( List<String> previousAges) {
-        message = getHtmlWithAges(previousAges);
-        browser = new Browser(message);
-        ages = new ArrayList<>(previousAges);
+
+    public String getIsoAge() {
+        return isoAge;
     }
 
-    public String showAgePickerDialog() {
+    public String getCaseId() {
+        return caseId;
+    }
+
+    public void showAgePickerDialog() {
         Label selection = new Label("Select age:");
         Font font = Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 12);
         selection.setFont(font);
@@ -74,28 +66,22 @@ public class AgePickerDialog {
         hbox.getChildren().addAll(yLab, years, mLab, months, dLab, days);
         HBox pickerBox = new HBox(selection, hbox);
         Button closeButton = new Button("Done");
-        closeButton.setOnAction((actionEvent -> ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close()));
-        Button clearLatestButton = new Button("Clear last age");
-        clearLatestButton.setOnAction((actionEvent -> {
-            int i = this.ages.size() - 1;
-            if (i>0) {
-                this.ages.remove(i);
-            }
-            years.getValueFactory().setValue(0);
-            months.getValueFactory().setValue(0);
-            days.getValueFactory().setValue(0);
-            String html = getHtmlWithAges(this.ages);
-            this.browser.setContent(html);
-        }));
+        closeButton.setOnAction(actionEvent -> ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close());
+
         closeButton.setStyle(buttonStyle);
-        clearLatestButton.setStyle(buttonStyle);
         final Separator separator = new Separator();
         separator.setMaxWidth(40);
         HBox buttonBox = new HBox();
-        buttonBox.getChildren().addAll(clearLatestButton, separator, closeButton);
+        buttonBox.getChildren().addAll(closeButton);
 
+        Label caseIdLabel = new Label("Case ID");
+        TextField caseIdTextField = new TextField();
+        caseIdTextField.setPrefHeight(40);
+        caseIdTextField.setPrefWidth(100);
+        HBox caseIdBox = new HBox();
+        caseIdBox.getChildren().addAll(caseIdLabel, caseIdTextField);
         VBox root = new VBox();
-        root.getChildren().addAll(pickerBox, browser, buttonBox);
+        root.getChildren().addAll(browser, pickerBox, caseIdBox, buttonBox);
         root.setStyle("-fx-padding: 10;" +
                 "-fx-border-style: solid inside;" +
                 "-fx-border-width: 2;" +
@@ -109,7 +95,8 @@ public class AgePickerDialog {
         int Y = years.getValue();
         int M = months.getValue();
         int D = days.getValue();
-        return "P" + Y + "Y" + M + "M" + D + "D";
+        this.isoAge = "P" + Y + "Y" + M + "M" + D + "D";
+        this.caseId = caseIdTextField.getText().trim();
     }
 
 
@@ -117,25 +104,7 @@ public class AgePickerDialog {
     private final static String setupHtml ="<html><body><h3>Fenomimal Phenopacket generator</h3>" +
             "<p><i>Fenominal</i> allows users to indicate the age of patients by having users indicate the birthdate as" +
             " well as the dates of the medical encounters that are being recorded.<p>" +
-            "<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
-            " It does not store or output the birthdate.</p>" +
+            "<p>This dialog is used for a simple case with only one-time point for TSSV output.</p>" +
             "</body></html>";
-
-    public String getHtmlWithAges(List<String> previousAges) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<html><body><h3>Fenomimal Phenopacket generator</h3>");
-        builder.append("<p>Encounter ages:</p>");
-        if (previousAges.isEmpty()) {
-            builder.append("<p>You will see encounter ages as the encounters are entered.</p>");
-        } else {
-            builder.append("<ol>");
-            for (String isoAge : previousAges) {
-                builder.append("<li>").append(isoAge).append("</li>");
-            }
-            builder.append("</ol>");
-        }
-        builder.append("</body></html>");
-        return builder.toString();
-    }
 
 }

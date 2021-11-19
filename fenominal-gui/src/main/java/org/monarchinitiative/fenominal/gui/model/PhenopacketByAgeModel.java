@@ -1,9 +1,5 @@
 package org.monarchinitiative.fenominal.gui.model;
 
-import org.monarchinitiative.fenominal.gui.output.PhenoOutputter;
-
-import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,6 @@ import com.google.protobuf.util.JsonFormat;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.gui.model.MedicalEncounter;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketByAgeModel;
-import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;
 import org.phenopackets.phenotools.builder.builders.MetaDataBuilder;

@@ -3,23 +3,9 @@ package org.monarchinitiative.fenominal.cli.cmd;
 import org.monarchinitiative.fenominal.cli.analysis.MultiplePassageParser;
 import org.monarchinitiative.fenominal.cli.analysis.PassageParser;
 import org.monarchinitiative.fenominal.cli.analysis.SinglePassageParser;
-import org.monarchinitiative.fenominal.core.TextToHpoMapper;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
-import org.monarchinitiative.fenominal.json.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.TermId;
 import picocli.CommandLine;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "parse", aliases = {"P"},
@@ -38,7 +24,7 @@ public class ParseCommand implements Callable<Integer> {
     private int mincount = 2;
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         PassageParser parser;
         if (multiple) {
             parser = new MultiplePassageParser(hpoJsonPath, input, output, mincount);

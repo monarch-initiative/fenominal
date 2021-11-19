@@ -9,22 +9,22 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class LexicalClustersBuilder {
+public class LexicalResources {
 
     private static final String CLUSTER_SIGNATURE = "$";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LexicalClustersBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LexicalResources.class);
 
-    private Map<String, String> invertedIndex;
+    private final Map<String, String> invertedIndex;
 
-    public LexicalClustersBuilder() {
+    public LexicalResources() {
         invertedIndex = new LinkedHashMap<>();
-        loadClusters();
+        loadLexicalClusters();
     }
 
-    private void loadClusters() {
+    private void loadLexicalClusters() {
         try (InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("clusters")) {
-            String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
             String[] lines = text.split("\n");
             int id = 1;
             for (String line : lines) {
@@ -42,10 +42,27 @@ public class LexicalClustersBuilder {
         }
     }
 
+    public Map<String, String> getNegationClues() {
+        final Map<String, String> negationClues = new LinkedHashMap<>();
+        try (InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("negation.clues")) {
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String[] lines = text.split("\n");
+            for (String line : lines) {
+                line = line.trim();
+                if (!"".equals(line)) {
+                    negationClues.put(line, "");
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return negationClues;
+    }
+
     public Set<String> getClusters(Set<String> words) {
         Set<String> clusters = new HashSet<>();
         for (String word : words) {
-            clusters.add(invertedIndex.containsKey(word.toLowerCase()) ? invertedIndex.get(word.toLowerCase()) : word);
+            clusters.add(invertedIndex.getOrDefault(word.toLowerCase(), word));
         }
         return clusters;
     }
@@ -53,12 +70,12 @@ public class LexicalClustersBuilder {
     public List<String> getClusters(List<String> words) {
         List<String> clusters = new ArrayList<>();
         for (String word : words) {
-            clusters.add(invertedIndex.containsKey(word.toLowerCase()) ? invertedIndex.get(word.toLowerCase()) : word);
+            clusters.add(invertedIndex.getOrDefault(word.toLowerCase(), word));
         }
         return clusters;
     }
 
     public String getCluster(String word) {
-        return invertedIndex.containsKey(word) ? invertedIndex.get(word) : word;
+        return invertedIndex.getOrDefault(word, word);
     }
 }

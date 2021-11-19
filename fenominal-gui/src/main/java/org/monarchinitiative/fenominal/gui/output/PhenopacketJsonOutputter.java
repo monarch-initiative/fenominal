@@ -13,6 +13,8 @@ import org.phenopackets.phenotools.builder.builders.TimeElements;
 import org.phenopackets.schema.v2.Phenopacket;
 import org.phenopackets.schema.v2.core.MetaData;
 import org.phenopackets.schema.v2.core.PhenotypicFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -21,6 +23,7 @@ import java.time.Period;
 import java.util.List;
 
 public class PhenopacketJsonOutputter implements PhenoOutputter{
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhenopacketJsonOutputter.class);
 
     private final PhenopacketModel phenopacketModel;
 
@@ -45,7 +48,6 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
         for (int i = 0; i < encounters.size(); i++) {
             LocalDate encounterDate = encounterDates.get(i);
             String isoAge = iso8601(encounterDate);
-            System.out.println("isSge " + isoAge);
             MedicalEncounter encounter = encounters.get(i);
             for (var phenotype : encounter.getTerms()) {
                 Term term = phenotype.getTerm();
@@ -73,6 +75,15 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
 
     private String iso8601(LocalDate encounterDate) {
         // Period.between takes (start, end), inclusive
+        if (phenopacketModel.getBirthdate() == null) {
+            LOGGER.error("Could not get phenopacket birthdate");
+            return "P0";
+        }
+        if (encounterDate == null) {
+            LOGGER.error("Could not get encounterDate");
+            return "P0";
+        }
+
         Period diff = Period.between( phenopacketModel.getBirthdate(),encounterDate);
         int y =diff.getYears();
         int m = diff.getMonths();

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.monarchinitiative.fenominal</groupId>
         <artifactId>fenominal</artifactId>
-        <version>0.1.5-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
 
     <name>fenominal-core</name>
@@ -65,6 +65,10 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.monarchinitiative.hpotextmining</groupId>
+            <artifactId>hpotextmining-gui</artifactId>
         </dependency>
     </dependencies>
 

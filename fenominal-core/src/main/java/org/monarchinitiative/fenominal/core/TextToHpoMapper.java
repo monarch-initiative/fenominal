@@ -1,7 +1,7 @@
 package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.lexical.LexicalClustersBuilder;
+import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -15,17 +15,17 @@ public class TextToHpoMapper {
 
     private final ClinicalTextMapper hpoMatcher;
 
-    private final LexicalClustersBuilder lexicalClustersBuilder;
+    private final LexicalResources lexicalResources;
 
     public TextToHpoMapper(String pathToHpJson) {
         JsonHpoParser parser = new JsonHpoParser(pathToHpJson);
-        lexicalClustersBuilder = new LexicalClustersBuilder();
-        hpoMatcher = new ClinicalTextMapper(parser.getHpo(), lexicalClustersBuilder);
+        lexicalResources = new LexicalResources();
+        hpoMatcher = new ClinicalTextMapper(parser.getHpo(), lexicalResources);
     }
 
     public TextToHpoMapper(Ontology ontology) {
-        lexicalClustersBuilder = new LexicalClustersBuilder();
-        hpoMatcher = new ClinicalTextMapper(ontology, lexicalClustersBuilder);
+        lexicalResources = new LexicalResources();
+        hpoMatcher = new ClinicalTextMapper(ontology, lexicalResources);
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
