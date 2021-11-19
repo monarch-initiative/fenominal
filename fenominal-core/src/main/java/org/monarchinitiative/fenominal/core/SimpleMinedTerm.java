@@ -1,4 +1,4 @@
-package org.monarchinitiative.fenominal.gui;
+package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;

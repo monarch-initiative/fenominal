@@ -123,8 +123,7 @@ public class FenominalMainController {
         Map<String, String> mp = new LinkedHashMap<>();
         String versionInfo = getHpoVersion();
         mp.put("HPO", versionInfo);
-        // TODO -- for some reason, the Ontology version is not available here.
-      //  populateTableWithData(mp);
+        populateTableWithData(mp);
     }
 
     private BooleanProperty tableHiddenProperty() {
@@ -164,7 +163,7 @@ public class FenominalMainController {
             AgePickerDialog agePickerDialog = new AgePickerDialog(pAgeModel.getEncounterAges());
             isoAge = agePickerDialog.showAgePickerDialog();
         }
-        FenominalMiner fenominalMiner = new FenominalMiner(ontology);
+        FenominalMinerApp fenominalMiner = new FenominalMinerApp(ontology);
            try {
             HpoTextMining hpoTextMining = HpoTextMining.builder()
                     .withTermMiner(fenominalMiner)
@@ -381,12 +380,12 @@ public class FenominalMainController {
         String initialFilename = "fenomimal.txt";
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
-        //String defaultdir = settings.getDefaultDirectory();
-       // FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TAB/TSV files (*.tab)", "*.tab");
-        //fileChooser.getExtensionFilters().add(extFilter);
-       // fileChooser.setInitialDirectory(new File(defaultdir));
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
+        if (file == null) {
+            PopUps.showInfoMessage("Could not retrieve file name, using default (\" fenomimal.txt\"", "Error");
+            file = new File(initialFilename);
+        }
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
 
