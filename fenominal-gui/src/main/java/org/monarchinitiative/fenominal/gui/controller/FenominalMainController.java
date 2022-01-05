@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -31,6 +32,9 @@ import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenofx.questionnnaire.Phenoquestionnaire;
+import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAge;
+import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAnswer;
+import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoItem;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -38,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.bind.validation.ValidationBindHandler;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -442,7 +447,7 @@ public class FenominalMainController {
     @FXML
     void setBiocuratorMenuItemClicked(ActionEvent event) {
         String biocurator = PopUps.getStringFromUser("Biocurator ID",
-                "e.g. HPO:rrabbit", "Enter your biocurator ID:");
+                "e.g., HPO:rrabbit", "Enter your biocurator ID:");
         if (biocurator != null) {
             this.pgProperties.setProperty(BIOCURATOR_ID_PROPERTY, biocurator);
             PopUps.showInfoMessage(String.format("Biocurator ID set to \n\"%s\"",
@@ -466,13 +471,29 @@ public class FenominalMainController {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
             QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
             loader.setController(qcontoller);
-            loader.load();
+            VBox parent = loader.load();
             Ontology hpo = this.optionalResources.getOntology();
             Phenoquestionnaire pq = Phenoquestionnaire.development(hpo);
+            qcontoller.setQuestions(pq.getQuestions());
+            Scene scene = new Scene(parent, 800, 600);
+            Stage secondary = new Stage();
+            secondary.setTitle("PhenoQuestionnaire");
+            secondary.setScene(scene);
+            secondary.showAndWait();
+            List<PhenoAnswer> answers = qcontoller.getAnswers();
+            // Transform the PhenoAnswer objects into FenominalTerm objects to add them to our model
+            List<FenominalTerm> fterms = new ArrayList<>();
+            for (PhenoAnswer answer : answers) {
+                if (answer.unknown()) {
+                    LOGGER.error("Unknown Phenoanswer passed to controller (should never happen");
+                    continue;
+                }
+                fterms.add(new FenominalTerm(answer.term(), answer.observed()));
+            }
+            model.addHpoFeatures(fterms);
         } catch (IOException ex) {
             PopUps.showException("Error", "Could not load Questionnaire", ex.getMessage(), ex);
         }
-        //quest.setQuestionnaire(hpo, pq.getQuestions());
 
     }
 
