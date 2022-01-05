@@ -12,8 +12,12 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Objects;
@@ -30,9 +34,16 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:daniel.danis@jax.org">Daniel Danis</a>
  * @author <a href="mailto:aaron.zhangl@jax.org">Aaron Zhang</a>
  */
+
 public class HpoTextMining {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HpoTextMining.class);
+
+
+    private Resource mainFxmResource;
+    private Resource configureFxmResource;
+    private Resource ontologyTreeFxmResource;
+    private Resource presentFxmResource;
 
     // ---------------------------------- CONTROLLERS and PARENTS ------------------------------------------------------
 
@@ -73,25 +84,32 @@ public class HpoTextMining {
      *                        to display in the widget from the beginning
      * @throws IOException if the building process fails
      */
-    private HpoTextMining(Ontology ontology, TermMiner miner, ExecutorService executorService, Set<PhenotypeTerm> presentTerms) throws IOException {
+    private HpoTextMining(Ontology ontology,
+                          TermMiner miner,
+                          ExecutorService executorService,
+                          Set<PhenotypeTerm> presentTerms,
+                           Resource mainFxmResource,
+                                   Resource configureFxmResource,
+                                   Resource ontologyTreeFxmResource,
+                                   Resource presentFxmResource) throws IOException {
         main = new Main();
+        this.mainFxmResource = mainFxmResource;
+        this.configureFxmResource = configureFxmResource;
+        this.ontologyTreeFxmResource = ontologyTreeFxmResource;
+        this.presentFxmResource = presentFxmResource;
         // Set up "Configure" part of the screen
         Consumer<Main.Signal> configureSignal = signal -> {
             switch (signal) {
-                case DONE:
+                case DONE -> {
                     Set<PhenotypeTerm> phenotypeTerms = configure.getTerms().stream()
                             .map(minedTermToPhenotypeTerm(ontology))
                             .filter(Objects::nonNull)
                             .collect(Collectors.toSet());
                     present.setResults(phenotypeTerms, configure.getQuery());
                     main.setTextMiningContent(presentVBox);
-                    break;
-                case FAILED:
-                    LOGGER.warn("Sorry, text mining analysis failed."); // TODO - improve cancellation & failed handling
-                    break;
-                case CANCELLED:
-                    LOGGER.warn("Text mining analysis cancelled");
-                    break;
+                }
+                case FAILED -> LOGGER.warn("Sorry, text mining analysis failed."); // TODO - improve cancellation & failed handling
+                case CANCELLED -> LOGGER.warn("Text mining analysis cancelled");
             }
         };
         configure = new Configure(miner, executorService, configureSignal);
@@ -99,19 +117,13 @@ public class HpoTextMining {
         // Set up "Present" part of the screen
         Consumer<Main.Signal> presentSignal = signal -> {
             switch (signal) {
-                case DONE:
+                case DONE -> {
                     main.addPhenotypeTerms(present.getApprovedTerms());
                     main.setTextMiningContent(configureAnchorPane);
-                    break;
-                case FAILED:
-                    LOGGER.warn("Sorry, text mining analysis failed."); // TODO - improve cancellation & failed handling);
-                    break;
-                case CANCELLED:
-                    LOGGER.warn("Text mining analysis cancelled");
-                    break;
-                default:
-                    LOGGER.warn("Unknown option '{}'", signal);
-                    break;
+                }
+                case FAILED -> LOGGER.warn("Sorry, text mining analysis failed."); // TODO - improve cancellation & failed handling);
+                case CANCELLED -> LOGGER.warn("Text mining analysis cancelled");
+                default -> LOGGER.warn("Unknown option '{}'", signal);
             }
         };
         this.present = new Present(presentSignal, termId -> ontologyTree.focusOnTerm(ontology.getTermMap().get(termId)));
@@ -136,22 +148,47 @@ public class HpoTextMining {
             }
         };
 
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("Main.fxml"));
-        mainLoader.setControllerFactory(controllerFactory);
-        mainParent = mainLoader.load();
+//        InputStream mainFxmlResource = getClass().getResourceAsStream("/fxml/Main.fxml");
+//        LOGGER.info("MainFxmlResource: {}", mainFxmlResource);
+//        InputStream configureResource = getClass().getResourceAsStream("/fxml/Configure.fxml");
+//        LOGGER.info("configureResource: {}", configureResource);
+//        InputStream presentResource = getClass().getResourceAsStream("/fxml/Present.fxml");
+//        LOGGER.info("presentResource: {}", presentResource);
+//        InputStream ontologyTreeResource = getClass().getResourceAsStream("/fxml/OntologyTree.fxml");
+//        LOGGER.info("ontologyTreeResource: {}", ontologyTreeResource);
 
-        FXMLLoader configureLoader = new FXMLLoader(getClass().getResource("Configure.fxml"));
+/*
+ FXMLLoader fxmlLoader = new FXMLLoader(fenominalFxmResource.getURL());
+            fxmlLoader.setControllerFactory(applicationContext::getBean);
+
+ */
+        FXMLLoader mainLoader = new FXMLLoader(this.mainFxmResource.getURL());
+       // mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+        //mainLoader.load(mainFxmlResource);
+        mainParent = mainLoader.load();
+        mainLoader.setControllerFactory(controllerFactory);
+
+        FXMLLoader configureLoader = new FXMLLoader(configureFxmResource.getURL());
+       // configureLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+       // configureLoader.load(configureResource);
+
+        //configureAnchorPane = configureLoader.load(configureResource);
         configureLoader.setControllerFactory(controllerFactory);
-        configureAnchorPane = configureLoader.load();
         main.setTextMiningContent(configureAnchorPane);
 
-        FXMLLoader presentLoader = new FXMLLoader(getClass().getResource("Present.fxml"));
-        presentLoader.setControllerFactory(controllerFactory);
-        presentVBox = presentLoader.load();
+        FXMLLoader presentLoader = new FXMLLoader(presentFxmResource.getURL());
+        //presentLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+        //presentLoader.load(presentResource);
 
-        FXMLLoader ontologyTreeLoader = new FXMLLoader(getClass().getResource("OntologyTree.fxml"));
-        ontologyTreeLoader.setControllerFactory(controllerFactory);
+        presentVBox = presentLoader.load();
+        presentLoader.setControllerFactory(controllerFactory);
+
+        FXMLLoader ontologyTreeLoader = new FXMLLoader(ontologyTreeFxmResource.getURL());
+       // ontologyTreeLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+        //ontologyTreeLoader.load(ontologyTreeResource);
+
         main.setLeftStackPaneContent(ontologyTreeLoader.load());
+        ontologyTreeLoader.setControllerFactory(controllerFactory);
 
         main.addPhenotypeTerms(presentTerms);
     }
@@ -214,8 +251,33 @@ public class HpoTextMining {
 
         private final Set<PhenotypeTerm> terms = new HashSet<>();
 
+        private Resource mainFxmResource = null;
+        private Resource configureFxmResource = null;
+        private Resource ontologyTreeFxmResource = null;
+        private Resource presentFxmResource = null;
+
         private HpoTextMiningBuilder() {
             // no-op
+        }
+
+        public HpoTextMiningBuilder mainFxml(Resource r) {
+            this.mainFxmResource = r;
+            return this;
+        }
+
+        public HpoTextMiningBuilder configureFxml(Resource r) {
+            this.configureFxmResource = r;
+            return this;
+        }
+
+        public HpoTextMiningBuilder ontoTreeFxml(Resource r) {
+            this.ontologyTreeFxmResource = r;
+            return this;
+        }
+
+        public HpoTextMiningBuilder presentFxml(Resource r) {
+            this.presentFxmResource = r;
+            return this;
         }
 
 
@@ -303,7 +365,8 @@ public class HpoTextMining {
                 executorService = Executors.newSingleThreadExecutor();
             }
 
-            return new HpoTextMining(ontology, usedMiner, executorService, terms);
+            return new HpoTextMining(ontology, usedMiner, executorService, terms,
+                mainFxmResource, configureFxmResource,ontologyTreeFxmResource, presentFxmResource);
         }
     }
 }

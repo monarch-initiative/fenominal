@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -90,6 +91,15 @@ public class FenominalMainController {
     private MiningTask miningTaskType = UNINITIALIZED;
 
     private TextMiningResultsModel model = null;
+
+    @Value("classpath:/fxml/Main.fxml")
+    private Resource mainFxmResource;
+    @Value("classpath:/fxml/Configure.fxml")
+    private Resource configureFxmResource;
+    @Value("classpath:/fxml/OntologyTree.fxml")
+    private Resource ontologyTreeFxmResource;
+    @Value("classpath:/fxml/Present.fxml")
+    private Resource presentFxmResource;
 
     @Autowired
     ResourceLoader resourceLoader;
@@ -180,6 +190,10 @@ public class FenominalMainController {
                     .withOntology(fenominalMiner.getHpo())
                     .withExecutorService(executor)
                     .withPhenotypeTerms(new HashSet<>()) // maybe you want to display some terms from the beginning
+                    .mainFxml(mainFxmResource)
+                    .configureFxml(configureFxmResource)
+                    .ontoTreeFxml(ontologyTreeFxmResource)
+                    .presentFxml(presentFxmResource)
                     .build();
             // get reference to primary stage
             Window w = this.parseButton.getScene().getWindow();
