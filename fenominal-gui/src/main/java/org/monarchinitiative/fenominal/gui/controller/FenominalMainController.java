@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
@@ -29,10 +28,11 @@ import org.monarchinitiative.fenominal.gui.guitools.*;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
 import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
+import org.monarchinitiative.fenominal.gui.questionnaire.PhenoQuestionnaire;
+import org.monarchinitiative.fenominal.gui.questionnaire.QuestionnairePane;
+import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
-import org.monarchinitiative.phenofx.questionnnaire.PhenoQuestionnaire;
-import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAnswer;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -66,6 +66,7 @@ public class FenominalMainController {
     public Button outputButton;
     @FXML
     public Button setupButton;
+    public Button questionnaireButtn;
 
     @FXML
     private Button previwButton;
@@ -118,6 +119,7 @@ public class FenominalMainController {
         this.parseButton.setDisable(true);
         this.previwButton.setDisable(true);
         this.outputButton.setDisable(true);
+        this.questionnaireButtn.setDisable(true);
         // set up table view
         TableColumn<Map, String> itemColumn = new TableColumn<>("item");
         itemColumn.setCellValueFactory(new MapValueFactory<>("item"));
@@ -362,6 +364,7 @@ public class FenominalMainController {
                     return;
             }
         }
+        this.questionnaireButtn.setDisable(false);
         e.consume();
     }
 
@@ -460,6 +463,10 @@ public class FenominalMainController {
     @FXML
     private void questionnaire(ActionEvent e) {
         e.consume();
+        if (this.model == null) {
+            PopUps.showInfoMessage("Error", "Cannot invoke questionnaire before initializing case");
+            return;
+        }
         Resource questionnaireResource = resourceLoader.getResource("classpath:questionnaire.fxml");
         if (! questionnaireResource.exists()) {
             LOGGER.error("Could not find Questionnare FXML resource (fxml file not found)");
@@ -471,26 +478,29 @@ public class FenominalMainController {
 //            ClassLoader classLoader = FenominalMainController.class.getClassLoader();
 //            InputStream is = classLoader.getResourceAsStream("questionnaire.fxml");
 
-            //FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
-            URL url = getClass().getResource("/questionnaire.fxml");
-            LOGGER.info("ULR={}",url);
-            String f = url.getFile();
-            LOGGER.info("As string {}", f);
-            File file = new File(f);
-            LOGGER.info("file exists: {}", file.exists());
-            FXMLLoader loader = new FXMLLoader(url);
-            QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
-            loader.setController(qcontoller);
-            VBox parent = loader.load();
+         //   FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
+//            URL url = getClass().getResource("/questionnaire.fxml");
+//            LOGGER.info("ULR={}",url);
+//            String f = url.getFile();
+//            LOGGER.info("As string {}", f);
+//            File file = new File(f);
+//            LOGGER.info("file exists: {}", file.exists());
+//            FXMLLoader loader = new FXMLLoader(url);
+          //  QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
+           // loader.setController(qcontoller);
+            //VBox parent = loader.load();
             Ontology hpo = this.optionalResources.getOntology();
             PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
-            qcontoller.setQuestions(pq.getQuestions());
-            Scene scene = new Scene(parent, 800, 600);
+            QuestionnairePane qpane = new QuestionnairePane();
+            qpane.setQuestionnaire(hpo, pq.getQuestions());
+
+            //qcontoller.setQuestions(pq.getQuestions());
+            Scene scene = new Scene(qpane, 800, 600);
             Stage secondary = new Stage();
             secondary.setTitle("PhenoQuestionnaire");
             secondary.setScene(scene);
             secondary.showAndWait();
-            List<PhenoAnswer> answers = qcontoller.getAnswers();
+            List<PhenoAnswer> answers = qpane.getAnswers();
             // Transform the PhenoAnswer objects into FenominalTerm objects to add them to our model
             List<FenominalTerm> fterms = new ArrayList<>();
             for (PhenoAnswer answer : answers) {
@@ -499,8 +509,9 @@ public class FenominalMainController {
                     continue;
                 }
                 fterms.add(new FenominalTerm(answer.term(), answer.observed()));
+                LOGGER.info("Adding fterm {}", answer.term().getName());
             }
-            model.addHpoFeatures(fterms);
+            model.addHpoFeatures(fterms, LocalDate.now());
         } catch (IOException ex) {
             ex.printStackTrace();
             LOGGER.error("Could not load questionnaire {}", ex.getMessage());

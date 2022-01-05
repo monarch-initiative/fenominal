@@ -1,14 +1,16 @@
 package org.monarchinitiative.fenominal.gui.controller;
 
 import javafx.fxml.FXML;
-import org.monarchinitiative.phenofx.questionnnaire.QuestionnairePane;
-import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAnswer;
-import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoItem;
+
+import org.monarchinitiative.fenominal.gui.questionnaire.QuestionnairePane;
+import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
+import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoItem;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 
 @Component
 @Scope("prototype")
