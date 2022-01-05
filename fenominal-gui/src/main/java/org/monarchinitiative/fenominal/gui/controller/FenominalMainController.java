@@ -1,4 +1,4 @@
-package org.monarchinitiative.fenominal.gui;
+package org.monarchinitiative.fenominal.gui.controller;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -20,12 +20,16 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.dialog.CommandLinksDialog;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
+import org.monarchinitiative.fenominal.gui.FenominalMinerApp;
+import org.monarchinitiative.fenominal.gui.OptionalResources;
+import org.monarchinitiative.fenominal.gui.StartupTask;
 import org.monarchinitiative.fenominal.gui.guitools.*;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
 import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
+import org.monarchinitiative.phenofx.questionnnaire.Phenoquestionnaire;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -114,11 +118,6 @@ public class FenominalMainController {
         this.metaDataTableView.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY );
         itemColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );
         valueColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );
-        // TODO -- Want to get the table to disappear until we have done the "get started"
-        // The following causes the table to disappear, but setting the value of hidden to false does
-        // not cause it to reappear
-//        this.metaDataTableView.visibleProperty().bind(this.tableHiddenProperty());
-//        this.metaDataTableView.managedProperty().bind(this.tableHiddenProperty().not());
         // Ordered map of data for the table
         Map<String, String> mp = new LinkedHashMap<>();
         String versionInfo = getHpoVersion();
@@ -451,6 +450,9 @@ public class FenominalMainController {
     @FXML
     private void questionnaire(ActionEvent e) {
         e.consume();
+        Ontology hpo = this.optionalResources.getOntology();
+        Phenoquestionnaire pq = Phenoquestionnaire.development(hpo);
+        //quest.setQuestionnaire(hpo, pq.getQuestions());
 
     }
 
