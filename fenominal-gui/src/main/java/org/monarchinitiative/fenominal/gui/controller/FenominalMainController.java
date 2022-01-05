@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
@@ -37,10 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -454,8 +457,21 @@ public class FenominalMainController {
     @FXML
     private void questionnaire(ActionEvent e) {
         e.consume();
-        Ontology hpo = this.optionalResources.getOntology();
-        Phenoquestionnaire pq = Phenoquestionnaire.development(hpo);
+        Resource questionnaireResource = resourceLoader.getResource("classpath:questionnaire.fxml");
+        if (! questionnaireResource.exists()) {
+            LOGGER.error("Could not find Questionnare FXML resource (fxml file not found)");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
+            QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
+            loader.setController(qcontoller);
+            loader.load();
+            Ontology hpo = this.optionalResources.getOntology();
+            Phenoquestionnaire pq = Phenoquestionnaire.development(hpo);
+        } catch (IOException ex) {
+            PopUps.showException("Error", "Could not load Questionnaire", ex.getMessage(), ex);
+        }
         //quest.setQuestionnaire(hpo, pq.getQuestions());
 
     }
