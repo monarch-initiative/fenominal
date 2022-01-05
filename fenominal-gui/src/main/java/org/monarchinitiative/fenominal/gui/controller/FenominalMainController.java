@@ -31,10 +31,8 @@ import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
-import org.monarchinitiative.phenofx.questionnnaire.Phenoquestionnaire;
-import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAge;
+import org.monarchinitiative.phenofx.questionnnaire.PhenoQuestionnaire;
 import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoAnswer;
-import org.monarchinitiative.phenofx.questionnnaire.phenoitem.PhenoItem;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -473,7 +471,7 @@ public class FenominalMainController {
             loader.setController(qcontoller);
             VBox parent = loader.load();
             Ontology hpo = this.optionalResources.getOntology();
-            Phenoquestionnaire pq = Phenoquestionnaire.development(hpo);
+            PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
             qcontoller.setQuestions(pq.getQuestions());
             Scene scene = new Scene(parent, 800, 600);
             Stage secondary = new Stage();
@@ -492,6 +490,7 @@ public class FenominalMainController {
             }
             model.addHpoFeatures(fterms);
         } catch (IOException ex) {
+            LOGGER.error("Could not load questionnaire {}", ex.getMessage());
             PopUps.showException("Error", "Could not load Questionnaire", ex.getMessage(), ex);
         }
 
