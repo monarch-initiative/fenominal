@@ -25,14 +25,14 @@ import org.monarchinitiative.fenominal.gui.FenominalMinerApp;
 import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.monarchinitiative.fenominal.gui.StartupTask;
 import org.monarchinitiative.fenominal.gui.guitools.*;
+import org.monarchinitiative.fenominal.gui.hpotextminingwidget.HpoTextMining;
+import org.monarchinitiative.fenominal.gui.hpotextminingwidget.PhenotypeTerm;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
 import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.fenominal.gui.questionnaire.PhenoQuestionnaire;
 import org.monarchinitiative.fenominal.gui.questionnaire.QuestionnairePane;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
-import org.monarchinitiative.hpotextmining.gui.controller.HpoTextMining;
-import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.bind.validation.ValidationBindHandler;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -192,7 +191,7 @@ public class FenominalMainController {
             secondary.setScene(new Scene(hpoTextMining.getMainParent()));
             secondary.showAndWait();
 
-            Set<Main.PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
+            Set<PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
             List<FenominalTerm> approvedTerms = approved.stream()
                     .map(FenominalTerm::fromMainPhenotypeTerm)
                     .sorted()

@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.gui.model;
 
+import org.monarchinitiative.fenominal.gui.hpotextminingwidget.PhenotypeTerm;
 import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.ontology.data.Term;
 
@@ -21,7 +22,7 @@ public record FenominalTerm(Term term, boolean observed)
         return observed;
     }
 
-    public static FenominalTerm fromMainPhenotypeTerm(Main.PhenotypeTerm mpt) {
+    public static FenominalTerm fromMainPhenotypeTerm(PhenotypeTerm mpt) {
         return new FenominalTerm(mpt.getTerm(), mpt.isPresent());
     }
 
