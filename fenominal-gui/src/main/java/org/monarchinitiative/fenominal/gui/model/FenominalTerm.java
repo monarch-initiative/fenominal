@@ -5,15 +5,13 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 
 import java.util.Objects;
 
-public class FenominalTerm implements Comparable<FenominalTerm> {
-
-    private final Term term;
-    private final boolean observed;
-
-    private FenominalTerm(Term term, boolean observed){
-        this.term = term;
-        this.observed = observed;
-    }
+/**
+ * Encapsulates one (text-mined) HPO term and a boolean to indicate
+ * whether the term was observed or excluded.
+ * @author  Peter N Robinson
+ */
+public record FenominalTerm(Term term, boolean observed)
+        implements Comparable<FenominalTerm> {
 
     public Term getTerm() {
         return term;
@@ -21,17 +19,6 @@ public class FenominalTerm implements Comparable<FenominalTerm> {
 
     public boolean isObserved() {
         return observed;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.term, this.observed);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (! (obj instanceof FenominalTerm that)) return false;
-        return this.term.equals(that.term) && this.observed == that.observed;
     }
 
     public static FenominalTerm fromMainPhenotypeTerm(Main.PhenotypeTerm mpt) {
