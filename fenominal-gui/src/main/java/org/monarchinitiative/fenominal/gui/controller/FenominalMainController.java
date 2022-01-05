@@ -466,7 +466,19 @@ public class FenominalMainController {
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
+            LOGGER.info("Loading questionnare resource={}", questionnaireResource.getDescription());
+            LOGGER.info("Loading questionnare URL={}", questionnaireResource.getURL());
+//            ClassLoader classLoader = FenominalMainController.class.getClassLoader();
+//            InputStream is = classLoader.getResourceAsStream("questionnaire.fxml");
+
+            //FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
+            URL url = getClass().getResource("/questionnaire.fxml");
+            LOGGER.info("ULR={}",url);
+            String f = url.getFile();
+            LOGGER.info("As string {}", f);
+            File file = new File(f);
+            LOGGER.info("file exists: {}", file.exists());
+            FXMLLoader loader = new FXMLLoader(url);
             QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
             loader.setController(qcontoller);
             VBox parent = loader.load();
@@ -490,6 +502,7 @@ public class FenominalMainController {
             }
             model.addHpoFeatures(fterms);
         } catch (IOException ex) {
+            ex.printStackTrace();
             LOGGER.error("Could not load questionnaire {}", ex.getMessage());
             PopUps.showException("Error", "Could not load Questionnaire", ex.getMessage(), ex);
         }
