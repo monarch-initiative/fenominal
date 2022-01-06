@@ -150,9 +150,6 @@ public class FenominalConfig {
         return node;
     }
 
-    @Bean
-    TermMiner termMiner(OptionalResources optionalResources) {
-        return new FenominalMinerApp(optionalResources().getOntology());
-    }
+
 
 }
