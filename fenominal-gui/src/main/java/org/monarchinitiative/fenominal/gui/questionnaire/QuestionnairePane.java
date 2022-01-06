@@ -35,8 +35,6 @@ Logger LOGGER = LoggerFactory.getLogger(QuestionnairePane.class);
         } else {
             LOGGER.error("Could not load CSS for QuestionnairePane");
         }
-//        List<AgeThresholdPhenoItem> agePhenoItems = developmentQuestionnare.getAgeThresholdPhenoItemList();
-//        phenoRows = agePhenoItems.stream().map(Qphenorow::new).collect(Collectors.toList());
         phenoqTable = new PhenoqTable(List.of()); // initialize here with empty list
         root.getChildren().add(phenoqTable);
         HBox buttonBox = new HBox();
@@ -57,9 +55,6 @@ Logger LOGGER = LoggerFactory.getLogger(QuestionnairePane.class);
         Label titleLabel = new Label("HPO-based Questionnaire");
         setTop(titleLabel);
 
-//        Scene scene = new Scene(root);
-
-//        stage.show();
     }
 
     public void setQuestionnaire(Ontology ontology, List<PhenoItem> phenoQuestions) {

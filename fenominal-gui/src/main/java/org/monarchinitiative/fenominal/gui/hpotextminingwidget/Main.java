@@ -47,7 +47,7 @@ public class Main {
      * Temporary copy for storing already present PhenotypeTerms until the controller GUI elements are initialized by
      * the FXML loader. The content is moved into the TableView in {@link #initialize()} method.
      */
-    private Set<PhenotypeTerm> terms = new HashSet<>();
+    private final Set<PhenotypeTerm> terms = new HashSet<>();
 
 
     /**

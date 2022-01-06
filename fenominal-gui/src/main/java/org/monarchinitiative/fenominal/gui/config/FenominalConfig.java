@@ -1,10 +1,5 @@
 package org.monarchinitiative.fenominal.gui.config;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import org.monarchinitiative.fenominal.core.TermMiner;
-import org.monarchinitiative.fenominal.gui.FenominalMinerApp;
 import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,51 +99,11 @@ public class FenominalConfig {
         return appHomeDir;
     }
 
-    @Bean("configureAnchorPane")
-    public Node configureAnchorPane () {
-        Node node = null;
-        try {
-            node = FXMLLoader.load(configureFxmResource.getURL());
-            LOGGER.info("Created configure AnchorPane Node: {}", node.toString());
-        } catch (IOException e) {
-            LOGGER.error("Could not create anchor pane node: {}", e.getMessage());
-        }
-        return node;
-    }
 
-    @Bean("present")
-    public Node presentVBox() {
-        Node node = null;
-        try {
-            node = FXMLLoader.load(presentFxmResource.getURL());
-            LOGGER.info("Created configure Present Node: {}", node.toString());
-        } catch (IOException e) {
-            LOGGER.error("Could not create Present node: {}", e.getMessage());
-        }
-        return node;
-    }
 
-    @Bean
-    public Parent mainParent () {
-        Parent parent = null;
-        try {
-            parent = FXMLLoader.load(presentFxmResource.getURL());
-        } catch (IOException e) {
-            LOGGER.error("Could not create parent node: {}", e.getMessage());
-        }
-        return parent;
-    }
 
-    @Bean("ontologyTreeResourceNode")
-    public Node ontologyTreeResourceNode() {
-        Node node = null;
-        try {
-            node = FXMLLoader.load(ontologyTreeFxmResource.getURL());
-        } catch (IOException e) {
-            LOGGER.error("Could not create ontologyTreeFxmResource node: {}", e.getMessage());
-        }
-        return node;
-    }
+
+
 
 
 

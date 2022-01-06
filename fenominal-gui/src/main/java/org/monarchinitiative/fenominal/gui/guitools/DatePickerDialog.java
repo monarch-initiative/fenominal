@@ -157,7 +157,7 @@ public class DatePickerDialog {
     static class FxDatePickerConverter extends StringConverter<LocalDate> {
         // Default Date Pattern
         private String pattern = "MM/dd/yyyy";
-        private DateTimeFormatter dtFormatter;
+        private final DateTimeFormatter dtFormatter;
 
         public FxDatePickerConverter() {
             dtFormatter = DateTimeFormatter.ofPattern(pattern);

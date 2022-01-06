@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.gui.hpotextminingwidget;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.util.Callback;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -81,8 +83,6 @@ public class HpoTextMining {
      * @param ontology        {@link Ontology} to use for text mining
      * @param miner           {@link TermMiner} to use for HPO text mining
      * @param executorService {@link ExecutorService} to use for asynchronous tasks
-
-     * @throws IOException if the building process fails
      */
     public HpoTextMining(Ontology ontology,
                           TermMiner miner,
@@ -139,49 +139,48 @@ public class HpoTextMining {
             }
         };
 
-//        InputStream mainFxmlResource = getClass().getResourceAsStream("/fxml/Main.fxml");
-//        LOGGER.info("MainFxmlResource: {}", mainFxmlResource);
-//        InputStream configureResource = getClass().getResourceAsStream("/fxml/Configure.fxml");
-//        LOGGER.info("configureResource: {}", configureResource);
-//        InputStream presentResource = getClass().getResourceAsStream("/fxml/Present.fxml");
-//        LOGGER.info("presentResource: {}", presentResource);
-//        InputStream ontologyTreeResource = getClass().getResourceAsStream("/fxml/OntologyTree.fxml");
-//        LOGGER.info("ontologyTreeResource: {}", ontologyTreeResource);
-
-/*
- FXMLLoader fxmlLoader = new FXMLLoader(fenominalFxmResource.getURL());
-            fxmlLoader.setControllerFactory(applicationContext::getBean);
-
- */
-//        FXMLLoader mainLoader = new FXMLLoader(this.mainFxmResource.getURL());
-//       // mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-//        //mainLoader.load(mainFxmlResource);
-//        mainParent = mainLoader.load();
-//        mainLoader.setControllerFactory(controllerFactory);
-
-//        FXMLLoader configureLoader = new FXMLLoader(configureFxmResource.getURL());
-//       // configureLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-//       // configureLoader.load(configureResource);
 //
-//        configureAnchorPane = configureLoader.load(configureResource);
-//        configureLoader.setControllerFactory(controllerFactory);
-        main.setTextMiningContent(configureAnchorPane);
+        try {
 
-       // FXMLLoader presentLoader = new FXMLLoader(presentFxmResource.getURL());
-        //presentLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-        //presentLoader.load(presentResource);
+            URL url = HpoTextMining.class.getResource("/fxml/Main.fxml");
+            FXMLLoader mainLoader = new FXMLLoader(url);
+            mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+            File f = new File(url.getFile());
+            LOGGER.info("Resource for Main.fxml: {} - exists? {}", url, f.isFile());
+            mainLoader.setControllerFactory(controllerFactory);
+            mainParent = mainLoader.load();
 
-//        presentVBox = presentLoader.load();
-//        presentLoader.setControllerFactory(controllerFactory);
+            url = HpoTextMining.class.getResource("/fxml/Configure.fxml");
+            f = new File(url.getFile());
+            LOGGER.info("Resource for Configure.fxml: {} - exists? {}", url, f.isFile());
+            FXMLLoader configureLoader = new FXMLLoader(url);
+            configureLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+            configureLoader.setControllerFactory(controllerFactory);
+            configureAnchorPane = configureLoader.load();
+            main.setTextMiningContent(configureAnchorPane);
 
-//        FXMLLoader ontologyTreeLoader = new FXMLLoader(ontologyTreeFxmResource.getURL());
-//        ontologyTreeLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-        //ontologyTreeLoader.load(ontologyTreeResource);
+            url = HpoTextMining.class.getResource("/fxml/Present.fxml");
+            f = new File(url.getFile());
+            LOGGER.info("Resource for Present.fxml: {} - exists? {}", url, f.isFile());
+            FXMLLoader presentLoader = new FXMLLoader(url);
+            presentLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+            presentLoader.setControllerFactory(controllerFactory);
+            presentVBox = presentLoader.load();
 
-        main.setLeftStackPaneContent(ontologyTreeResourceNode);
-       // ontologyTreeLoader.setControllerFactory(controllerFactory);
+            url = HpoTextMining.class.getResource("/fxml/OntologyTree.fxml");
+            f = new File(url.getFile());
+            LOGGER.info("Resource for OntologyTree.fxml: {} - exists? {}", url, f.isFile());
+            FXMLLoader ontologyTreeLoader = new FXMLLoader(url);
+            ontologyTreeLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+            ontologyTreeLoader.setControllerFactory(controllerFactory);
+            main.setLeftStackPaneContent(ontologyTreeLoader.load());
+        } catch (NullPointerException npe) {
+            LOGGER.error("Could not dereference URL for controllers: {}", npe.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Could not load HPO Textminign widget: {}", e.getMessage());
+            e.printStackTrace();
+        }
 
-        //main.addPhenotypeTerms(presentTerms);
     }
 
     /**

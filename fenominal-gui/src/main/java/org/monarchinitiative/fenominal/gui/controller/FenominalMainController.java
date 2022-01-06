@@ -472,26 +472,10 @@ public class FenominalMainController {
         try {
             LOGGER.info("Loading questionnare resource={}", questionnaireResource.getDescription());
             LOGGER.info("Loading questionnare URL={}", questionnaireResource.getURL());
-//            ClassLoader classLoader = FenominalMainController.class.getClassLoader();
-//            InputStream is = classLoader.getResourceAsStream("questionnaire.fxml");
-
-         //   FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(questionnaireResource.getURL()));
-//            URL url = getClass().getResource("/questionnaire.fxml");
-//            LOGGER.info("ULR={}",url);
-//            String f = url.getFile();
-//            LOGGER.info("As string {}", f);
-//            File file = new File(f);
-//            LOGGER.info("file exists: {}", file.exists());
-//            FXMLLoader loader = new FXMLLoader(url);
-          //  QuestionnaireController qcontoller = new QuestionnaireController(this.optionalResources.getOntology());
-           // loader.setController(qcontoller);
-            //VBox parent = loader.load();
             Ontology hpo = this.optionalResources.getOntology();
             PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
             QuestionnairePane qpane = new QuestionnairePane();
             qpane.setQuestionnaire(hpo, pq.getQuestions());
-
-            //qcontoller.setQuestions(pq.getQuestions());
             Scene scene = new Scene(qpane, 800, 600);
             Stage secondary = new Stage();
             secondary.setTitle("PhenoQuestionnaire");

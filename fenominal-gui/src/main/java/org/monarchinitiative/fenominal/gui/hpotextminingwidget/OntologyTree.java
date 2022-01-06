@@ -166,7 +166,7 @@ public class OntologyTree {
             ontologyTreeView.setCellFactory(new Callback<>() {
                 @Override
                 public TreeCell<Term> call(TreeView<Term> param) {
-                    return new TreeCell<Term>() {
+                    return new TreeCell<>() {
                         @Override
                         public void updateItem(Term term, boolean empty) {
                             super.updateItem(term, empty);
