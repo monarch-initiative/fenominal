@@ -36,7 +36,6 @@ Logger LOGGER = LoggerFactory.getLogger(QuestionnairePane.class);
             LOGGER.error("Could not load CSS for QuestionnairePane");
         }
         phenoqTable = new PhenoqTable(List.of()); // initialize here with empty list
-        root.getChildren().add(phenoqTable);
         HBox buttonBox = new HBox();
         buttonBox.setMinWidth(1000);
         buttonBox.setMaxHeight(20);
@@ -57,7 +56,7 @@ Logger LOGGER = LoggerFactory.getLogger(QuestionnairePane.class);
 
     }
 
-    public void setQuestionnaire(Ontology ontology, List<PhenoItem> phenoQuestions) {
+    public void setQuestionnaire(List<PhenoItem> phenoQuestions) {
         List<Qphenorow> phenoRows = phenoQuestions.stream().map(Qphenorow::new).collect(Collectors.toList());
         this.phenoqTable = new PhenoqTable(phenoRows);
         root.getChildren().add(this.phenoqTable);

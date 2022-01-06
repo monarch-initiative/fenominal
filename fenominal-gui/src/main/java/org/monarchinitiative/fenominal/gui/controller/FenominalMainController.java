@@ -73,7 +73,9 @@ public class FenominalMainController {
 
     @FXML
     public TableView metaDataTableView;
-    /** We hide the table until the first bits of data are entered. */
+    /**
+     * We hide the table until the first bits of data are entered.
+     */
     private final BooleanProperty tableHidden;
 
 
@@ -92,9 +94,6 @@ public class FenominalMainController {
 
     @Autowired
     ResourceLoader resourceLoader;
-
-
-
 
 
     @Autowired
@@ -129,9 +128,9 @@ public class FenominalMainController {
         valueColumn.setCellValueFactory(new MapValueFactory<>("value"));
         this.metaDataTableView.getColumns().add(itemColumn);
         this.metaDataTableView.getColumns().add(valueColumn);
-        this.metaDataTableView.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY );
-        itemColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );
-        valueColumn.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );
+        this.metaDataTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        itemColumn.setMaxWidth(1f * Integer.MAX_VALUE * 15);
+        valueColumn.setMaxWidth(1f * Integer.MAX_VALUE * 85);
         // Ordered map of data for the table
         Map<String, String> mp = new LinkedHashMap<>();
         String versionInfo = getHpoVersion();
@@ -146,10 +145,10 @@ public class FenominalMainController {
     private void populateTableWithData(Map<String, String> data) {
         this.metaDataTableView.getItems().clear();
         ObservableList<Map<String, Object>> itemMap = FXCollections.observableArrayList();
-        for (Map.Entry<String, String> e :  data.entrySet()) {
+        for (Map.Entry<String, String> e : data.entrySet()) {
             Map<String, Object> item = new HashMap<>();
             item.put("item", e.getKey());
-            item.put("value" , e.getValue());
+            item.put("value", e.getValue());
             itemMap.add(item);
         }
         this.metaDataTableView.getItems().addAll(itemMap);
@@ -158,7 +157,7 @@ public class FenominalMainController {
 
     @FXML
     private void parseButtonPressed(ActionEvent e) {
-        LOGGER.error("Parse button pressed" );
+        LOGGER.error("Parse button pressed");
 
         Ontology ontology = this.optionalResources.getOntology();
         if (ontology == null) {
@@ -182,44 +181,44 @@ public class FenominalMainController {
                 .withOntology(fenominalMiner.getHpo())
                 .withTermMiner(fenominalMiner)
                 .build();
-            // get reference to primary stage
-            Window w = this.parseButton.getScene().getWindow();
+        // get reference to primary stage
+        Window w = this.parseButton.getScene().getWindow();
 
-            // show the text mining analysis dialog in the new stage/window
-            Stage secondary = new Stage();
-            secondary.initOwner(w);
-            secondary.setTitle("HPO text mining analysis");
-            secondary.setScene(new Scene(hpoTextMining.getMainParent()));
-            secondary.showAndWait();
+        // show the text mining analysis dialog in the new stage/window
+        Stage secondary = new Stage();
+        secondary.initOwner(w);
+        secondary.setTitle("HPO text mining analysis");
+        secondary.setScene(new Scene(hpoTextMining.getMainParent()));
+        secondary.showAndWait();
 
-            Set<PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
-            List<FenominalTerm> approvedTerms = approved.stream()
-                    .map(FenominalTerm::fromMainPhenotypeTerm)
-                    .sorted()
-                    .collect(Collectors.toList());
-            switch (this.miningTaskType) {
-                case CASE_REPORT:
-                    model.addHpoFeatures(approvedTerms);
-                    break;
-                case COHORT_ONE_BY_ONE:
-                    model.addHpoFeatures(approvedTerms);
-                    int casesSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine case report %d", casesSoFar+1));
-                    break;
-                case PHENOPACKET:
-                    int encountersSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
-                    model.addHpoFeatures(approvedTerms, encounterDate);
-                    break;
-                case PHENOPACKET_BY_AGE:
-                    encountersSoFar = model.casesMined();
-                    this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar+1));
-                    model.addHpoFeatures(approvedTerms, isoAge);
-                    break;
-                default:
-                    PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
-                    return;
-            }
+        Set<PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
+        List<FenominalTerm> approvedTerms = approved.stream()
+                .map(FenominalTerm::fromMainPhenotypeTerm)
+                .sorted()
+                .collect(Collectors.toList());
+        switch (this.miningTaskType) {
+            case CASE_REPORT:
+                model.addHpoFeatures(approvedTerms);
+                break;
+            case COHORT_ONE_BY_ONE:
+                model.addHpoFeatures(approvedTerms);
+                int casesSoFar = model.casesMined();
+                this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
+                break;
+            case PHENOPACKET:
+                int encountersSoFar = model.casesMined();
+                this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+                model.addHpoFeatures(approvedTerms, encounterDate);
+                break;
+            case PHENOPACKET_BY_AGE:
+                encountersSoFar = model.casesMined();
+                this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+                model.addHpoFeatures(approvedTerms, isoAge);
+                break;
+            default:
+                PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
+                return;
+        }
 
         updateTable();
         // if we get here, we have data that could be output
@@ -231,7 +230,7 @@ public class FenominalMainController {
     private void updateTable() {
         Map<String, String> data = new LinkedHashMap<>();
         data.put("HPO", getHpoVersion());
-        data.put("patients (n)",  String.valueOf(model.casesMined()));
+        data.put("patients (n)", String.valueOf(model.casesMined()));
         data.put("terms curated (n)", String.valueOf(model.getTermCount()));
         populateTableWithData(data);
     }
@@ -244,7 +243,7 @@ public class FenominalMainController {
         if (hpo != null) {
             return hpo.getMetaInfo().getOrDefault("data-version", "n/a");
         } else {
-            return  "not initialized";
+            return "not initialized";
         }
     }
 
@@ -255,7 +254,7 @@ public class FenominalMainController {
         String isoAge = dataEntryPane.getIsoAge();
         String id = dataEntryPane.getCaseId();
         Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO",  getHpoVersion());
+        mp.put("HPO", getHpoVersion());
         mp.put("id", id);
         mp.put("age", isoAge);
         populateTableWithData(mp);
@@ -283,12 +282,12 @@ public class FenominalMainController {
         String diseasename = dataPane.getDiseaseName();
         try {
             TermId tid = TermId.of(omimId);
-        } catch (PhenolRuntimeException e ) {
+        } catch (PhenolRuntimeException e) {
             PopUps.showException("Error", "Could not parse OMIM id", "Please start again, OMIM id should be like OMIM:600123", e);
             return;
         }
         Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO",  getHpoVersion());
+        mp.put("HPO", getHpoVersion());
         mp.put("Curated so far", "0");
         mp.put("OMIM id", omimId);
         mp.put("Disease", diseasename);
@@ -306,7 +305,7 @@ public class FenominalMainController {
      */
     private void initPhenopacket() {
         Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO",  getHpoVersion());
+        mp.put("HPO", getHpoVersion());
         mp.put("Curated so far", "0");
         populateTableWithData(mp);
         this.parseButton.setDisable(false);
@@ -319,7 +318,7 @@ public class FenominalMainController {
 
     private void initPhenopacketWithManualAge() {
         Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO",  getHpoVersion());
+        mp.put("HPO", getHpoVersion());
         mp.put("Curated so far", "0");
         populateTableWithData(mp);
         this.parseButton.setDisable(false);
@@ -331,11 +330,11 @@ public class FenominalMainController {
 
     @FXML
     private void getStarted(ActionEvent e) {
-        var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report","Enter data about one individual, one time point", true);
-        var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket","Enter data about one individual, multiple time points", false);
-        var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort","Enter data about cohort", false);
-        var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)","Enter data about one individual, multiple ages", false);
-        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel","Cancel", false);
+        var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report", "Enter data about one individual, one time point", true);
+        var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
+        var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
+        var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter data about one individual, multiple ages", false);
+        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Cancel", false);
         CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
@@ -343,7 +342,7 @@ public class FenominalMainController {
         Optional<ButtonType> opt = dialog.showAndWait();
         if (opt.isPresent()) {
             ButtonType btype = opt.get();
-            switch(btype.getText()) {
+            switch (btype.getText()) {
                 case "Case report":
                     initCaseReport();
                     break;
@@ -464,41 +463,34 @@ public class FenominalMainController {
             PopUps.showInfoMessage("Error", "Cannot invoke questionnaire before initializing case");
             return;
         }
-        Resource questionnaireResource = resourceLoader.getResource("classpath:questionnaire.fxml");
-        if (! questionnaireResource.exists()) {
-            LOGGER.error("Could not find Questionnare FXML resource (fxml file not found)");
-            return;
-        }
-        try {
-            LOGGER.info("Loading questionnare resource={}", questionnaireResource.getDescription());
-            LOGGER.info("Loading questionnare URL={}", questionnaireResource.getURL());
-            Ontology hpo = this.optionalResources.getOntology();
-            PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
-            QuestionnairePane qpane = new QuestionnairePane();
-            qpane.setQuestionnaire(hpo, pq.getQuestions());
-            Scene scene = new Scene(qpane, 800, 600);
-            Stage secondary = new Stage();
-            secondary.setTitle("PhenoQuestionnaire");
-            secondary.setScene(scene);
-            secondary.showAndWait();
-            List<PhenoAnswer> answers = qpane.getAnswers();
-            // Transform the PhenoAnswer objects into FenominalTerm objects to add them to our model
-            List<FenominalTerm> fterms = new ArrayList<>();
-            for (PhenoAnswer answer : answers) {
-                if (answer.unknown()) {
-                    LOGGER.error("Unknown Phenoanswer passed to controller (should never happen");
-                    continue;
-                }
-                fterms.add(new FenominalTerm(answer.term(), answer.observed()));
-                LOGGER.info("Adding fterm {}", answer.term().getName());
-            }
-            model.addHpoFeatures(fterms, LocalDate.now());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            LOGGER.error("Could not load questionnaire {}", ex.getMessage());
-            PopUps.showException("Error", "Could not load Questionnaire", ex.getMessage(), ex);
-        }
 
+        Ontology hpo = this.optionalResources.getOntology();
+        PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
+        QuestionnairePane qpane = new QuestionnairePane();
+        qpane.setQuestionnaire(pq.getQuestions());
+        Scene scene = new Scene(qpane, 1200, 600);
+        Stage secondary = new Stage();
+        secondary.setTitle("PhenoQuestionnaire");
+        secondary.setScene(scene);
+        secondary.showAndWait();
+        List<PhenoAnswer> answers = qpane.getAnswers();
+        // Transform the PhenoAnswer objects into FenominalTerm objects to add them to our model
+        List<FenominalTerm> fterms = new ArrayList<>();
+        for (PhenoAnswer answer : answers) {
+            if (answer.unknown()) {
+                LOGGER.error("Unknown Phenoanswer passed to controller (should never happen");
+                continue;
+            }
+            fterms.add(new FenominalTerm(answer.term(), answer.observed()));
+            LOGGER.info("Adding fterm {}", answer.term().getName());
+        }
+        LOGGER.info("Adding HPO features from questionnaire, n={}", fterms.size());
+        model.addHpoFeatures(fterms, LocalDate.now());
+
+
+        updateTable();
+        this.previwButton.setDisable(false);
+        this.outputButton.setDisable(false);
     }
 
 

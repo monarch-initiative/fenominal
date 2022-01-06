@@ -141,6 +141,9 @@ public class Qphenorow {
 
 
     public PhenoAnswer phenoAnswer() {
+        if (ageRuleOpt().isPresent()) {
+            phenoItem.updateAge(new PhenoAge(getYears(), getMonths(), getDays()));
+        }
         return new DefaultPhenoAnswer(phenoItem);
     }
 

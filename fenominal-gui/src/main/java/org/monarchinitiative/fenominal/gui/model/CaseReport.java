@@ -20,7 +20,7 @@ public class CaseReport implements TextMiningResultsModel {
     }
 
     public List<FenominalTerm> getTerms() {
-        return terms;
+        return terms == null ? List.of() : terms;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CaseReport implements TextMiningResultsModel {
 
     @Override
     public int getTermCount() {
-        return this.terms.size();
+        return terms == null ? 0 : this.terms.size();
     }
 
     public String getCaseId() {
