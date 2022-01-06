@@ -271,7 +271,7 @@ public class Present {
         });
 
         //when yes terms are updated, re-create checkboxes for all terms
-        yesTerms.addListener(new SetChangeListener<PhenotypeTerm>() {
+        yesTerms.addListener(new SetChangeListener<>() {
             @Override
             public void onChanged(Change<? extends PhenotypeTerm> change) {
                 yesTermsVBox.getChildren().clear();
@@ -282,7 +282,7 @@ public class Present {
         });
 
         //same as above
-        notTerms.addListener(new SetChangeListener<PhenotypeTerm>() {
+        notTerms.addListener(new SetChangeListener<>() {
             @Override
             public void onChanged(Change<? extends PhenotypeTerm> change) {
                 notTermsVBox.getChildren().clear();
@@ -292,7 +292,7 @@ public class Present {
         });
 
         //The listener listens to checkbox list changes. It adds drag support to every checkbox.
-        ListChangeListener<Node> changeListener = new ListChangeListener<Node>() {
+        ListChangeListener<Node> changeListener = new ListChangeListener<>() {
             @Override
             public void onChanged(Change<? extends Node> c) {
                 while (c.next()) {

@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -40,13 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -92,17 +89,13 @@ public class FenominalMainController {
 
     private TextMiningResultsModel model = null;
 
-    @Value("classpath:/fxml/Main.fxml")
-    private Resource mainFxmResource;
-    @Value("classpath:/fxml/Configure.fxml")
-    private Resource configureFxmResource;
-    @Value("classpath:/fxml/OntologyTree.fxml")
-    private Resource ontologyTreeFxmResource;
-    @Value("classpath:/fxml/Present.fxml")
-    private Resource presentFxmResource;
 
     @Autowired
     ResourceLoader resourceLoader;
+
+
+
+
 
     @Autowired
     public FenominalMainController(OptionalResources optionalResources,
@@ -184,17 +177,11 @@ public class FenominalMainController {
             isoAge = agePickerDialog.showAgePickerDialog();
         }
         FenominalMinerApp fenominalMiner = new FenominalMinerApp(ontology);
-           try {
-            HpoTextMining hpoTextMining = HpoTextMining.builder()
-                    .withTermMiner(fenominalMiner)
-                    .withOntology(fenominalMiner.getHpo())
-                    .withExecutorService(executor)
-                    .withPhenotypeTerms(new HashSet<>()) // maybe you want to display some terms from the beginning
-                    .mainFxml(mainFxmResource)
-                    .configureFxml(configureFxmResource)
-                    .ontoTreeFxml(ontologyTreeFxmResource)
-                    .presentFxml(presentFxmResource)
-                    .build();
+        HpoTextMining hpoTextMining = HpoTextMining.builder()
+                .withExecutorService(executor)
+                .withOntology(fenominalMiner.getHpo())
+                .withTermMiner(fenominalMiner)
+                .build();
             // get reference to primary stage
             Window w = this.parseButton.getScene().getWindow();
 
@@ -233,10 +220,7 @@ public class FenominalMainController {
                     PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
                     return;
             }
-        } catch (IOException ex) {
-            PopUps.showException("Error", "HPO textmining error", ex.getMessage(), ex);
-            LOGGER.error("Error doing HPO Textming: {}", ex.getMessage());
-        }
+
         updateTable();
         // if we get here, we have data that could be output
         this.previwButton.setDisable(false);

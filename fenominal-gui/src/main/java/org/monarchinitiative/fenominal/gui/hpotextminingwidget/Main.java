@@ -8,8 +8,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
-import org.monarchinitiative.phenol.ontology.data.Term;
 
 import java.util.*;
 

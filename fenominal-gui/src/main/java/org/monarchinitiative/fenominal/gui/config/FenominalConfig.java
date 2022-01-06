@@ -1,11 +1,18 @@
 package org.monarchinitiative.fenominal.gui.config;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import org.monarchinitiative.fenominal.core.TermMiner;
+import org.monarchinitiative.fenominal.gui.FenominalMinerApp;
 import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +28,14 @@ public class FenominalConfig {
 
     public static final String CONFIG_FILE_BASENAME = "fenominal.properties";
 
-
+    @Value("classpath:/fxml/Main.fxml")
+    private Resource mainFxmResource;
+    @Value("classpath:/fxml/Configure.fxml")
+    private Resource configureFxmResource;
+    @Value("classpath:/fxml/OntologyTree.fxml")
+    private Resource ontologyTreeFxmResource;
+    @Value("classpath:/fxml/Present.fxml")
+    private Resource presentFxmResource;
     @Bean
     public OptionalResources optionalResources() {
         return new OptionalResources();
@@ -90,22 +104,55 @@ public class FenominalConfig {
         return appHomeDir;
     }
 
+    @Bean("configureAnchorPane")
+    public Node configureAnchorPane () {
+        Node node = null;
+        try {
+            node = FXMLLoader.load(configureFxmResource.getURL());
+            LOGGER.info("Created configure AnchorPane Node: {}", node.toString());
+        } catch (IOException e) {
+            LOGGER.error("Could not create anchor pane node: {}", e.getMessage());
+        }
+        return node;
+    }
 
-//    @Bean("appNameVersion")
-//    String appNameVersion(String appVersion, String appName) {
-//        return String.format("%s : %s", appName, appVersion);
-//    }
-//
-//
-//    @Bean("appVersion")
-//    String appVersion() {
-//        // this property is set in FenominalApplication#init()
-//        return System.getProperty(FenominalApplication.FENOMINAL_VERSION_PROP_KEY);
-//    }
-//
-//    @Bean("appName")
-//    String appName() {
-//        // this property is set in FenominalApplication#init()
-//        return System.getProperty(FenominalApplication.FENOMINAL_NAME_KEY);
-//    }
+    @Bean("present")
+    public Node presentVBox() {
+        Node node = null;
+        try {
+            node = FXMLLoader.load(presentFxmResource.getURL());
+            LOGGER.info("Created configure Present Node: {}", node.toString());
+        } catch (IOException e) {
+            LOGGER.error("Could not create Present node: {}", e.getMessage());
+        }
+        return node;
+    }
+
+    @Bean
+    public Parent mainParent () {
+        Parent parent = null;
+        try {
+            parent = FXMLLoader.load(presentFxmResource.getURL());
+        } catch (IOException e) {
+            LOGGER.error("Could not create parent node: {}", e.getMessage());
+        }
+        return parent;
+    }
+
+    @Bean("ontologyTreeResourceNode")
+    public Node ontologyTreeResourceNode() {
+        Node node = null;
+        try {
+            node = FXMLLoader.load(ontologyTreeFxmResource.getURL());
+        } catch (IOException e) {
+            LOGGER.error("Could not create ontologyTreeFxmResource node: {}", e.getMessage());
+        }
+        return node;
+    }
+
+    @Bean
+    TermMiner termMiner(OptionalResources optionalResources) {
+        return new FenominalMinerApp(optionalResources().getOntology());
+    }
+
 }

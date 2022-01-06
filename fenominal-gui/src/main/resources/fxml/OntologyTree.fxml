@@ -15,7 +15,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monarchinitiative.hpotextmining.gui.controller.OntologyTree">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+      xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.monarchinitiative.fenominal.gui.hpotextminingwidget.OntologyTree">
    <children>
       <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
          <content>

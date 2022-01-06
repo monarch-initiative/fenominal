@@ -1,10 +1,7 @@
 package org.monarchinitiative.fenominal.gui.model;
 
 import org.monarchinitiative.fenominal.gui.hpotextminingwidget.PhenotypeTerm;
-import org.monarchinitiative.hpotextmining.gui.controller.Main;
 import org.monarchinitiative.phenol.ontology.data.Term;
-
-import java.util.Objects;
 
 /**
  * Encapsulates one (text-mined) HPO term and a boolean to indicate

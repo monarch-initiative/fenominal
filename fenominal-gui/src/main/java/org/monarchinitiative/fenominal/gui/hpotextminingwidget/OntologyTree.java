@@ -163,7 +163,7 @@ public class OntologyTree {
             ontologyTreeView.getSelectionModel().selectedItemProperty()
                     .addListener((observable, oldValue, newValue) -> updateDescription(newValue));
 
-            ontologyTreeView.setCellFactory(new Callback<TreeView<Term>, TreeCell<Term>>() {
+            ontologyTreeView.setCellFactory(new Callback<>() {
                 @Override
                 public TreeCell<Term> call(TreeView<Term> param) {
                     return new TreeCell<Term>() {

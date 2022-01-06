@@ -1,7 +1,6 @@
 package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -21,8 +20,13 @@ public class SimpleMinedTerm implements MinedTerm  {
     private final boolean isPresent;
 
 
-
-    private SimpleMinedTerm(int begin, int end, TermId tid, boolean isPresent) {
+    SimpleMinedTerm(int begin, int end, String tid, boolean isPresent) {
+        this.begin = begin;
+        this.end = end;
+        this.termid = tid;
+        this.isPresent = isPresent;
+    }
+    SimpleMinedTerm(int begin, int end, TermId tid, boolean isPresent) {
         this.begin = begin;
         this.end = end;
         this.termid = tid.getValue();

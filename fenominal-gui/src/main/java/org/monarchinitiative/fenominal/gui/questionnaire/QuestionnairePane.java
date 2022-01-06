@@ -6,7 +6,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.DefaultPhenoAnswer;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoItem;
 import org.monarchinitiative.fenominal.gui.questionnaire.qtable.PhenoqTable;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;

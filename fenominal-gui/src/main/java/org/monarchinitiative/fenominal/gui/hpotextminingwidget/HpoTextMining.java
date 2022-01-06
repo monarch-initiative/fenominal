@@ -1,25 +1,20 @@
 package org.monarchinitiative.fenominal.gui.hpotextminingwidget;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.util.Callback;
-import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
-import org.monarchinitiative.hpotextmining.core.miners.TermMiner;
-import org.monarchinitiative.hpotextmining.core.miners.TermMiners;
+import org.monarchinitiative.fenominal.core.MinedTerm;
+import org.monarchinitiative.fenominal.core.TermMiner;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -39,18 +34,24 @@ public class HpoTextMining {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HpoTextMining.class);
 
+    @Autowired
+    Parent mainParent;
 
-    private Resource mainFxmResource;
-    private Resource configureFxmResource;
-    private Resource ontologyTreeFxmResource;
-    private Resource presentFxmResource;
+    @Autowired
+    Node configureAnchorPane;
+
+    @Autowired
+    Node presentVBox;
+
+    @Autowired
+    Node ontologyTreeResourceNode;
 
     // ---------------------------------- CONTROLLERS and PARENTS ------------------------------------------------------
 
     /**
      * Main parent, contains all GUI elements of the widget.
      */
-    private final Parent mainParent;
+    //private final Parent mainParent;
 
     /**
      * Main controller, part of the API.
@@ -62,14 +63,14 @@ public class HpoTextMining {
      */
     private Configure configure;
 
-    private Node configureAnchorPane;
+
 
     /**
      * Results of text mining is presented here.
      */
     private Present present;
 
-    private Node presentVBox;
+
 
     /**
      * Ontology is displayed in this controller as a tree.
@@ -80,23 +81,13 @@ public class HpoTextMining {
      * @param ontology        {@link Ontology} to use for text mining
      * @param miner           {@link TermMiner} to use for HPO text mining
      * @param executorService {@link ExecutorService} to use for asynchronous tasks
-     * @param presentTerms    {@link Set} of {@link PhenotypeTerm}s
-     *                        to display in the widget from the beginning
+
      * @throws IOException if the building process fails
      */
-    private HpoTextMining(Ontology ontology,
+    public HpoTextMining(Ontology ontology,
                           TermMiner miner,
-                          ExecutorService executorService,
-                          Set<PhenotypeTerm> presentTerms,
-                           Resource mainFxmResource,
-                                   Resource configureFxmResource,
-                                   Resource ontologyTreeFxmResource,
-                                   Resource presentFxmResource) throws IOException {
+                          ExecutorService executorService) {
         main = new Main();
-        this.mainFxmResource = mainFxmResource;
-        this.configureFxmResource = configureFxmResource;
-        this.ontologyTreeFxmResource = ontologyTreeFxmResource;
-        this.presentFxmResource = presentFxmResource;
         // Set up "Configure" part of the screen
         Consumer<Main.Signal> configureSignal = signal -> {
             switch (signal) {
@@ -162,35 +153,35 @@ public class HpoTextMining {
             fxmlLoader.setControllerFactory(applicationContext::getBean);
 
  */
-        FXMLLoader mainLoader = new FXMLLoader(this.mainFxmResource.getURL());
-       // mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-        //mainLoader.load(mainFxmlResource);
-        mainParent = mainLoader.load();
-        mainLoader.setControllerFactory(controllerFactory);
+//        FXMLLoader mainLoader = new FXMLLoader(this.mainFxmResource.getURL());
+//       // mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+//        //mainLoader.load(mainFxmlResource);
+//        mainParent = mainLoader.load();
+//        mainLoader.setControllerFactory(controllerFactory);
 
-        FXMLLoader configureLoader = new FXMLLoader(configureFxmResource.getURL());
-       // configureLoader.setClassLoader(HpoTextMining.class.getClassLoader());
-       // configureLoader.load(configureResource);
-
-        //configureAnchorPane = configureLoader.load(configureResource);
-        configureLoader.setControllerFactory(controllerFactory);
+//        FXMLLoader configureLoader = new FXMLLoader(configureFxmResource.getURL());
+//       // configureLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+//       // configureLoader.load(configureResource);
+//
+//        configureAnchorPane = configureLoader.load(configureResource);
+//        configureLoader.setControllerFactory(controllerFactory);
         main.setTextMiningContent(configureAnchorPane);
 
-        FXMLLoader presentLoader = new FXMLLoader(presentFxmResource.getURL());
+       // FXMLLoader presentLoader = new FXMLLoader(presentFxmResource.getURL());
         //presentLoader.setClassLoader(HpoTextMining.class.getClassLoader());
         //presentLoader.load(presentResource);
 
-        presentVBox = presentLoader.load();
-        presentLoader.setControllerFactory(controllerFactory);
+//        presentVBox = presentLoader.load();
+//        presentLoader.setControllerFactory(controllerFactory);
 
-        FXMLLoader ontologyTreeLoader = new FXMLLoader(ontologyTreeFxmResource.getURL());
-       // ontologyTreeLoader.setClassLoader(HpoTextMining.class.getClassLoader());
+//        FXMLLoader ontologyTreeLoader = new FXMLLoader(ontologyTreeFxmResource.getURL());
+//        ontologyTreeLoader.setClassLoader(HpoTextMining.class.getClassLoader());
         //ontologyTreeLoader.load(ontologyTreeResource);
 
-        main.setLeftStackPaneContent(ontologyTreeLoader.load());
-        ontologyTreeLoader.setControllerFactory(controllerFactory);
+        main.setLeftStackPaneContent(ontologyTreeResourceNode);
+       // ontologyTreeLoader.setControllerFactory(controllerFactory);
 
-        main.addPhenotypeTerms(presentTerms);
+        //main.addPhenotypeTerms(presentTerms);
     }
 
     /**
@@ -249,35 +240,9 @@ public class HpoTextMining {
 
         private ExecutorService executorService;
 
-        private final Set<PhenotypeTerm> terms = new HashSet<>();
-
-        private Resource mainFxmResource = null;
-        private Resource configureFxmResource = null;
-        private Resource ontologyTreeFxmResource = null;
-        private Resource presentFxmResource = null;
 
         private HpoTextMiningBuilder() {
             // no-op
-        }
-
-        public HpoTextMiningBuilder mainFxml(Resource r) {
-            this.mainFxmResource = r;
-            return this;
-        }
-
-        public HpoTextMiningBuilder configureFxml(Resource r) {
-            this.configureFxmResource = r;
-            return this;
-        }
-
-        public HpoTextMiningBuilder ontoTreeFxml(Resource r) {
-            this.ontologyTreeFxmResource = r;
-            return this;
-        }
-
-        public HpoTextMiningBuilder presentFxml(Resource r) {
-            this.presentFxmResource = r;
-            return this;
         }
 
 
@@ -290,25 +255,6 @@ public class HpoTextMining {
             return this;
         }
 
-        /**
-         * @param biolarkServerUrl {@link URL} pointing to Biolark server instance where the text mining should be
-         *                         performed. SciGraph URL has precedence
-         * @return this {@link HpoTextMiningBuilder} instance
-         */
-        public HpoTextMiningBuilder withBiolarkUrl(URL biolarkServerUrl) {
-            this.biolarkServerUrl = biolarkServerUrl;
-            return this;
-        }
-
-        /**
-         * @param sciGraphServerUrl {@link URL} pointing to SciGraph server instance where the text mining should be
-         *                          performed. SciGraph URL has precedence over Biolark URL
-         * @return this {@link HpoTextMiningBuilder} instance
-         */
-        public HpoTextMiningBuilder withSciGraphUrl(URL sciGraphServerUrl) {
-            this.sciGraphServerUrl = sciGraphServerUrl;
-            return this;
-        }
 
         /**
          * @param miner {@link TermMiner} to use for the text mining analysis. The miner has precedence over any URL
@@ -334,29 +280,19 @@ public class HpoTextMining {
          * @return this {@link HpoTextMiningBuilder} instance
          */
         public HpoTextMiningBuilder withPhenotypeTerms(Set<PhenotypeTerm> terms) {
-            this.terms.addAll(terms);
-            return this;
+            throw new UnsupportedOperationException("Cannot add terms, (TODO)");
         }
 
         /**
          * @return a new {@link HpoTextMining} instance
          * @throws IOException in case if the building fails
          */
-        public HpoTextMining build() throws IOException {
+        public HpoTextMining build() {
             TermMiner usedMiner;
             if (this.miner != null) {
                 usedMiner = miner;
             } else {
-                if (sciGraphServerUrl != null) {
-                    LOGGER.info("Using '{}' as url for text mining server", sciGraphServerUrl);
-                    usedMiner = TermMiners.scigraph(sciGraphServerUrl);
-                } else {
-                    if (biolarkServerUrl != null) {
-                        usedMiner = TermMiners.biolark(biolarkServerUrl);
-                    } else {
-                        throw new NullPointerException("Neither SciGraph not Biolark URL was specified");
-                    }
-                }
+                throw new PhenolRuntimeException("Could not get miner for HpoTextMining");
             }
 
             Objects.requireNonNull(ontology, "Ontology must not be null");
@@ -365,8 +301,7 @@ public class HpoTextMining {
                 executorService = Executors.newSingleThreadExecutor();
             }
 
-            return new HpoTextMining(ontology, usedMiner, executorService, terms,
-                mainFxmResource, configureFxmResource,ontologyTreeFxmResource, presentFxmResource);
+            return new HpoTextMining(ontology, usedMiner, executorService);
         }
     }
 }

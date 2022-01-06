@@ -64,12 +64,9 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.26</version>
+            <version>1.29</version>
         </dependency>
-        <dependency>
-            <groupId>org.monarchinitiative.hpotextmining</groupId>
-            <artifactId>hpotextmining-gui</artifactId>
-        </dependency>
+
     </dependencies>
 
 </project>
