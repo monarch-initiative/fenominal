@@ -416,6 +416,7 @@ public class FenominalMainController {
     @FXML
     public void previewOutput(ActionEvent e) {
         PhenoOutputter phenoOutputter;
+        LOGGER.info("preview output");
         Writer writer = new StringWriter();
         phenoOutputter = switch (this.miningTaskType) {
             case CASE_REPORT -> new CaseReportTsvOutputter((CaseReport) this.model);
@@ -426,6 +427,7 @@ public class FenominalMainController {
         };
         try {
             phenoOutputter.output(writer);
+            writer.close();
         } catch (IOException ioe) {
             System.err.println(ioe.getMessage());
         }
