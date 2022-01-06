@@ -1,0 +1,9 @@
+question.type	hp.id	hp.label	threshold.year	threshold.month	threshold.day	older.younger	question.text
+age.threshold	Poor head control	HP:0002421	0	3	0	older	Able to lift head almost 45 degrees
+age.threshold	Poor head control	HP:0002421	0	5	0	older	Raises head 90 degrees when placed on stomach
+age.threshold	Delayed ability to roll over	HP:0032989	0	6		older	Able to roll from front to back
+age.threshold	Delayed ability to sit	HP:0025336	0	9		older	Able to sit steadily
+age.threshold	Delayed ability to crawl	HP:0033128	0	9		older	Is able to crawl
+age.threshold	Delayed ability to stand	HP:0025335	1	3		older	Stands without holding on to anything
+age.threshold	Delayed ability to walk with support	HP:0033257	1	3		older	"Walks with support (e.g., holding one hand)"
+age.threshold	Delayed ability to walk	HP:0031936	1	6		older	Walks without support

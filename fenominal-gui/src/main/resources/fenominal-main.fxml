@@ -15,23 +15,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.monarchinitiative.fenominal.gui.FenominalMainController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.monarchinitiative.fenominal.gui.controller.FenominalMainController">
     <BorderPane prefHeight="600.0" prefWidth="1000">
         <top>
             <HBox prefHeight="25.0" prefWidth="1000" BorderPane.alignment="CENTER">
                 <MenuBar>
                     <Menu mnemonicParsing="false" text="File">
-                        <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close"/>
                     </Menu>
                     <Menu mnemonicParsing="false" text="Edit">
-                        <MenuItem mnemonicParsing="false" onAction="#importHpJson" text="Download hp.json" />
-                  <MenuItem mnemonicParsing="false" onAction="#setBiocuratorMenuItemClicked" text="Set biocurator ID" />
+                        <MenuItem mnemonicParsing="false" onAction="#importHpJson" text="Download hp.json"/>
+                        <MenuItem mnemonicParsing="false" onAction="#setBiocuratorMenuItemClicked"
+                                  text="Set biocurator ID"/>
                     </Menu>
                 </MenuBar>
-                <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES" />
+                <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES"/>
                 <MenuBar HBox.hgrow="NEVER">
                     <Menu mnemonicParsing="false" text="Help">
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="About"/>
                     </Menu>
                 </MenuBar>
             </HBox>
@@ -41,41 +43,47 @@
                 <HBox prefHeight="53.0" prefWidth="982.0">
                     <Label text="FENOMINAL">
                         <font>
-                            <Font name="System Bold" size="23.0" />
+                            <Font name="System Bold" size="23.0"/>
                         </font>
                         <HBox.margin>
-                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                         </HBox.margin>
                     </Label>
                 </HBox>
                 <HBox prefHeight="400.0" prefWidth="400.0">
                     <VBox prefHeight="200.0" prefWidth="400.0">
-                        <Button fx:id="setupButton" mnemonicParsing="false" onAction="#getStarted" prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Get started">
+                        <Button fx:id="setupButton" mnemonicParsing="false" onAction="#getStarted" prefWidth="300"
+                                styleClass="bevel-grey" stylesheets="@fenominal.css" text="Get started">
                             <VBox.margin>
-                                <Insets left="20.0" />
+                                <Insets left="20.0"/>
                             </VBox.margin>
                             <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                            </VBox.margin>
-                        </Button>
-                        <Button fx:id="parseButton" mnemonicParsing="false" onAction="#parseButtonPressed" prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Text mining">
-                            <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                             </VBox.margin>
                         </Button>
-                  <Button mnemonicParsing="false" onAction="#questionnaire" prefWidth="300.0" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Questionnaire">
-                     <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </VBox.margin>
-                  </Button>
-                        <Button fx:id="previwButton" mnemonicParsing="false" onAction="#previewOutput" prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Preview output">
+                        <Button fx:id="parseButton" mnemonicParsing="false" onAction="#parseButtonPressed"
+                                prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Text mining">
                             <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="outputButton" mnemonicParsing="false" onAction="#outputButtonPressed" prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Output">
+                        <Button fx:id="questionnaireButtn" mnemonicParsing="false" onAction="#questionnaire"
+                                prefWidth="300.0" styleClass="bevel-grey" stylesheets="@fenominal.css"
+                                text="Questionnaire">
                             <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="previwButton" mnemonicParsing="false" onAction="#previewOutput" prefWidth="300"
+                                styleClass="bevel-grey" stylesheets="@fenominal.css" text="Preview output">
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="outputButton" mnemonicParsing="false" onAction="#outputButtonPressed"
+                                prefWidth="300" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Output">
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                             </VBox.margin>
                         </Button>
                     </VBox>
@@ -90,14 +98,14 @@
                         </TableView>
                     </VBox>
                 </HBox>
-                <Separator prefWidth="400.0" />
+                <Separator prefWidth="400.0"/>
                 <HBox prefHeight="34.0" prefWidth="1000">
                     <Label fx:id="hpoReadyLabel" text="HPO needs to be downloaded (See edit menu)" textFill="#ce0d0d">
                         <HBox.margin>
-                            <Insets bottom="20.0" left="20.0" />
+                            <Insets bottom="20.0" left="20.0"/>
                         </HBox.margin>
                         <font>
-                            <Font name="System Bold" size="18.0" />
+                            <Font name="System Bold" size="18.0"/>
                         </font>
                     </Label>
                 </HBox>

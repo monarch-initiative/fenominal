@@ -12,73 +12,48 @@ import javafx.util.StringConverter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static javafx.stage.StageStyle.DECORATED;
 
-public class DatePickerDialog {
+public class BirthDatePickerDialog {
 
     private final String message;
 
     private final Browser browser;
 
     private LocalDate birthDate =null;
-    private final List<LocalDate> encounterDates;
 
-    private final boolean setBirthDate;
+    private String id = "";
 
     private final static String buttonStyle =
             " -fx-background-color:" +
-            "        linear-gradient(#f2f2f2, #d6d6d6)," +
-            "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
-            "        linear-gradient(#dddddd 0%, #f6f6f6 50%);" +
-            "    -fx-background-radius: 8,7,6;" +
-            "    -fx-background-insets: 0,1,2;" +
-            "    -fx-text-fill: black;\n" +
-            "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
+                    "        linear-gradient(#f2f2f2, #d6d6d6)," +
+                    "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
+                    "        linear-gradient(#dddddd 0%, #f6f6f6 50%);" +
+                    "    -fx-background-radius: 8,7,6;" +
+                    "    -fx-background-insets: 0,1,2;" +
+                    "    -fx-text-fill: black;\n" +
+                    "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
 
-    public DatePickerDialog(String msg) {
+    public BirthDatePickerDialog(String msg) {
         message = msg;
         browser = new Browser(message);
-        setBirthDate = true;
-        encounterDates = new ArrayList<>();
-    }
-
-    public DatePickerDialog(LocalDate bDate, List<LocalDate> previousEncounters) {
-        message = getHtmlWithDates(bDate, previousEncounters);
-        browser = new Browser(message);
-        setBirthDate = false;
-        birthDate = bDate;
-        encounterDates = new ArrayList<>(previousEncounters);
     }
 
 
-    private void setDate(LocalDate d) {
-        if (setBirthDate) {
-            this.birthDate = d;
-        } else {
-            encounterDates.add(d);
-        }
+
+    private void setBirthDate(LocalDate d) {
+       this.birthDate = d;
     }
 
 
-    public String getHtmlWithDates(LocalDate birthdate, List<LocalDate> encounterDates) {
+    public String getHtmlWithDates(LocalDate birthdate) {
         StringBuilder builder = new StringBuilder();
         builder.append("<html><body><h3>Fenomimal Phenopacket generator</h3>");
         builder.append("<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
                 " It does not store or output the birthdate.</p>");
         builder.append("<p>Birthdate: ").append(birthdate.toString()).append("</p>");
-        if (encounterDates.isEmpty()) {
-            builder.append("<p>You will see encounter dates and ages as the encounters are entered.</p>");
-        } else {
-            builder.append("<ol>");
-            for (LocalDate encounter: encounterDates) {
-                builder.append("<li>").append(encounter.toString()).append("</li>");
-            }
-            builder.append("</ol>");
-        }
         builder.append("</body></html>");
         return builder.toString();
     }
@@ -92,13 +67,13 @@ public class DatePickerDialog {
         AtomicReference<LocalDate> localDate = new AtomicReference<>();
         datePicker.setOnAction((actionEvent) -> {
             LocalDate date = datePicker.getValue();
-            setDate(date);
+            setBirthDate(date);
             localDate.set(date);
-            String html = getHtmlWithDates(this.birthDate, this.encounterDates);
+            String html = getHtmlWithDates(this.birthDate);
             this.browser.setContent(html);
             actionEvent.consume();
         });
-        FxDatePickerConverter converter = new FxDatePickerConverter(pattern);
+        DatePickerDialog.FxDatePickerConverter converter = new DatePickerDialog.FxDatePickerConverter(pattern);
         datePicker.setConverter(converter);
         datePicker.setPromptText(pattern.toLowerCase());
 
@@ -117,29 +92,32 @@ public class DatePickerDialog {
             }
         };
         datePicker.setDayCellFactory(dayCellFactory);
-        Label selection = new Label("Select date:");
+        Label selection = new Label("Select birthdate:  ");
         HBox pickerBox = new HBox(selection, datePicker);
 
         Button closeButton = new Button("Done");
         closeButton.setOnAction((actionEvent -> ((Stage)(((Button)actionEvent.getSource()).getScene().getWindow())).close()));
         Button clearLatestButton = new Button("Clear last date");
         clearLatestButton.setOnAction((actionEvent -> {
-            int i = this.encounterDates.size() - 1;
-            if (i>0) {
-                this.encounterDates.remove(i);
-            }
-            String html = getHtmlWithDates(this.birthDate, this.encounterDates);
+            String html = getHtmlWithDates(this.birthDate);
             this.browser.setContent(html);
         }));
         closeButton.setStyle(buttonStyle);
         clearLatestButton.setStyle(buttonStyle);
         final Separator separator = new Separator();
         separator.setMaxWidth(40);
+        HBox idBox = new HBox();
+        Label idLabel = new Label("Enter patient id:  ");
+        TextField idField = new TextField();
+        idBox.getChildren().addAll(idLabel, separator, idField);
+
         HBox buttonBox = new HBox();
         buttonBox.getChildren().addAll(clearLatestButton, separator, closeButton);
 
+
+
         VBox root = new VBox();
-        root.getChildren().addAll(pickerBox, browser, buttonBox);
+        root.getChildren().addAll(pickerBox, browser,idBox,  buttonBox);
         root.setStyle("-fx-padding: 10;" +
                 "-fx-border-style: solid inside;" +
                 "-fx-border-width: 2;" +
@@ -150,9 +128,13 @@ public class DatePickerDialog {
         Stage stage = new Stage(DECORATED);
         stage.setScene(scene);
         stage.showAndWait();
+        this.id = idField.getText();
         return localDate.get();
     }
 
+    public String getId() {
+        return id;
+    }
 
     static class FxDatePickerConverter extends StringConverter<LocalDate> {
         // Default Date Pattern
@@ -191,19 +173,17 @@ public class DatePickerDialog {
 
 
     private final static String setupHtml ="<html><body><h3>Fenomimal Phenopacket generator</h3>" +
-        "<p><i>Fenominal</i> allows users to indicate the age of patients by having users indicate the birthdate as" +
+            "<p><i>Fenominal</i> allows users to indicate the age of patients by having users indicate the birthdate as" +
             " well as the dates of the medical encounters that are being recorded.<p>" +
             "<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
             " It does not store or output the birthdate.</p>" +
-        "</body></html>";
+            "</body></html>";
 
-    public static DatePickerDialog getBirthDate() {
-        return new DatePickerDialog(setupHtml);
+    public static BirthDatePickerDialog getBirthDate() {
+        return new BirthDatePickerDialog(setupHtml);
     }
 
 
-    public static DatePickerDialog getEncounterDate(LocalDate birthdate, List<LocalDate> encounterDates) {
-        return new DatePickerDialog(birthdate, encounterDates);
-    }
+
 
 }

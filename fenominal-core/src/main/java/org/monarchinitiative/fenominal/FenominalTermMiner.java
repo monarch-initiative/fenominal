@@ -1,15 +1,15 @@
 package org.monarchinitiative.fenominal;
 
+import org.monarchinitiative.fenominal.core.MinedTerm;
 import org.monarchinitiative.fenominal.core.SimpleMinedTerm;
+import org.monarchinitiative.fenominal.core.TermMiner;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
+
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.monarchinitiative.hpotextmining.core.miners.MinedTerm;
-import org.monarchinitiative.hpotextmining.core.miners.TermMiner;
 
 import java.util.Collection;
 import java.util.List;

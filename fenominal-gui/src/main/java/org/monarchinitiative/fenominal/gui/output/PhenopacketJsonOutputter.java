@@ -22,14 +22,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-public class PhenopacketJsonOutputter implements PhenoOutputter{
+public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
+        implements PhenoOutputter{
     private static final Logger LOGGER = LoggerFactory.getLogger(PhenopacketJsonOutputter.class);
-
-    private final PhenopacketModel phenopacketModel;
-
-    public PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) {
-        this.phenopacketModel = phenopacketModel;
-    }
 
     @Override
     public void output(Writer writer) throws IOException {
