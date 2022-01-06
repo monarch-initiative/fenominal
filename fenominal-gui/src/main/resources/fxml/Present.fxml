@@ -11,46 +11,42 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="presentVBox" minHeight="400.0" minWidth="800.0"
+<VBox xmlns:fx="http://javafx.com/fxml/1" minHeight="400.0" minWidth="800.0"
       xmlns="http://javafx.com/javafx/8.0.172-ea"
       fx:controller="org.monarchinitiative.fenominal.gui.hpotextminingwidget.Present">
-   <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS">
-      <items>
-         <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0"/>
-         <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="220.0">
+    <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS">
+        <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0"/>
+        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="220.0">
             <SplitPane dividerPositions="0.66" minWidth="195.0" orientation="VERTICAL">
-               <items>
-                  <VBox>
-                     <Label text="HPO terms:">
+                <VBox>
+                    <Label text="HPO terms:">
                         <font>
-                           <Font name="System Bold" size="16.0"/>
+                            <Font name="System Bold" size="16.0"/>
                         </font>
                         <VBox.margin>
-                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </VBox.margin>
-                     </Label>
-                     <ScrollPane fx:id="yesTermScrollPane" VBox.vgrow="SOMETIMES">
+                    </Label>
+                    <ScrollPane fx:id="yesTermScrollPane" VBox.vgrow="SOMETIMES">
                         <VBox fx:id="yesTermsVBox" minHeight="340.0"/>
-                     </ScrollPane>
-                  </VBox>
-                  <VBox>
-                     <Label text="&quot;NOT&quot; HPO terms:">
+                    </ScrollPane>
+                </VBox>
+                <VBox>
+                    <Label text="&quot;NOT&quot; HPO terms:">
                         <font>
-                           <Font name="System Bold" size="16.0"/>
+                            <Font name="System Bold" size="16.0"/>
                         </font>
                         <VBox.margin>
-                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </VBox.margin>
-                     </Label>
-                     <ScrollPane fx:id="notTermScrollPane" VBox.vgrow="SOMETIMES">
+                    </Label>
+                    <ScrollPane fx:id="notTermScrollPane" VBox.vgrow="SOMETIMES">
                         <VBox fx:id="notTermsVBox" minHeight="160.0"/>
-                     </ScrollPane>
-                  </VBox>
-               </items>
+                    </ScrollPane>
+                </VBox>
             </SplitPane>
-         </ScrollPane>
-      </items>
-   </SplitPane>
+        </ScrollPane>
+    </SplitPane>
    <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
       <Button fx:id="addTermsButton" alignment="CENTER" minHeight="30.0" minWidth="120.0" mnemonicParsing="false"
               onAction="#addTermsButtonAction" text="Add selected terms" HBox.hgrow="NEVER">

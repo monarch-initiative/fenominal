@@ -10,7 +10,6 @@ import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoItem;
 import org.monarchinitiative.fenominal.gui.questionnaire.qtable.PhenoqTable;
 import org.monarchinitiative.fenominal.gui.questionnaire.qtable.Qphenorow;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

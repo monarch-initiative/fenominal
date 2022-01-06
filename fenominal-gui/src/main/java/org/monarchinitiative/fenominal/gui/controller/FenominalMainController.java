@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
@@ -311,9 +310,10 @@ public class FenominalMainController {
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
-        DatePickerDialog dialog = DatePickerDialog.getBirthDate();
+        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
         LocalDate bdate = dialog.showDatePickerDialog();
-        this.model = new PhenopacketModel(bdate);
+        String id = dialog.getId();
+        this.model = new PhenopacketModel(bdate, id);
     }
 
     private void initPhenopacketWithManualAge() {
@@ -470,7 +470,8 @@ public class FenominalMainController {
         PhenoQuestionnaire pq = PhenoQuestionnaire.development(hpo);
         QuestionnairePane qpane = new QuestionnairePane();
         qpane.setQuestionnaire(pq.getQuestions());
-        Scene scene = new Scene(qpane, 1200, 600);
+        int height = pq.getQuestions().size() * 80 + 100;
+        Scene scene = new Scene(qpane, 1200, height);
         Stage secondary = new Stage();
         secondary.setTitle("PhenoQuestionnaire");
         secondary.setScene(scene);
