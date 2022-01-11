@@ -227,11 +227,15 @@ public class FenominalMainController {
     }
 
     private void updateTable() {
-        Map<String, String> data = new LinkedHashMap<>();
-        data.put("HPO", getHpoVersion());
-        data.put("patients (n)", String.valueOf(model.casesMined()));
-        data.put("terms curated (n)", String.valueOf(model.getTermCount()));
-        populateTableWithData(data);
+        if (this.model == null) {
+            LOGGER.error("Attempt to update table while model was null");
+            return;
+        }
+        if (model.casesMined() > 0) {
+            model.setModelDataItem("patients (n)", String.valueOf(model.casesMined()));
+        }
+        model.setModelDataItem("terms curated (n)", String.valueOf(model.getTermCount()));
+        populateTableWithData(model.getModelData());
     }
 
     /**
@@ -252,15 +256,14 @@ public class FenominalMainController {
         dataEntryPane.showAgePickerDialog();
         String isoAge = dataEntryPane.getIsoAge();
         String id = dataEntryPane.getCaseId();
-        Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO", getHpoVersion());
-        mp.put("id", id);
-        mp.put("age", isoAge);
-        populateTableWithData(mp);
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine case report");
         this.miningTaskType = CASE_REPORT;
         this.model = new CaseReport(id, isoAge);
+        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem("id", id);
+        model.setModelDataItem("age", isoAge);
+        populateTableWithData(model.getModelData());
     }
 
 
@@ -285,17 +288,18 @@ public class FenominalMainController {
             PopUps.showException("Error", "Could not parse OMIM id", "Please start again, OMIM id should be like OMIM:600123", e);
             return;
         }
-        Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO", getHpoVersion());
-        mp.put("Curated so far", "0");
-        mp.put("OMIM id", omimId);
-        mp.put("Disease", diseasename);
-        mp.put("PMID", pmid);
-        populateTableWithData(mp);
+
+
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine case report 1");
         this.miningTaskType = COHORT_ONE_BY_ONE;
         this.model = new OneByOneCohort(pmid, omimId, diseasename);
+        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem("Curated so far", "0");
+        model.setModelDataItem("OMIM id", omimId);
+        model.setModelDataItem("Disease", diseasename);
+        model.setModelDataItem("PMID", pmid);
+        populateTableWithData(model.getModelData());
     }
 
     /**
@@ -303,10 +307,6 @@ public class FenominalMainController {
      * GA4GH phenopacket with one or multiple time points
      */
     private void initPhenopacket() {
-        Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO", getHpoVersion());
-        mp.put("Curated so far", "0");
-        populateTableWithData(mp);
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
@@ -314,17 +314,19 @@ public class FenominalMainController {
         LocalDate bdate = dialog.showDatePickerDialog();
         String id = dialog.getId();
         this.model = new PhenopacketModel(bdate, id);
+        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem("Patient ID", id);
+        populateTableWithData(model.getModelData());
     }
 
     private void initPhenopacketWithManualAge() {
-        Map<String, String> mp = new LinkedHashMap<>();
-        mp.put("HPO", getHpoVersion());
-        mp.put("Curated so far", "0");
-        populateTableWithData(mp);
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine encounter 1");
         this.miningTaskType = PHENOPACKET_BY_AGE;
         this.model = new PhenopacketByAgeModel();
+        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem("Curated so far", "0");
+        populateTableWithData(model.getModelData());
     }
 
 

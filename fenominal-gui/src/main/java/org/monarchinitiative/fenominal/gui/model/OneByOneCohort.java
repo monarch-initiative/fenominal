@@ -6,6 +6,8 @@ import java.util.*;
 
 public class OneByOneCohort implements TextMiningResultsModel {
 
+    private final Map<String, String> data;
+
     private final List<CaseReport> cases;
     private final Map<TermId, String> labelMap;
 
@@ -20,6 +22,7 @@ public class OneByOneCohort implements TextMiningResultsModel {
         this.pmid = pmid;
         this.omimId = omimId;
         this.diseasename = diseasename;
+        data = new HashMap<>();
     }
 
     public void addCase(CaseReport caseReport) {
@@ -60,6 +63,16 @@ public class OneByOneCohort implements TextMiningResultsModel {
             }
         }
         return terms.size();
+    }
+
+    @Override
+    public Map<String, String> getModelData() {
+        return data;
+    }
+
+    @Override
+    public void setModelDataItem(String k, String v) {
+        data.put(k, v);
     }
 
     @Override

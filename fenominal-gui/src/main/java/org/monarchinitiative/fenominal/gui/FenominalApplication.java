@@ -33,7 +33,7 @@ public class FenominalApplication extends Application {
     public void init() {
         applicationContext = new SpringApplicationBuilder(StockUiApplication.class).run();
         // export app's version into System properties
-        try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
+        try (InputStream is = FenominalApplication.class.getResourceAsStream("/application.properties")) {
             Properties properties = new Properties();
             properties.load(is);
             String version = properties.getProperty(FENOMINAL_VERSION_PROP_KEY, "unknown version");

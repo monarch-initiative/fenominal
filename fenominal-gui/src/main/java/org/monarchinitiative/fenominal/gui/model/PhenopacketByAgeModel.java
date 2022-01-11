@@ -2,7 +2,9 @@ package org.monarchinitiative.fenominal.gui.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PhenopacketByAgeModel  implements TextMiningResultsModel {
@@ -12,9 +14,12 @@ public class PhenopacketByAgeModel  implements TextMiningResultsModel {
 
     private final List<MedicalEncounter> encounters;
 
+    private final Map<String, String> data;
+
     public PhenopacketByAgeModel() {
         encounterAges = new ArrayList<>();
         encounters = new ArrayList<>();
+        data = new HashMap<>();
     }
 
     public List<String> getEncounterAges() {
@@ -54,5 +59,15 @@ public class PhenopacketByAgeModel  implements TextMiningResultsModel {
                 .map(FenominalTerm::getTerm)
                 .collect(Collectors.toSet())
                 .size();
+    }
+
+    @Override
+    public Map<String, String> getModelData() {
+        return data;
+    }
+
+    @Override
+    public void setModelDataItem(String k, String v) {
+        data.put(k, v);
     }
 }

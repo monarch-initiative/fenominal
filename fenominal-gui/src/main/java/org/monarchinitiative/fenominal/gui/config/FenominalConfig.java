@@ -23,14 +23,6 @@ public class FenominalConfig {
 
     public static final String CONFIG_FILE_BASENAME = "fenominal.properties";
 
-    @Value("classpath:/fxml/Main.fxml")
-    private Resource mainFxmResource;
-    @Value("classpath:/fxml/Configure.fxml")
-    private Resource configureFxmResource;
-    @Value("classpath:/fxml/OntologyTree.fxml")
-    private Resource ontologyTreeFxmResource;
-    @Value("classpath:/fxml/Present.fxml")
-    private Resource presentFxmResource;
     @Bean
     public OptionalResources optionalResources() {
         return new OptionalResources();
@@ -98,12 +90,6 @@ public class FenominalConfig {
         }
         return appHomeDir;
     }
-
-
-
-
-
-
 
 
 

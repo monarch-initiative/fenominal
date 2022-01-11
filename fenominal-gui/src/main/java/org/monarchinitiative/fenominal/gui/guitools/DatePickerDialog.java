@@ -11,6 +11,7 @@ import javafx.util.StringConverter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,9 @@ public class DatePickerDialog {
         } else {
             builder.append("<ol>");
             for (LocalDate encounter: encounterDates) {
-                builder.append("<li>").append(encounter.toString()).append("</li>");
+                Period pd = Period.between(birthdate, encounter);
+                String age = String.format("%s (Age: %d Y, %d M, %d D)",encounter,  pd.getYears(), pd.getMonths(), pd.getDays());
+                builder.append("<li>").append(age).append("</li>");
             }
             builder.append("</ol>");
         }
