@@ -180,7 +180,7 @@ public class PopUps {
         al.getButtonTypes().setAll(buttons);
 
         Optional<ButtonType> result = al.showAndWait();
-        if (!result.isPresent()) return null;
+        if (result.isEmpty()) return null;
         if (result.get().getButtonData() == ButtonData.CANCEL_CLOSE)
             return null;
 

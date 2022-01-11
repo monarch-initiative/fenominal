@@ -362,6 +362,10 @@ public class FenominalMainController {
                     return;
             }
         }
+        String biocurator = this.pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
+        if (biocurator != null) {
+            this.model.setModelDataItem("biocurator", biocurator);
+        }
         this.questionnaireButtn.setDisable(false);
         e.consume();
     }
@@ -398,7 +402,6 @@ public class FenominalMainController {
         }
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
-
             switch (this.miningTaskType) {
                 case CASE_REPORT -> phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
                 case COHORT_ONE_BY_ONE -> {

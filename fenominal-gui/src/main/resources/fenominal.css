@@ -10,6 +10,14 @@
     -fx-font-size: 14px;
 }
 
+.vboxWithBorder {
+    -fx-background-color: white;
+    -fx-border-color: green;
+    -fx-border-insets: 1;
+    -fx-border-width: 1;
+    -fx-border-style: dotted;
+}
+
 
 .bevel-grey {
     -fx-background-color:

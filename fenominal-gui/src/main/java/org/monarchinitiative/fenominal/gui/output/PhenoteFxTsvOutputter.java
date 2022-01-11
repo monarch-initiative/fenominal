@@ -65,7 +65,7 @@ public class PhenoteFxTsvOutputter  implements PhenoOutputter {
                 pmid,
                 evidence,
                 biocurationentry};
-        return Arrays.stream(s).collect(Collectors.joining("\t"));
+        return String.join("\t", s);
     }
 
     /**
@@ -87,7 +87,7 @@ public class PhenoteFxTsvOutputter  implements PhenoOutputter {
                 "publication",
                 "evidence",
                 "biocuration"};
-        return Arrays.stream(fields).collect(Collectors.joining("\t"));
+        return String.join("\t", fields);
     }
 
     @Override

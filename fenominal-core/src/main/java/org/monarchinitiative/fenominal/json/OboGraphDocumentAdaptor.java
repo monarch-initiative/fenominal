@@ -194,7 +194,7 @@ public class OboGraphDocumentAdaptor {
 
     private TermId getTermIdOrNull(String id) {
       Optional<String> curie = curieUtil.getCurie(id);
-      if (!curie.isPresent()) {
+      if (curie.isEmpty()) {
         LOGGER.warn("No matching curie found for id: {}", id);
         return null;
       }
