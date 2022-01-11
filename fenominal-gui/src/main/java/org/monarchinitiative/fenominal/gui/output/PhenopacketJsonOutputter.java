@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Map;
 
 public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
         implements PhenoOutputter{
@@ -29,8 +30,11 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
     @Override
     public void output(Writer writer) throws IOException {
         LocalDate nowDate = LocalDate.now();
+        Map<String,String> data = phenopacketModel.getModelData();
+        String biocurator = data.getOrDefault("biocurator", "n/a");
+        String hpoVersion = data.getOrDefault("HPO", "n/a");
         MetaData meta = MetaDataBuilder
-                .create(LocalDate.now().toString(), "TODO-biocurator ID")
+                .create(LocalDate.now().toString(), biocurator)
                 .resource(Resources.hpoVersion("TODO"))
                 .build();
         PhenopacketBuilder builder =PhenopacketBuilder.create(generatePhenopacketId(), meta);
@@ -79,8 +83,8 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
             return "P0";
         }
 
-        Period diff = Period.between( phenopacketModel.getBirthdate(),encounterDate);
-        int y =diff.getYears();
+        Period diff = Period.between( phenopacketModel.getBirthdate(), encounterDate);
+        int y = diff.getYears();
         int m = diff.getMonths();
         int d = diff.getDays();
         return "P" + y + "Y" + m + "M" + d + "D";

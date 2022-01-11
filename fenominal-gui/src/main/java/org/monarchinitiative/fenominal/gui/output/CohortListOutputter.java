@@ -7,13 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-public class CohortListOutputter implements PhenoOutputter {
-    private final OneByOneCohort cohort;
-
-    public CohortListOutputter(OneByOneCohort cohort) {
-        this.cohort = cohort;
-    }
-
+public record CohortListOutputter(OneByOneCohort cohort) implements PhenoOutputter {
 
     @Override
     public void output(Writer writer) throws IOException {

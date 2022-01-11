@@ -19,13 +19,8 @@ import java.io.Writer;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PhenopacketByAgeJsonOutputter implements PhenoOutputter{
-
-    private final PhenopacketByAgeModel phenopacketModel;
-
-    public PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel) {
-        this.phenopacketModel = phenopacketModel;
-    }
+public record PhenopacketByAgeJsonOutputter(
+        PhenopacketByAgeModel phenopacketModel) implements PhenoOutputter {
 
     @Override
     public void output(Writer writer) throws IOException {
@@ -63,7 +58,7 @@ public class PhenopacketByAgeJsonOutputter implements PhenoOutputter{
         }
         // The Phenopacket is now complete and we would like to write it as JSON
         Phenopacket phenopacket = builder.build();
-        String json =  JsonFormat.printer().print(phenopacket);
+        String json = JsonFormat.printer().print(phenopacket);
         writer.write(json);
     }
 

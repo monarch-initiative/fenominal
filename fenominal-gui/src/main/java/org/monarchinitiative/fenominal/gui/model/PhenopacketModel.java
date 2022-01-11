@@ -5,9 +5,7 @@ import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,13 +23,14 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     private final List<MedicalEncounter> encounters;
 
-
+    private final Map<String, String> data;
 
     public PhenopacketModel(LocalDate bdate, String id) {
         birthdate = bdate;
         this.id = id;
         encounters = new ArrayList<>();
         encounterDates = new ArrayList<>();
+        data = new HashMap<>();
     }
 
 
@@ -54,13 +53,23 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     @Override
     public int getTermCount() {
-        if (encounters == null || encounters.size()==0) return 0;
+        if (encounters.size()==0) return 0;
         Set<TermId> tids = encounters.stream().map(MedicalEncounter::getTerms)
                 .flatMap(List::stream)
                 .map(FenominalTerm::getTerm)
                 .map(Term::getId)
                 .collect(Collectors.toSet());
         return tids.size();
+    }
+
+    @Override
+    public Map<String, String> getModelData() {
+        return data;
+    }
+
+    @Override
+    public void setModelDataItem(String k, String v) {
+        data.put(k,v);
     }
 
     public LocalDate getBirthdate() {

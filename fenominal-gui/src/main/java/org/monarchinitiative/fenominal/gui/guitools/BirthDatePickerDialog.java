@@ -49,13 +49,11 @@ public class BirthDatePickerDialog {
 
 
     public String getHtmlWithDates(LocalDate birthdate) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<html><body><h3>Fenomimal Phenopacket generator</h3>");
-        builder.append("<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
-                " It does not store or output the birthdate.</p>");
-        builder.append("<p>Birthdate: ").append(birthdate.toString()).append("</p>");
-        builder.append("</body></html>");
-        return builder.toString();
+        return "<html><body><h3>Fenomimal Phenopacket generator</h3>" +
+                "<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
+                " It does not store or output the birthdate.</p>" +
+                "<p>Birthdate: " + birthdate.toString() + "</p>" +
+                "</body></html>";
     }
 
 

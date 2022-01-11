@@ -102,9 +102,7 @@ public class PhenoqTable extends TableView<Qphenorow> {
             Qphenorow pr = cdf.getValue();
             TermSelectionButton button = pr.termSelectionButton;
             for (var b : button.getButtons()) {
-                b.setOnAction((e) ->{
-                    pr.updateAnswer();
-                });
+                b.setOnAction((e) -> pr.updateAnswer());
             }
             // wrap it so it can be displayed in the TableView
             return new ReadOnlyObjectWrapper<>(button);

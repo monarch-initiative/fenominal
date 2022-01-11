@@ -4,10 +4,8 @@ import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +21,6 @@ public class FenominalConfig {
 
     public static final String CONFIG_FILE_BASENAME = "fenominal.properties";
 
-    @Value("classpath:/fxml/Main.fxml")
-    private Resource mainFxmResource;
-    @Value("classpath:/fxml/Configure.fxml")
-    private Resource configureFxmResource;
-    @Value("classpath:/fxml/OntologyTree.fxml")
-    private Resource ontologyTreeFxmResource;
-    @Value("classpath:/fxml/Present.fxml")
-    private Resource presentFxmResource;
     @Bean
     public OptionalResources optionalResources() {
         return new OptionalResources();
@@ -98,12 +88,6 @@ public class FenominalConfig {
         }
         return appHomeDir;
     }
-
-
-
-
-
-
 
 
 

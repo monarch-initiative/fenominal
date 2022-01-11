@@ -2,6 +2,7 @@ package org.monarchinitiative.fenominal.gui.model;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface TextMiningResultsModel {
 
@@ -16,5 +17,9 @@ public interface TextMiningResultsModel {
     int casesMined();
 
     int getTermCount();
+
+    Map<String,String> getModelData();
+
+    void setModelDataItem(String k, String v);
 
 }

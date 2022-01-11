@@ -271,72 +271,63 @@ public class Present {
         });
 
         //when yes terms are updated, re-create checkboxes for all terms
-        yesTerms.addListener(new SetChangeListener<>() {
-            @Override
-            public void onChanged(Change<? extends PhenotypeTerm> change) {
-                yesTermsVBox.getChildren().clear();
-                change.getSet().stream().sorted(Comparator.comparing(a -> a.getTerm().getName()))
-                        .map(phenotype -> checkBoxFactory(phenotype)).forEach(yesTermsVBox.getChildren()::add);
+        yesTerms.addListener((SetChangeListener<PhenotypeTerm>) change -> {
+            yesTermsVBox.getChildren().clear();
+            change.getSet().stream().sorted(Comparator.comparing(a -> a.getTerm().getName()))
+                    .map(Present::checkBoxFactory).forEach(yesTermsVBox.getChildren()::add);
 
-            }
         });
 
         //same as above
-        notTerms.addListener(new SetChangeListener<>() {
-            @Override
-            public void onChanged(Change<? extends PhenotypeTerm> change) {
-                notTermsVBox.getChildren().clear();
-                change.getSet().stream().sorted(Comparator.comparing(a -> a.getTerm().getName()))
-                        .map(phenotype -> checkBoxFactory(phenotype)).forEach(notTermsVBox.getChildren()::add);
-            }
+        notTerms.addListener((SetChangeListener<PhenotypeTerm>) change -> {
+            notTermsVBox.getChildren().clear();
+            change.getSet().stream().sorted(Comparator.comparing(a -> a.getTerm().getName()))
+                    .map(Present::checkBoxFactory).forEach(notTermsVBox.getChildren()::add);
         });
 
         //The listener listens to checkbox list changes. It adds drag support to every checkbox.
-        ListChangeListener<Node> changeListener = new ListChangeListener<>() {
-            @Override
-            public void onChanged(Change<? extends Node> c) {
-                while (c.next()) {
-                    if (c.wasAdded()) {
-                        c.getAddedSubList().forEach(node -> {
-                            CheckBox checkBox = (CheckBox) node;
-                            //add drag detected listener
-                            checkBox.setOnDragDetected(event -> {
-                                Dragboard db = checkBox.startDragAndDrop(TransferMode.ANY);
-                                ClipboardContent draggedTerm = new ClipboardContent();
-                                draggedTerm.putString(checkBox.getText());
-                                LOGGER.debug("dragged item: " + checkBox.getText());
-                                db.setContent(draggedTerm);
-                                event.consume();
-                            });
-
-                            //drag is done.
-                            //nothing else is needed to do as the term is already removed when drag is dropped
-                            //(see below)--it is easier to handle over there than doing it here
-                            checkBox.setOnDragDone(event -> {
-                                if (event.getTransferMode() == TransferMode.MOVE) {
-                                    LOGGER.debug("drag and drop completed");
-                                }
-                                event.consume();
-                            });
-
-                            if (checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm())) {
-                                checkBox.setSelected(true);
-                            } else {
-                                checkBox.setSelected(false);
-                            }
-
-                            checkBox.selectedProperty().addListener((selected, oldvalue, newvalue) -> {
-                                if (newvalue) {
-                                    checkBoxesState.add(((PhenotypeTerm) checkBox.getUserData()).getTerm());
-                                } else {
-                                    checkBoxesState.remove(((PhenotypeTerm) checkBox.getUserData()).getTerm());
-                                }
-                            });
+        ListChangeListener<Node> changeListener = c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    c.getAddedSubList().forEach(node -> {
+                        CheckBox checkBox = (CheckBox) node;
+                        //add drag detected listener
+                        checkBox.setOnDragDetected(event -> {
+                            Dragboard db = checkBox.startDragAndDrop(TransferMode.ANY);
+                            ClipboardContent draggedTerm = new ClipboardContent();
+                            draggedTerm.putString(checkBox.getText());
+                            LOGGER.debug("dragged item: " + checkBox.getText());
+                            db.setContent(draggedTerm);
+                            event.consume();
                         });
-                    }
-                }
 
+                        //drag is done.
+                        //nothing else is needed to do as the term is already removed when drag is dropped
+                        //(see below)--it is easier to handle over there than doing it here
+                        checkBox.setOnDragDone(event -> {
+                            if (event.getTransferMode() == TransferMode.MOVE) {
+                                LOGGER.debug("drag and drop completed");
+                            }
+                            event.consume();
+                        });
+
+                        if (checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm())) {
+                            checkBox.setSelected(true);
+                        } else {
+                            checkBox.setSelected(false);
+                        }
+
+                        checkBox.selectedProperty().addListener((selected, oldvalue, newvalue) -> {
+                            if (newvalue) {
+                                checkBoxesState.add(((PhenotypeTerm) checkBox.getUserData()).getTerm());
+                            } else {
+                                checkBoxesState.remove(((PhenotypeTerm) checkBox.getUserData()).getTerm());
+                            }
+                        });
+                    });
+                }
             }
+
         };
 
         //add drag listeners to all checkboxes for yes terms
@@ -434,7 +425,7 @@ public class Present {
         List<PhenotypeTerm> termList = deduplicate(terms);
         termList.sort(Comparator.comparing(t -> t.getTerm().getName()));
 
-        termList.stream().filter(t -> t.isPresent()).forEach(yesTerms::add);
+        termList.stream().filter(PhenotypeTerm::isPresent).forEach(yesTerms::add);
         termList.stream().filter(t -> !t.isPresent()).forEach(notTerms::add);
 
         String html = colorizeHTML4ciGraph(termList, query);
