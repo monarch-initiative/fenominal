@@ -18,8 +18,6 @@ import static javafx.stage.StageStyle.DECORATED;
 
 public class BirthDatePickerDialog {
 
-    private final String message;
-
     private final Browser browser;
 
     private LocalDate birthDate =null;
@@ -37,8 +35,7 @@ public class BirthDatePickerDialog {
                     "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
 
     public BirthDatePickerDialog(String msg) {
-        message = msg;
-        browser = new Browser(message);
+        browser = new Browser(msg);
     }
 
 

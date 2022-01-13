@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class DecorationProcessorService {
 
-    private List<DecorationProcessor> decorationProcessors;
+    private final List<DecorationProcessor> decorationProcessors;
 
     public DecorationProcessorService() {
         decorationProcessors = new ArrayList<>();

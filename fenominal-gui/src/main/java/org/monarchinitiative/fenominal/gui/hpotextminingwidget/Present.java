@@ -311,11 +311,7 @@ public class Present {
                             event.consume();
                         });
 
-                        if (checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm())) {
-                            checkBox.setSelected(true);
-                        } else {
-                            checkBox.setSelected(false);
-                        }
+                        checkBox.setSelected(checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm()));
 
                         checkBox.selectedProperty().addListener((selected, oldvalue, newvalue) -> {
                             if (newvalue) {

@@ -51,11 +51,6 @@ public class HpoTextMining {
     // ---------------------------------- CONTROLLERS and PARENTS ------------------------------------------------------
 
     /**
-     * Main parent, contains all GUI elements of the widget.
-     */
-    //private final Parent mainParent;
-
-    /**
      * Main controller, part of the API.
      */
     private final Main main;

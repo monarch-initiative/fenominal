@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.PATIENT_ID_KEY;
+
 public class PhenopacketByAgeModel  implements TextMiningResultsModel {
 
     private final List<String> encounterAges;
@@ -16,10 +18,11 @@ public class PhenopacketByAgeModel  implements TextMiningResultsModel {
 
     private final Map<String, String> data;
 
-    public PhenopacketByAgeModel() {
+    public PhenopacketByAgeModel(String id) {
         encounterAges = new ArrayList<>();
         encounters = new ArrayList<>();
         data = new HashMap<>();
+        data.put(PATIENT_ID_KEY, id);
     }
 
     public List<String> getEncounterAges() {

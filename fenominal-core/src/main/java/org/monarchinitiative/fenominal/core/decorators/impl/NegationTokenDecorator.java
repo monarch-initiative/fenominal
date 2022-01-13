@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class NegationTokenDecorator implements TokenDecorator {
 
-    private Map<String, String> negationClues;
+    private final Map<String, String> negationClues;
 
     public NegationTokenDecorator(Map<String, String> negationClues) {
         this.negationClues = negationClues;

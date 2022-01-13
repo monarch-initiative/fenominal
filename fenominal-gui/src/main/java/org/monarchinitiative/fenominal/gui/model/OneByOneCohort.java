@@ -82,6 +82,11 @@ public class OneByOneCohort implements TextMiningResultsModel {
         this.addCase(caseReport);
     }
 
+    @Override
+    public String getInitialFileName() {
+        return pmid + "-" + diseasename.replaceAll(" ", "_") + "-fenominal.json";
+    }
+
     public String getPmid() {
         return pmid;
     }

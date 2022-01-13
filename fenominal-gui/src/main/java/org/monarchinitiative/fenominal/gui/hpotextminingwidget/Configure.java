@@ -77,7 +77,7 @@ public class Configure {
         // wrap into the Task so that mining will not cause freezing of the GUI
         Task<Collection<MinedTerm>> task = new Task<>() {
             @Override
-            protected Collection<MinedTerm> call() throws Exception {
+            protected Collection<MinedTerm> call() {
                 return miner.doMining(query);
             }
         };

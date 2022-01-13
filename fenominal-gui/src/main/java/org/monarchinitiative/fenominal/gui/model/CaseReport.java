@@ -53,6 +53,11 @@ public class CaseReport implements TextMiningResultsModel {
         data.put(k, v);
     }
 
+    @Override
+    public String getInitialFileName() {
+        return caseId + "-fenominal.json";
+    }
+
     public String getCaseId() {
         return caseId;
     }

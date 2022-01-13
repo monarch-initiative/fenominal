@@ -8,13 +8,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CaseReportTsvOutputter implements PhenoOutputter{
-
-    private final CaseReport caseReport;
-
-    public CaseReportTsvOutputter(CaseReport caseReport) {
-        this.caseReport = caseReport;
-    }
+public record CaseReportTsvOutputter(CaseReport caseReport) implements PhenoOutputter {
 
     @Override
     public void output(Writer writer) throws IOException {

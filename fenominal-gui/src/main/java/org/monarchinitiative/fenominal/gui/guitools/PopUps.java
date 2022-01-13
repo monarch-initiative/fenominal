@@ -50,9 +50,9 @@ public class PopUps {
 
 
 
-    private static String getHpoTermsFromUser = "/fxml/HPOWindow.fxml";
+    private static final String getHpoTermsFromUser = "/fxml/HPOWindow.fxml";
 
-    private static String showValidationResults = "/fxml/ValidationResults.fxml";
+    private static final String showValidationResults = "/fxml/ValidationResults.fxml";
 
 
     /**

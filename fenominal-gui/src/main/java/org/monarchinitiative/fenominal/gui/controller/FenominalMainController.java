@@ -322,9 +322,10 @@ public class FenominalMainController {
 
     private void initPhenopacketWithManualAge() {
         this.parseButton.setDisable(false);
+        String id = PopUps.getStringFromUser("Patient ID", "Enter patient ID (no PHI)", "Patient ID");
         this.parseButton.setText("Mine encounter 1");
         this.miningTaskType = PHENOPACKET_BY_AGE;
-        this.model = new PhenopacketByAgeModel();
+        this.model = new PhenopacketByAgeModel(id);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(N_CURATED_KEY, "0");
         populateTableWithData(model.getModelData());
@@ -392,7 +393,7 @@ public class FenominalMainController {
 
     @FXML
     public void outputButtonPressed(ActionEvent actionEvent) {
-
+        actionEvent.consume();
         String initialFilename = model.getInitialFileName();
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();

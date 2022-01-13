@@ -18,8 +18,8 @@ public class ClinicalTextMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
     private final HpoMatcher hpoMatcher;
-    private TokenDecoratorService tokenDecoratorService;
-    private DecorationProcessorService decorationProcessorService;
+    private final TokenDecoratorService tokenDecoratorService;
+    private final DecorationProcessorService decorationProcessorService;
 
     public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
         this.hpoMatcher = new HpoMatcher(ontology, lexicalResources);

@@ -55,7 +55,7 @@ public class OntologyTree {
     /**
      * Map of term names to term IDs.
      */
-    private Map<String, TermId> labels = new HashMap<>();
+    private final Map<String, TermId> labels = new HashMap<>();
 
     /**
      * Text field with autocompletion for jumping to a particular HPO term in the tree view.

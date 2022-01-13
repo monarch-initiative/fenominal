@@ -20,10 +20,9 @@ public class FenominalMinerApp implements TermMiner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMinerApp.class);
     private final ClinicalTextMapper mapper;
-    private final LexicalResources lexicalResources;
 
     public FenominalMinerApp(Ontology ontology) {
-        this.lexicalResources = new LexicalResources();
+        LexicalResources lexicalResources = new LexicalResources();
         this.mapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
 

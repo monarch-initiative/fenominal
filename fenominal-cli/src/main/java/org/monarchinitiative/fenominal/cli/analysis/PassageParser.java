@@ -8,7 +8,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 import java.util.List;
 
 public abstract class PassageParser {
-    private final String hpoJsonPath;
     private final TextToHpoMapper mapper;
     protected final Ontology ontology;
 
@@ -17,7 +16,6 @@ public abstract class PassageParser {
 
 
     public PassageParser(String hpoJsonPath, String output) {
-        this.hpoJsonPath = hpoJsonPath;
         this.output = output;
         HpoLoader hpoLoader = new HpoLoader(hpoJsonPath);
         this.ontology = hpoLoader.getHpo();
