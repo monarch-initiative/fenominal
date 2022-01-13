@@ -23,6 +23,7 @@ import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.gui.FenominalMinerApp;
 import org.monarchinitiative.fenominal.gui.OptionalResources;
 import org.monarchinitiative.fenominal.gui.StartupTask;
+import org.monarchinitiative.fenominal.gui.config.ApplicationProperties;
 import org.monarchinitiative.fenominal.gui.guitools.*;
 import org.monarchinitiative.fenominal.gui.hpotextminingwidget.HpoTextMining;
 import org.monarchinitiative.fenominal.gui.hpotextminingwidget.PhenotypeTerm;
@@ -39,11 +40,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -90,6 +96,9 @@ public class FenominalMainController {
     private MiningTask miningTaskType = UNINITIALIZED;
 
     private TextMiningResultsModel model = null;
+
+    @Autowired
+    ApplicationProperties applicationProperties;
 
 
     @Autowired
@@ -505,4 +514,13 @@ public class FenominalMainController {
     }
 
 
+    public void openAboutDialog(ActionEvent e) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Fenominal");
+        alert.setHeaderText(null);
+        String fenomimalVersion = applicationProperties.getApplicationVersion();
+        alert.setContentText(String.format("Version %s", fenomimalVersion));
+        alert.showAndWait();
+        e.consume();
+    }
 }

@@ -31,7 +31,7 @@
                 <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES" />
                 <MenuBar HBox.hgrow="NEVER">
                     <Menu mnemonicParsing="false" text="Help">
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" onAction="#openAboutDialog"  text="About" />
                     </Menu>
                 </MenuBar>
             </HBox>
