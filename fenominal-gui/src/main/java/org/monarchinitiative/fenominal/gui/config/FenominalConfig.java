@@ -21,6 +21,11 @@ public class FenominalConfig {
 
     public static final String CONFIG_FILE_BASENAME = "fenominal.properties";
 
+    public static final String HPO_VERSION_KEY = "hpo.version";
+    public static final String PATIENT_ID_KEY = "patient.id";
+    public static final String N_CURATED_KEY = "curated so far";
+
+
     @Bean
     public OptionalResources optionalResources() {
         return new OptionalResources();

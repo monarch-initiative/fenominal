@@ -29,7 +29,6 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
 
     @Override
     public void output(Writer writer) throws IOException {
-        LocalDate nowDate = LocalDate.now();
         Map<String,String> data = phenopacketModel.getModelData();
         String biocurator = data.getOrDefault("biocurator", "n/a");
         String hpoVersion = data.getOrDefault("HPO", "n/a");

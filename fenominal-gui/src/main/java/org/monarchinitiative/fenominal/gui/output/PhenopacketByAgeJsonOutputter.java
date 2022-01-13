@@ -18,15 +18,19 @@ import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public record PhenopacketByAgeJsonOutputter(
         PhenopacketByAgeModel phenopacketModel) implements PhenoOutputter {
 
     @Override
     public void output(Writer writer) throws IOException {
+        Map<String,String> data = phenopacketModel.getModelData();
+        String biocurator = data.getOrDefault("biocurator", "n/a");
+        String hpoVersion = data.getOrDefault("HPO", "n/a");
         MetaData meta = MetaDataBuilder
-                .create(LocalDate.now().toString(), "TODO-biocurator ID")
-                .resource(Resources.hpoVersion("TODO"))
+                .create(LocalDate.now().toString(), biocurator)
+                .resource(Resources.hpoVersion(hpoVersion))
                 .build();
         PhenopacketBuilder builder = PhenopacketBuilder.create(generatePhenopacketId(), meta);
         List<MedicalEncounter> encounters = phenopacketModel.getEncounters();

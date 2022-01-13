@@ -49,6 +49,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 import static org.monarchinitiative.fenominal.gui.OptionalResources.BIOCURATOR_ID_PROPERTY;
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.*;
 import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -314,8 +315,8 @@ public class FenominalMainController {
         LocalDate bdate = dialog.showDatePickerDialog();
         String id = dialog.getId();
         this.model = new PhenopacketModel(bdate, id);
-        model.setModelDataItem("HPO", getHpoVersion());
-        model.setModelDataItem("Patient ID", id);
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
+        model.setModelDataItem(PATIENT_ID_KEY, id);
         populateTableWithData(model.getModelData());
     }
 
@@ -324,8 +325,8 @@ public class FenominalMainController {
         this.parseButton.setText("Mine encounter 1");
         this.miningTaskType = PHENOPACKET_BY_AGE;
         this.model = new PhenopacketByAgeModel();
-        model.setModelDataItem("HPO", getHpoVersion());
-        model.setModelDataItem("Curated so far", "0");
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
+        model.setModelDataItem(N_CURATED_KEY, "0");
         populateTableWithData(model.getModelData());
     }
 
@@ -364,7 +365,7 @@ public class FenominalMainController {
         }
         String biocurator = this.pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
         if (biocurator != null) {
-            this.model.setModelDataItem("biocurator", biocurator);
+            this.model.setModelDataItem(BIOCURATOR_ID_PROPERTY, biocurator);
         }
         this.questionnaireButtn.setDisable(false);
         e.consume();
@@ -391,14 +392,15 @@ public class FenominalMainController {
 
     @FXML
     public void outputButtonPressed(ActionEvent actionEvent) {
-        String initialFilename = "fenomimal.txt";
+
+        String initialFilename = model.getInitialFileName();
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
         fileChooser.setInitialFileName(initialFilename);
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) {
-            PopUps.showInfoMessage("Could not retrieve file name, using default (\" fenomimal.txt\"", "Error");
-            file = new File(initialFilename);
+            PopUps.showInfoMessage("Could not retrieve output file name, please try again.", "Error");
+            return;
         }
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
