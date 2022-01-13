@@ -1,6 +1,7 @@
 package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.core.decorators.Decorations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 /**
@@ -34,7 +35,9 @@ public class SimpleMinedTerm implements MinedTerm  {
     }
 
     public static SimpleMinedTerm fromMappedSentencePart(MappedSentencePart msp) {
-        return new SimpleMinedTerm(msp.getStartpos(), msp.getEndpos(), msp.getTid(), true);
+        boolean observed = !msp.getDecorations().containsKey(Decorations.NEGATION.name()) ||
+                !msp.getDecorations().get(Decorations.NEGATION.name()).equals("true");
+        return new SimpleMinedTerm(msp.getStartpos(), msp.getEndpos(), msp.getTid(), observed);
     }
 
     public static SimpleMinedTerm fromExcludedMappedSentencePart(MappedSentencePart msp) {
@@ -62,5 +65,10 @@ public class SimpleMinedTerm implements MinedTerm  {
     @Override
     public boolean isPresent() {
         return this.isPresent;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s [%d-%d]%s", termid, begin, end, (isPresent?"":"excluded"));
     }
 }

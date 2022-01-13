@@ -29,9 +29,6 @@ public class SimpleHpoTermTest {
     @Test
     public void testXref() {
         TermId tid = TermId.of("HP:0012372");
-        for (var sht : hpoTerms) {
-            System.out.println(sht);
-        }
         SimpleHpoTerm sht = hpoTerms.stream().filter(s -> s.getId().equals(tid)).findFirst().orElseThrow();
         assertNotNull(sht);
         Set<String> expectedXrefs = Set.of("Fyler:4863", "UMLS:C4022925");
