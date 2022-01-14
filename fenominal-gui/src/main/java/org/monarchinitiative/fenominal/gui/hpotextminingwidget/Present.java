@@ -93,7 +93,7 @@ public class Present {
 
     private final Consumer<TermId> focusToTermHook;
 
-    private final Consumer<Main.Signal> signal;
+    private final Consumer<HpoTextMiningMain.Signal> signal;
 
     /**
      * The GUI element responsible for presentation of analyzed text with highlighted regions.
@@ -145,12 +145,12 @@ public class Present {
 
 
     /**
-     * @param signal          {@link Consumer} of {@link Main.Signal}
+     * @param signal          {@link Consumer} of {@link HpoTextMiningMain.Signal}
      *                        that will notify the upstream controller about status of the analysis
      * @param focusToTermHook {@link Consumer} that will accept {@link TermId} in order to show appropriate {@link Term} in ontology
      *                        tree view
      */
-    Present(Consumer<Main.Signal> signal, Consumer<TermId> focusToTermHook) {
+    Present(Consumer<HpoTextMiningMain.Signal> signal, Consumer<TermId> focusToTermHook) {
         this.signal = signal;
         this.focusToTermHook = focusToTermHook;
     }
@@ -238,12 +238,12 @@ public class Present {
     }
 
     /**
-     * End of analysis. Add approved terms into {@link Main}'s <code>hpoTermsTableView</code> and display configure
+     * End of analysis. Add approved terms into {@link HpoTextMiningMain}'s <code>hpoTermsTableView</code> and display configure
      * Dialog to allow next round of text-mining analysis.
      */
     @FXML
     void addTermsButtonAction() {
-        signal.accept(Main.Signal.DONE);
+        signal.accept(HpoTextMiningMain.Signal.DONE);
     }
 
     /**
@@ -252,7 +252,7 @@ public class Present {
      */
     @FXML
     void cancelButtonAction() {
-        signal.accept(Main.Signal.CANCELLED);
+        signal.accept(HpoTextMiningMain.Signal.CANCELLED);
     }
 
     /**

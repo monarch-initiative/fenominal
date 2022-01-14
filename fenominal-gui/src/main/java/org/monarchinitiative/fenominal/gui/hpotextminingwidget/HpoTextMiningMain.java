@@ -28,7 +28,7 @@ import java.util.*;
  * @version 0.1.0
  * @since 0.1
  */
-public class Main {
+public class HpoTextMiningMain {
 
     /**
      * Ontology is presented here by {@link OntologyTree} controller.
@@ -72,7 +72,7 @@ public class Main {
     /**
      * Create the controller.
      */
-    public Main() {
+    public HpoTextMiningMain() {
         // no-op
     }
 
@@ -125,7 +125,7 @@ public class Main {
     }
 
     /**
-     * Initialize JavaFX components of {@link Main} controller.
+     * Initialize JavaFX components of {@link HpoTextMiningMain} controller.
      */
     public void initialize() {
         // initialize behaviour of columns of the TableView

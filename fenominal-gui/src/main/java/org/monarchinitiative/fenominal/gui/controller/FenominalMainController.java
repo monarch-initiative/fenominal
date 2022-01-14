@@ -347,11 +347,11 @@ public class FenominalMainController {
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter data about one individual, multiple ages", false);
-        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Cancel", false);
+        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Go back and do not delete current work", false);
         CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
-        dialog.setContentText("Fenominal supports four types of HPO biocuration. This will delete current work (Cancel to return).");
+        dialog.setContentText("Fenominal supports four types of HPO biocuration.");
         Optional<ButtonType> opt = dialog.showAndWait();
         if (opt.isPresent()) {
             ButtonType btype = opt.get();
@@ -522,5 +522,39 @@ public class FenominalMainController {
         alert.setContentText(String.format("Version %s", fenomimalVersion));
         alert.showAndWait();
         e.consume();
+    }
+
+    public void updatePhenopacket(ActionEvent actionEvent) {
+        var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter age via brithdate/encounter date", false);
+        var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter dage directly", false);
+        var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Cancel", false);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, cancel);
+        dialog.setTitle("Update Phenopacket");
+        dialog.setHeaderText("Select type of curation");
+
+        dialog.setContentText("Select a phenopacket file for updating.");
+        Optional<ButtonType> opt = dialog.showAndWait();
+        if (opt.isPresent()) {
+            ButtonType btype = opt.get();
+            switch (btype.getText()) {
+                case "Phenopacket":
+                    //initPhenopacket();
+                    System.out.println("Update phenopacket");
+                    break;
+                case "Phenopacket (by age at encounter)":
+                   // initPhenopacketWithManualAge();
+                    System.out.println("Update phenopacket by age");
+                    break;
+                case "Cancel":
+                default:
+                    return;
+            }
+        }
+        String biocurator = this.pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
+        if (biocurator != null) {
+            this.model.setModelDataItem(BIOCURATOR_ID_PROPERTY, biocurator);
+        }
+        this.questionnaireButtn.setDisable(false);
+        actionEvent.consume();
     }
 }

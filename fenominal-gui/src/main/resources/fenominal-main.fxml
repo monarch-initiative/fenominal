@@ -58,6 +58,14 @@
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                             </VBox.margin>
                         </Button>
+                        <Button fx:id="updatePhenopacketButton" mnemonicParsing="false" onAction="#updatePhenopacket" prefWidth="200" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Update Phenopacket">
+                            <VBox.margin>
+                                <Insets left="20.0" />
+                            </VBox.margin>
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </VBox.margin>
+                        </Button>
                         <Button fx:id="parseButton" mnemonicParsing="false" onAction="#parseButtonPressed" prefWidth="200" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Text mining">
                             <VBox.margin>
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
