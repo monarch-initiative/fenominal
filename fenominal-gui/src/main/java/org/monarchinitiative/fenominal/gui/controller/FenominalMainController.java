@@ -28,6 +28,7 @@ import org.monarchinitiative.fenominal.gui.guitools.*;
 import org.monarchinitiative.fenominal.gui.hpotextminingwidget.HpoTextMining;
 import org.monarchinitiative.fenominal.gui.hpotextminingwidget.PhenotypeTerm;
 import org.monarchinitiative.fenominal.gui.io.HpoMenuDownloader;
+import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
 import org.monarchinitiative.fenominal.gui.model.*;
 import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.fenominal.gui.questionnaire.PhenoQuestionnaire;
@@ -36,20 +37,17 @@ import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.phenopackets.schema.v2.Phenopacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.time.Period;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -103,6 +101,11 @@ public class FenominalMainController {
 
     @Autowired
     ResourceLoader resourceLoader;
+    /**
+     * The birthdate of the current patient, if applicable.
+     * This field must be set to enter data for Phenopacket with birthdate.
+     */
+    private LocalDate birthdate = null;
 
 
     @Autowired
@@ -164,6 +167,20 @@ public class FenominalMainController {
         this.tableHiddenProperty().set(false);
     }
 
+    /**
+     * Calculate the age of the patient as a Java Period object
+     * @param birthdate birth date
+     * @param encounterDate data at which the phenotype was first observed
+     * @return a Period object representing the patient age
+     */
+    private Period getAge(LocalDate birthdate, LocalDate encounterDate) {
+        return Period.between(birthdate, encounterDate);
+    }
+
+    private void parsePhenopacket(Set<PhenotypeTerm> approved, LocalDate encounterDate) {
+
+    }
+
     @FXML
     private void parseButtonPressed(ActionEvent e) {
         LOGGER.error("Parse button pressed");
@@ -177,7 +194,12 @@ public class FenominalMainController {
         String isoAge = null;
         if (this.miningTaskType == PHENOPACKET) {
             PhenopacketModel pmodel = (PhenopacketModel) this.model;
-            DatePickerDialog dialog = DatePickerDialog.getEncounterDate(pmodel.getBirthdate(), pmodel.getEncounterDates());
+            Optional<LocalDate> bdOpt = pmodel.getBirthdate();
+            if (bdOpt.isEmpty()) {
+                PopUps.showInfoMessage("Error", "Cannot enter phenotype info without birthdate");
+                return; // should never happen
+            }
+            DatePickerDialog dialog = DatePickerDialog.getEncounterDate(bdOpt.get(), pmodel.getEncounterDates(bdOpt.get()));
             encounterDate = dialog.showDatePickerDialog();
         } else if (this.miningTaskType == PHENOPACKET_BY_AGE) {
             PhenopacketByAgeModel pAgeModel = (PhenopacketByAgeModel) this.model;
@@ -201,32 +223,48 @@ public class FenominalMainController {
         secondary.showAndWait();
 
         Set<PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
-        List<FenominalTerm> approvedTerms = approved.stream()
-                .map(FenominalTerm::fromMainPhenotypeTerm)
-                .sorted()
-                .collect(Collectors.toList());
-        switch (this.miningTaskType) {
-            case CASE_REPORT:
+
+        if (this.miningTaskType.equals(CASE_REPORT) ||
+        this.miningTaskType.equals(COHORT_ONE_BY_ONE)) {
+            List<FenominalTerm> approvedTerms = approved.stream()
+                    .map(FenominalTerm::fromMainPhenotypeTerm)
+                    .sorted()
+                    .collect(Collectors.toList());
+            if (miningTaskType.equals(CASE_REPORT))
                 model.addHpoFeatures(approvedTerms);
-                break;
-            case COHORT_ONE_BY_ONE:
+            else {
                 model.addHpoFeatures(approvedTerms);
                 int casesSoFar = model.casesMined();
                 this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
-                break;
-            case PHENOPACKET:
-                int encountersSoFar = model.casesMined();
-                this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
-                model.addHpoFeatures(approvedTerms, encounterDate);
-                break;
-            case PHENOPACKET_BY_AGE:
-                encountersSoFar = model.casesMined();
-                this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
-                model.addHpoFeatures(approvedTerms, isoAge);
-                break;
-            default:
+            }
+        }
+        if (miningTaskType.equals(PHENOPACKET)) {
+            int encountersSoFar = model.casesMined();
+            this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+            PhenopacketModel pmodel = (PhenopacketModel) this.model;
+           Optional<LocalDate> bdateOpt = pmodel.getBirthdate();
+           if (bdateOpt.isEmpty()) {
+               PopUps.showInfoMessage("Error", "Cannot add phenotypes without initializing birthdate");
+               return;
+           }
+            Period age = getAge(bdateOpt.get(), encounterDate);
+            List<FenominalTerm> approvedTerms = approved.stream()
+                    .map(pterm -> FenominalTerm.fromMainPhenotypeTermWithAge(pterm, age))
+                    .sorted()
+                    .collect(Collectors.toList());
+            model.addHpoFeatures(approvedTerms);
+        } else if (miningTaskType.equals(PHENOPACKET_BY_AGE)) {
+            int encountersSoFar = model.casesMined();
+            this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
+            Period agePeriod = Period.parse(isoAge);
+            List<FenominalTerm> approvedTerms = approved.stream()
+                    .map(pterm -> FenominalTerm.fromMainPhenotypeTermWithIsoAge(pterm, agePeriod))
+                    .sorted()
+                    .collect(Collectors.toList());
+            model.addHpoFeatures(approvedTerms, isoAge);
+        } else {
                 PopUps.showInfoMessage("Error, mining task not implemented yet", "Error");
-                return;
+            return;
         }
 
         updateTable();
@@ -323,9 +361,25 @@ public class FenominalMainController {
         BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
         LocalDate bdate = dialog.showDatePickerDialog();
         String id = dialog.getId();
-        this.model = new PhenopacketModel(bdate, id);
+        this.model = new PhenopacketModel(id);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, id);
+        populateTableWithData(model.getModelData());
+    }
+
+    /**
+     * Loads a prexisting Phenopacket and populates the model
+     * @param phenopacketImp Importer object
+     */
+    private void loadPhenopacket(PhenopacketImporter phenopacketImp) {
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine time point 1");
+        this.miningTaskType = PHENOPACKET;
+        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
+        LocalDate bdate = dialog.showDatePickerDialog();
+        this.model = new PhenopacketModel(phenopacketImp);
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
+        model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
         populateTableWithData(model.getModelData());
     }
 
@@ -538,7 +592,12 @@ public class FenominalMainController {
             ButtonType btype = opt.get();
             switch (btype.getText()) {
                 case "Phenopacket":
-                    //initPhenopacket();
+                    Optional<PhenopacketImporter> optpp = loadPhenopacketFromFile();
+                    if (optpp.isEmpty()) {
+                        PopUps.showInfoMessage("Error", "Could not load phenopacket file");
+                        return;
+                    }
+                    loadPhenopacket(optpp.get());
                     System.out.println("Update phenopacket");
                     break;
                 case "Phenopacket (by age at encounter)":
@@ -556,5 +615,23 @@ public class FenominalMainController {
         }
         this.questionnaireButtn.setDisable(false);
         actionEvent.consume();
+    }
+
+
+
+    private Optional<PhenopacketImporter> loadPhenopacketFromFile() {
+        FileChooser fileChooser = new FileChooser();
+        Stage stage = (Stage) this.outputButton.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+        if (file == null) {
+            return Optional.empty();
+        }
+        Ontology ontology = optionalResources.getOntology();
+        if (ontology == null) {
+            PopUps.showInfoMessage("Error", "Cannot import Phenopacket before initialized HPO.");
+            return Optional.empty();
+        }
+        PhenopacketImporter ppacket = PhenopacketImporter.fromJson(file, ontology);
+        return Optional.of(ppacket);
     }
 }

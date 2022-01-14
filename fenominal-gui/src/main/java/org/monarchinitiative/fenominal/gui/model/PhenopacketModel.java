@@ -1,10 +1,18 @@
 package org.monarchinitiative.fenominal.gui.model;
 
 
+import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.phenopackets.schema.v2.Phenopacket;
+import org.phenopackets.schema.v2.core.Age;
+import org.phenopackets.schema.v2.core.OntologyClass;
+import org.phenopackets.schema.v2.core.PhenotypicFeature;
+import org.phenopackets.schema.v2.core.TimeElement;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,35 +24,31 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     private final String id;
 
-    private final LocalDate birthdate;
+    private final List<FenominalTerm> terms;
 
-    private final List<LocalDate> encounterDates;
-
-
-    private final List<MedicalEncounter> encounters;
 
     private final Map<String, String> data;
 
-    public PhenopacketModel(LocalDate bdate, String id) {
-        birthdate = bdate;
+    private LocalDate birthdate = null;
+
+    public PhenopacketModel(String id) {
         this.id = id;
-        encounters = new ArrayList<>();
-        encounterDates = new ArrayList<>();
+        this.terms = new ArrayList<>();
+        data = new HashMap<>();
+    }
+
+    public PhenopacketModel(PhenopacketImporter phenopacketImp) {
+        this.id = phenopacketImp.getId();
+        this.terms = phenopacketImp.getFenominalTermList();
         data = new HashMap<>();
     }
 
 
     @Override
-    public void addHpoFeatures(List<FenominalTerm> terms) {
-        // should never happen
-        throw new UnsupportedOperationException("Phenopackets must use overloaded function with LocalDate");
+    public void addHpoFeatures(List<FenominalTerm> fterms) {
+        terms.addAll(fterms);
     }
 
-    public void addHpoFeatures(List<FenominalTerm> terms, LocalDate date) {
-        MedicalEncounter encounter = new MedicalEncounter(terms);
-        encounterDates.add(date);
-        encounters.add(encounter);
-    }
 
     @Override
     public int casesMined() {
@@ -53,9 +57,8 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     @Override
     public int getTermCount() {
-        if (encounters.size()==0) return 0;
-        Set<TermId> tids = encounters.stream().map(MedicalEncounter::getTerms)
-                .flatMap(List::stream)
+        if (terms.size()==0) return 0;
+        Set<TermId> tids = terms.stream()
                 .map(FenominalTerm::getTerm)
                 .map(Term::getId)
                 .collect(Collectors.toSet());
@@ -72,23 +75,43 @@ public class PhenopacketModel implements TextMiningResultsModel {
         data.put(k,v);
     }
 
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
     public String getPhenopacketId() { return id; }
-
-    public List<LocalDate> getEncounterDates() {
-        return encounterDates;
-    }
-
-    public List<MedicalEncounter> getEncounters() {
-        return encounters;
-    }
 
     @Override
     public String toString() {
-        return String.format("[PhenopacketModel] birthdate=%s; encounters:%d, dates: %d\n",
-               getBirthdate(), encounters.size() ,encounterDates.size());
+        return String.format("[PhenopacketModel] terms:%d.",terms.size());
+    }
+
+    @Override
+    public  Optional<LocalDate> getBirthdate() {
+        return Optional.ofNullable(this.birthdate);
+    }
+
+    @Override
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public List<FenominalTerm> getTerms() {
+        return terms;
+    }
+
+    public List<LocalDate> getEncounterDates(LocalDate birthdate) {
+        Set<Period> ageSet = new HashSet<>();
+        for (FenominalTerm fterm : terms) {
+            if (fterm.hasAge()) {
+                ageSet.add(Period.parse(fterm.getIso8601Age()));
+            }
+        }
+        List<LocalDate> encounterDates = new ArrayList<>();
+        for (Period age : ageSet) {
+            LocalDate ldate = birthdate
+                    .plusYears(age.getYears())
+                    .plusMonths(age.getMonths())
+                    .plusDays(age.getDays());
+            encounterDates.add(ldate);
+        }
+        Collections.sort(encounterDates);
+        return encounterDates;
     }
 }
