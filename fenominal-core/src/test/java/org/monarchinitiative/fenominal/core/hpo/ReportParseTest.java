@@ -89,7 +89,7 @@ public class ReportParseTest {
                 classification system) III.""";
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            System.out.println(decode(mt, sentence));
+            assertTrue(mt.isPresent());
         }
         assertEquals(3, terms.size());
     }
@@ -112,7 +112,7 @@ public class ReportParseTest {
                 """;
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            System.out.println(decode(mt, sentence));
+            assertTrue(mt.isPresent());
         }
         assertEquals(5,  terms.size());
     }
@@ -128,7 +128,7 @@ public class ReportParseTest {
                 """;
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            System.out.println(decode(mt, sentence));
+            assertTrue(mt.isPresent());
         }
         assertEquals(1,  terms.size());
     }
@@ -141,7 +141,7 @@ public class ReportParseTest {
                 """;
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            System.out.println(decode(mt, sentence));
+            assertFalse(mt.isPresent());
         }
         assertEquals(1,  terms.size());
     }
