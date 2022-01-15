@@ -50,7 +50,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-import static org.monarchinitiative.fenominal.gui.OptionalResources.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.*;
 import static org.monarchinitiative.fenominal.gui.guitools.MiningTask.*;
 
@@ -132,12 +131,12 @@ public class FenominalMainController {
         this.metaDataTableView.getColumns().add(itemColumn);
         this.metaDataTableView.getColumns().add(valueColumn);
         this.metaDataTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        itemColumn.setMaxWidth(1f * Integer.MAX_VALUE * 15);
-        valueColumn.setMaxWidth(1f * Integer.MAX_VALUE * 85);
+        itemColumn.setMaxWidth(1f * Integer.MAX_VALUE * 25);
+        valueColumn.setMaxWidth(1f * Integer.MAX_VALUE * 75);
         // Ordered map of data for the table
         Map<String, String> mp = new LinkedHashMap<>();
         String versionInfo = getHpoVersion();
-        mp.put("HPO", versionInfo);
+        mp.put(HPO_VERSION_KEY, versionInfo);
         populateTableWithData(mp);
     }
 
@@ -299,7 +298,7 @@ public class FenominalMainController {
         this.parseButton.setText("Mine case report");
         this.miningTaskType = CASE_REPORT;
         this.model = new CaseReport(id, isoAge);
-        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem("id", id);
         model.setModelDataItem("age", isoAge);
         populateTableWithData(model.getModelData());
@@ -333,7 +332,7 @@ public class FenominalMainController {
         this.parseButton.setText("Mine case report 1");
         this.miningTaskType = COHORT_ONE_BY_ONE;
         this.model = new OneByOneCohort(pmid, omimId, diseasename);
-        model.setModelDataItem("HPO", getHpoVersion());
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem("Curated so far", "0");
         model.setModelDataItem("OMIM id", omimId);
         model.setModelDataItem("Disease", diseasename);

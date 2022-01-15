@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
+
 public record PhenopacketByAgeJsonOutputter(
         PhenopacketByAgeModel phenopacketModel) implements PhenoOutputter {
 
@@ -27,7 +29,7 @@ public record PhenopacketByAgeJsonOutputter(
     public void output(Writer writer) throws IOException {
         Map<String,String> data = phenopacketModel.getModelData();
         String biocurator = data.getOrDefault("biocurator", "n/a");
-        String hpoVersion = data.getOrDefault("HPO", "n/a");
+        String hpoVersion = data.getOrDefault(HPO_VERSION_KEY, "n/a");
         MetaData meta = MetaDataBuilder
                 .create(LocalDate.now().toString(), biocurator)
                 .resource(Resources.hpoVersion(hpoVersion))
