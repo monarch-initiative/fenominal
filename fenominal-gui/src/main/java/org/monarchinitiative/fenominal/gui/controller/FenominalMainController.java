@@ -345,9 +345,17 @@ public class FenominalMainController {
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
         BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
-        LocalDate birthdate = dialog.showDatePickerDialog();
-        String id = dialog.getId();
-        this.model = new PhenopacketModel(id);
+        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialog();
+        if (opt.isEmpty()) {
+            PopUps.showInfoMessage("Error", "Could not retrieve id/sex/birthdate");
+            return;
+        }
+        PatientSexIdAndBirthdate psidb = opt.get();
+        String id = psidb.id();
+        Sex sex = psidb.sex();
+        LocalDate birthdate = psidb.birthdate();
+        LOGGER.info("Retrieved id {} and sex {} and birthdate {}", id, sex, birthdate);
+        this.model = new PhenopacketModel(id, sex);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, id);
         model.setModelDataItem(N_CURATED_KEY, "0");
@@ -360,9 +368,16 @@ public class FenominalMainController {
     private void initPhenopacketWithManualAge() {
         this.parseButton.setDisable(false);
         String id = PopUps.getStringFromUser("Patient ID", "Enter patient ID (no PHI)", "Patient ID");
+
+        Optional<PatientSexAndId> opt = PatientSexAndIdDialog.show();
+        if (opt.isEmpty()) {
+            PopUps.showInfoMessage("Error", "Could not initialize Phenopacket");
+            return;
+        }
+        PatientSexAndId psid = opt.get();
         this.parseButton.setText("Mine encounter 1");
         this.miningTaskType = PHENOPACKET_BY_AGE;
-        this.model = new PhenopacketByAgeModel(id);
+        this.model = new PhenopacketByAgeModel(psid.id(), psid.sex());
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(N_CURATED_KEY, "0");
         populateTableWithData(model.getModelData());
@@ -567,8 +582,13 @@ public class FenominalMainController {
 
         this.model = new PhenopacketModel(phenopacketImp);
         BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
-        LocalDate bdate = dialog.showDatePickerDialog();
-        model.setBirthdate(bdate);
+        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialog();
+        if (opt.isEmpty()) {
+            PopUps.showInfoMessage("Error", "Could not load phenopacket");
+            return;
+        }
+        PatientSexIdAndBirthdate psib = opt.get();
+        model.setBirthdate(psib.birthdate());
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
         populateTableWithData(model.getModelData());

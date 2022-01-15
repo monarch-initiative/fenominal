@@ -15,6 +15,10 @@ public interface TextMiningResultsModel {
 
     int getTermCount();
 
+    default Sex sex() {
+        return Sex.UNKNOWN_SEX;
+    }
+
     Map<String,String> getModelData();
 
     void setModelDataItem(String k, String v);

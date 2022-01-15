@@ -12,6 +12,7 @@ import org.phenopackets.phenotools.builder.builders.PhenotypicFeatureBuilder;
 import org.phenopackets.phenotools.builder.builders.Resources;
 import org.phenopackets.phenotools.builder.builders.TimeElements;
 import org.phenopackets.schema.v2.Phenopacket;
+import org.phenopackets.schema.v2.core.Individual;
 import org.phenopackets.schema.v2.core.MetaData;
 import org.phenopackets.schema.v2.core.PhenotypicFeature;
 import org.phenopackets.schema.v2.core.Update;
@@ -81,10 +82,15 @@ public class PhenopacketByAgeJsonOutputter
     public void output(Writer writer) throws IOException {
         LOGGER.info("Output by age model with {} terms.", phenopacketModel.getTermCount());
         Map<String, String> data = phenopacketModel.getModelData();
-        String biocurator = data.getOrDefault(BIOCURATOR_ID_PROPERTY, "n/a");
-        String hpoVersion = data.getOrDefault(HPO_VERSION_KEY, "n/a");
         MetaData meta = getMetaData();
         PhenopacketBuilder builder = PhenopacketBuilder.create(generatePhenopacketId(), meta);
+        org.phenopackets.schema.v2.core.Sex sx = switch (phenopacketModel.sex()) {
+            case MALE -> org.phenopackets.schema.v2.core.Sex.MALE;
+            case FEMALE -> org.phenopackets.schema.v2.core.Sex.FEMALE;
+            case OTHER_SEX -> org.phenopackets.schema.v2.core.Sex.OTHER_SEX;
+            default -> org.phenopackets.schema.v2.core.Sex.UNKNOWN_SEX;
+        };
+        Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
         for (FenominalTerm fterm : phenopacketModel.getTerms()) {
             Term term = fterm.getTerm();
             boolean observed = fterm.isObserved();
@@ -114,6 +120,7 @@ public class PhenopacketByAgeJsonOutputter
             }
             builder.phenotypicFeature(pf); // add feature, one at a time
         }
+        builder.individual(subject);
 
         // The Phenopacket is now complete and we would like to write it as JSON
         Phenopacket phenopacket = builder.build();

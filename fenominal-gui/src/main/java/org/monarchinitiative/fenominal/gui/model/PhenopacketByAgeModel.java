@@ -9,8 +9,8 @@ import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
  */
 public class PhenopacketByAgeModel extends AbstractPhenopacketModel {
 
-    public PhenopacketByAgeModel(String id) {
-        super(id);
+    public PhenopacketByAgeModel(String id, Sex sex) {
+        super(id, sex);
     }
 
     public PhenopacketByAgeModel(PhenopacketImporter importer) {

@@ -4,14 +4,13 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
+import org.monarchinitiative.fenominal.gui.model.Sex;
 import org.monarchinitiative.fenominal.gui.model.SimpleUpdate;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;
-import org.phenopackets.phenotools.builder.builders.MetaDataBuilder;
-import org.phenopackets.phenotools.builder.builders.PhenotypicFeatureBuilder;
-import org.phenopackets.phenotools.builder.builders.Resources;
-import org.phenopackets.phenotools.builder.builders.TimeElements;
+import org.phenopackets.phenotools.builder.builders.*;
 import org.phenopackets.schema.v2.Phenopacket;
+import org.phenopackets.schema.v2.core.Individual;
 import org.phenopackets.schema.v2.core.MetaData;
 import org.phenopackets.schema.v2.core.PhenotypicFeature;
 import org.phenopackets.schema.v2.core.Update;
@@ -78,7 +77,14 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
     @Override
     public void output(Writer writer) throws IOException {
         MetaData meta = getMetaData();
-        PhenopacketBuilder builder =PhenopacketBuilder.create(generatePhenopacketId(), meta);
+        PhenopacketBuilder builder = PhenopacketBuilder.create(generatePhenopacketId(), meta);
+        org.phenopackets.schema.v2.core.Sex sx = switch (phenopacketModel.sex()) {
+            case MALE -> org.phenopackets.schema.v2.core.Sex.MALE;
+            case FEMALE -> org.phenopackets.schema.v2.core.Sex.FEMALE;
+            case OTHER_SEX -> org.phenopackets.schema.v2.core.Sex.OTHER_SEX;
+            default -> org.phenopackets.schema.v2.core.Sex.UNKNOWN_SEX;
+        };
+        Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
         for (FenominalTerm fenominalTerm : phenopacketModel.getTerms()) {
             Term term = fenominalTerm.getTerm();
             boolean observed = fenominalTerm.isObserved();
@@ -108,6 +114,7 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
             }
             builder.phenotypicFeature(pf); // add feature, one at a time
         }
+        builder.individual(subject);
         // The Phenopacket is now complete and we would like to write it as JSON
         Phenopacket phenopacket = builder.build();
         String json =  JsonFormat.printer().print(phenopacket);

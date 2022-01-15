@@ -18,8 +18,8 @@ public class PhenopacketModel extends AbstractPhenopacketModel  {
      * a preexisting phenopacket).
      * @param id id for the phenopacket
      */
-    public PhenopacketModel(String id) {
-        super(id);
+    public PhenopacketModel(String id,Sex sex) {
+        super(id, sex);
     }
 
     /**

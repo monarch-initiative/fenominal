@@ -35,8 +35,11 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
      */
     protected final List<SimpleUpdate> updates;
 
+    private final Sex sex;
+
     public AbstractPhenopacketModel(PhenopacketImporter phenopacketImp){
         this.id = phenopacketImp.getId();
+        this.sex = phenopacketImp.sex();
         this.terms = phenopacketImp.getFenominalTermList();
         this.createdBy = phenopacketImp.getCreatedBy();
         this.createdOn = phenopacketImp.getCreatedOn();
@@ -45,8 +48,9 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
         data.put(PATIENT_ID_KEY, id);
     }
 
-    public AbstractPhenopacketModel(String id) {
+    public AbstractPhenopacketModel(String id, Sex sex) {
         this.id = id;
+        this.sex = sex;
         this.createdBy = null;
         this.createdOn = null;
         this.updates = List.of();
