@@ -499,9 +499,11 @@ public class FenominalMainController {
         text1.setFill(Color.BLUE);
         text1.setFont(Font.font("Helvetica", FontPosture.REGULAR, 14));
         TextFlow textFlow = new TextFlow(text1);
+        ScrollPane spane = new ScrollPane(textFlow);
         Stage stage = new Stage();
-        Scene testScene = new Scene(textFlow);
-        stage.setScene(testScene);
+        Scene previewOutputScene = new Scene(spane);
+        stage.setScene(previewOutputScene);
+        stage.setHeight(750);
         stage.showAndWait();
         e.consume();
     }
