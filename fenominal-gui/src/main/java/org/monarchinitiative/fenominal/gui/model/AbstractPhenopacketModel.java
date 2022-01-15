@@ -2,18 +2,23 @@ package org.monarchinitiative.fenominal.gui.model;
 
 import com.google.protobuf.Timestamp;
 import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
+import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class AbstractPhenopacketModel {
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.N_CURATED_KEY;
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.PATIENT_ID_KEY;
+
+public class AbstractPhenopacketModel implements TextMiningResultsModel {
 
     protected final String id;
 
     protected final List<FenominalTerm> terms;
-
+    private int caseMined = 0;
 
     protected final Map<String, String> data;
 
@@ -37,6 +42,7 @@ public class AbstractPhenopacketModel {
         this.createdOn = phenopacketImp.getCreatedOn();
         this.updates = phenopacketImp.getUpdateList();
         data = new HashMap<>();
+        data.put(PATIENT_ID_KEY, id);
     }
 
     public AbstractPhenopacketModel(String id) {
@@ -46,6 +52,7 @@ public class AbstractPhenopacketModel {
         this.updates = List.of();
         this.terms = new ArrayList<>();
         data = new HashMap<>();
+        data.put(PATIENT_ID_KEY, id);
     }
 
     public String getId() {
@@ -72,6 +79,69 @@ public class AbstractPhenopacketModel {
         return updates;
     }
 
+    @Override
+    public void addHpoFeatures(List<FenominalTerm> fterms) {
+        caseMined++;
+        terms.addAll(fterms);
+        setModelDataItem(N_CURATED_KEY, String.valueOf(getTermCount()));
+    }
+
+    @Override
+    public int casesMined() {
+        return caseMined;
+    }
+
+    @Override
+    public int getTermCount() {
+        if (terms.size()==0) return 0;
+        Set<TermId> tids = terms.stream()
+                .map(FenominalTerm::getTerm)
+                .map(Term::getId)
+                .collect(Collectors.toSet());
+        return tids.size();
+    }
+
+    public List<LocalDate> getEncounterDates(LocalDate birthdate) {
+        Set<Period> ageSet = new HashSet<>();
+        for (FenominalTerm fterm : terms) {
+            if (fterm.hasAge()) {
+                ageSet.add(Period.parse(fterm.getIso8601Age()));
+            }
+        }
+        List<LocalDate> encounterDates = new ArrayList<>();
+        for (Period age : ageSet) {
+            LocalDate ldate = birthdate
+                    .plusYears(age.getYears())
+                    .plusMonths(age.getMonths())
+                    .plusDays(age.getDays());
+            encounterDates.add(ldate);
+        }
+        Collections.sort(encounterDates);
+        return encounterDates;
+    }
+
+
+    public List<String> getEncounterAges() {
+        Set<String> ageSet = new HashSet<>();
+        for (FenominalTerm fenominalTerm : terms) {
+            if (fenominalTerm.hasAge()) {
+                ageSet.add(fenominalTerm.getIso8601Age());
+            }
+        }
+        List<String> ageList = new ArrayList<>(ageSet);
+        Collections.sort(ageList);
+        return ageList;
+    }
+
+    @Override
+    public Map<String, String> getModelData() {
+        return data;
+    }
+
+    @Override
+    public void setModelDataItem(String k, String v) {
+        data.put(k,v);
+    }
 
 
     public String getPhenopacketId() { return id; }
