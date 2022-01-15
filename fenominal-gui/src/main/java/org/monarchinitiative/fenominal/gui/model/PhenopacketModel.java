@@ -1,6 +1,7 @@
 package org.monarchinitiative.fenominal.gui.model;
 
 
+import com.google.protobuf.Timestamp;
 import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -14,29 +15,29 @@ import java.util.stream.Collectors;
  * Model for building a Phenopacket with multiple time points for a single patient
  * @author Peter N Robinson
  */
-public class PhenopacketModel implements TextMiningResultsModel {
+public class PhenopacketModel extends AbstractPhenopacketModel implements TextMiningResultsModel {
 
-    private final String id;
-
-    private final List<FenominalTerm> terms;
-
-
-    private final Map<String, String> data;
 
     private LocalDate birthdate = null;
 
+
     private int caseMined = 0;
 
+    /**
+     * This constructor is use to initialize a Phenopacket for the first time (i.e., not from
+     * a preexisting phenopacket).
+     * @param id id for the phenopacket
+     */
     public PhenopacketModel(String id) {
-        this.id = id;
-        this.terms = new ArrayList<>();
-        data = new HashMap<>();
+        super(id);
     }
 
+    /**
+     * This constructor is used to initialize the PhenopacketModel from a pre-exisiting phenopacket
+     * @param phenopacketImp Parsed pre-existing Phenopacket
+     */
     public PhenopacketModel(PhenopacketImporter phenopacketImp) {
-        this.id = phenopacketImp.getId();
-        this.terms = phenopacketImp.getFenominalTermList();
-        data = new HashMap<>();
+        super(phenopacketImp);
     }
 
 
@@ -62,17 +63,7 @@ public class PhenopacketModel implements TextMiningResultsModel {
         return tids.size();
     }
 
-    @Override
-    public Map<String, String> getModelData() {
-        return data;
-    }
 
-    @Override
-    public void setModelDataItem(String k, String v) {
-        data.put(k,v);
-    }
-
-    public String getPhenopacketId() { return id; }
 
     @Override
     public String toString() {
@@ -111,4 +102,17 @@ public class PhenopacketModel implements TextMiningResultsModel {
         Collections.sort(encounterDates);
         return encounterDates;
     }
+
+    @Override
+    public Map<String, String> getModelData() {
+        return data;
+    }
+
+    @Override
+    public void setModelDataItem(String k, String v) {
+        data.put(k,v);
+    }
+
+
+
 }

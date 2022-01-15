@@ -5,18 +5,15 @@ import java.util.*;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.N_CURATED_KEY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.PATIENT_ID_KEY;
 
-public class PhenopacketByAgeModel  implements TextMiningResultsModel {
+public class PhenopacketByAgeModel extends AbstractPhenopacketModel implements TextMiningResultsModel {
 
     private final List<FenominalTerm> terms;
 
-
     private int casesMined = 0;
 
-    private final Map<String, String> data;
-
     public PhenopacketByAgeModel(String id) {
+        super(id);
         terms = new ArrayList<>();
-        data = new HashMap<>();
         data.put(PATIENT_ID_KEY, id);
     }
 
