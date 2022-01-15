@@ -154,9 +154,6 @@ public class FileDownloader {
             out.close();
             if (pb != null && pos != pb.getMax())
                 pb.print(fileSize);
-            // if (!ftp.completePendingCommand())
-            // throw new IOException("Could not finish download!");
-
         } catch (FileNotFoundException e) {
             dest.delete();
             try {
@@ -212,9 +209,8 @@ public class FileDownloader {
         FileOutputStream out;
         try {
             int connectionTimeout = 5000; // 5 seconds should be more than enough to connect to a server
-            final String TEXTPLAIN_REQUEST_TYPE = ", text/plain; q=0.1";
-            String actualAcceptHeaders = TEXTPLAIN_REQUEST_TYPE;
-            URLConnection connection =  connect(src.openConnection(),connectionTimeout,actualAcceptHeaders,new HashSet<>());
+            final String TEXTPLAIN_REQUEST_TYPE = ", text/plain; q=0.1"; // actual accept headers
+            URLConnection connection =  connect(src.openConnection(),connectionTimeout,TEXTPLAIN_REQUEST_TYPE,new HashSet<>());
             final int fileSize = connection.getContentLength();
             in = new BufferedInputStream(connection.getInputStream());
             out = new FileOutputStream(dest);

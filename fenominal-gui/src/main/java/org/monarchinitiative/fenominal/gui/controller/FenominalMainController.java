@@ -249,7 +249,7 @@ public class FenominalMainController {
                     .map(pterm -> FenominalTerm.fromMainPhenotypeTermWithIsoAge(pterm, agePeriod))
                     .sorted()
                     .collect(Collectors.toList());
-            model.addHpoFeatures(approvedTerms, isoAge);
+            model.addHpoFeatures(approvedTerms);
             int encountersSoFar = model.casesMined();
             this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
         } else {
@@ -354,6 +354,7 @@ public class FenominalMainController {
         this.model = new PhenopacketModel(id);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, id);
+        model.setModelDataItem(N_CURATED_KEY, "0");
         model.setBirthdate(birthdate);
         populateTableWithData(model.getModelData());
     }
@@ -554,7 +555,7 @@ public class FenominalMainController {
             LOGGER.info("Adding fterm {}", answer.term().getName());
         }
         LOGGER.info("Adding HPO features from questionnaire, n={}", fterms.size());
-        model.addHpoFeatures(fterms, LocalDate.now());
+        model.addHpoFeatures(fterms);
 
 
         updateTable();

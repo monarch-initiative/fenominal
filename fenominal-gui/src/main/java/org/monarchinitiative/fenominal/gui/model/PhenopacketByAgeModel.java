@@ -1,67 +1,41 @@
 package org.monarchinitiative.fenominal.gui.model;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.N_CURATED_KEY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.PATIENT_ID_KEY;
 
 public class PhenopacketByAgeModel  implements TextMiningResultsModel {
 
-    private final List<String> encounterAges;
+    private final List<FenominalTerm> terms;
 
 
-    private final List<MedicalEncounter> encounters;
+    private int casesMined = 0;
 
     private final Map<String, String> data;
 
     public PhenopacketByAgeModel(String id) {
-        encounterAges = new ArrayList<>();
-        encounters = new ArrayList<>();
+        terms = new ArrayList<>();
         data = new HashMap<>();
         data.put(PATIENT_ID_KEY, id);
     }
 
-    public List<String> getEncounterAges() {
-        return encounterAges;
+    @Override
+    public void addHpoFeatures(List<FenominalTerm> fterms) {
+        this.terms.addAll(fterms);
+        casesMined++;
+        setModelDataItem(N_CURATED_KEY, String.valueOf(getTermCount()));
     }
 
-    public List<MedicalEncounter> getEncounters() {
-        return encounters;
-    }
-
-    @Override
-    public void addHpoFeatures(List<FenominalTerm> terms) {
-        throw new UnsupportedOperationException("PhenopacketByAgeModel requires iso8601 strings");
-    }
-
-    @Override
-    public void addHpoFeatures(List<FenominalTerm> terms, LocalDate date) {
-        throw new UnsupportedOperationException("PhenopacketByAgeModel only accepts iso8601 strings");
-    }
-    @Override
-    public void addHpoFeatures(List<FenominalTerm> terms, String isoAge) {
-        MedicalEncounter encounter = new MedicalEncounter(terms);
-        encounterAges.add(isoAge);
-        encounters.add(encounter);
-    }
 
     @Override
     public int casesMined() {
-        return encounters.size();
+        return casesMined;
     }
 
     @Override
     public int getTermCount() {
-        return encounters.stream()
-                .map(MedicalEncounter::getTerms)
-                .flatMap(List::stream)
-                .map(FenominalTerm::getTerm)
-                .collect(Collectors.toSet())
-                .size();
+        return terms.size();
     }
 
     @Override
@@ -72,5 +46,22 @@ public class PhenopacketByAgeModel  implements TextMiningResultsModel {
     @Override
     public void setModelDataItem(String k, String v) {
         data.put(k, v);
+    }
+
+    public List<FenominalTerm> getTerms() {
+        return terms;
+    }
+
+
+    public List<String> getEncounterAges() {
+        Set<String> ageSet = new HashSet<>();
+        for (FenominalTerm fenominalTerm : terms) {
+            if (fenominalTerm.hasAge()) {
+                ageSet.add(fenominalTerm.getIso8601Age());
+            }
+        }
+        List<String> ageList = new ArrayList<>(ageSet);
+        Collections.sort(ageList);
+        return ageList;
     }
 }
