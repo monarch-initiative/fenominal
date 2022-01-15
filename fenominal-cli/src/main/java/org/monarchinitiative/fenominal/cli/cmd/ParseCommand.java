@@ -1,8 +1,6 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
-import org.monarchinitiative.fenominal.cli.analysis.MultiplePassageParser;
 import org.monarchinitiative.fenominal.cli.analysis.PassageParser;
-import org.monarchinitiative.fenominal.cli.analysis.SinglePassageParser;
 import picocli.CommandLine;
 
 
@@ -18,19 +16,10 @@ public class ParseCommand implements Callable<Integer> {
     public String input;
     @CommandLine.Option(names = { "-o", "--output"}, description = "path to output file")
     private String output = "fenominal-mined.txt";
-    @CommandLine.Option(names = { "--multiple"}, description = "if true, parse text with multiple passages")
-    private boolean multiple = false;
-    @CommandLine.Option(names = {"-mincount"}, description = "minimum count for output (multiple)")
-    private int mincount = 2;
 
     @Override
     public Integer call() {
-        PassageParser parser;
-        if (multiple) {
-            parser = new MultiplePassageParser(hpoJsonPath, input, output, mincount);
-        } else {
-            parser = new SinglePassageParser(hpoJsonPath, input, output);
-        }
+        PassageParser parser = new PassageParser(hpoJsonPath, input, output);
         parser.parse();
         return 0;
     }
