@@ -4,7 +4,6 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
-import org.monarchinitiative.fenominal.gui.model.Sex;
 import org.monarchinitiative.fenominal.gui.model.SimpleUpdate;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;

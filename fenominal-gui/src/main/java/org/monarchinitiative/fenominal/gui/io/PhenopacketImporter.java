@@ -108,11 +108,10 @@ public class PhenopacketImporter {
         if (phenopacket.hasSubject()) {
             Sex s = phenopacket.getSubject().getSex();
             return switch (s) {
-                case UNKNOWN_SEX -> org.monarchinitiative.fenominal.gui.model.Sex.UNKNOWN_SEX;
+                case UNKNOWN_SEX,UNRECOGNIZED -> org.monarchinitiative.fenominal.gui.model.Sex.UNKNOWN_SEX;
                 case MALE -> org.monarchinitiative.fenominal.gui.model.Sex.MALE;
                 case FEMALE -> org.monarchinitiative.fenominal.gui.model.Sex.FEMALE;
                 case OTHER_SEX -> org.monarchinitiative.fenominal.gui.model.Sex.OTHER_SEX;
-                case UNRECOGNIZED -> org.monarchinitiative.fenominal.gui.model.Sex.OTHER_SEX;
             };
         } else {
             return org.monarchinitiative.fenominal.gui.model.Sex.UNKNOWN_SEX;

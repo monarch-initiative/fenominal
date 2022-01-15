@@ -40,7 +40,7 @@ public class PhenoAge implements Comparable<PhenoAge> {
                     .thenComparingInt(PhenoAge::getDays);
 
     @Override
-    public int compareTo(PhenoAge other) {
+    public int compareTo(@SuppressWarnings("NullableProblems") PhenoAge other) {
         return COMPARATOR.compare(this, other);
     }
 

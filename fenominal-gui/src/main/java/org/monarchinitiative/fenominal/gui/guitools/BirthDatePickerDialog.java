@@ -1,29 +1,18 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
-import org.apache.commons.logging.Log;
-import org.monarchinitiative.fenominal.gui.model.PatientSexAndId;
 import org.monarchinitiative.fenominal.gui.model.PatientSexIdAndBirthdate;
 import org.monarchinitiative.fenominal.gui.model.Sex;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
-import static javafx.stage.StageStyle.DECORATED;
 
 public class BirthDatePickerDialog {
 
@@ -86,6 +75,8 @@ public class BirthDatePickerDialog {
         dialog.setHeaderText("Please enter patient sex, ID, and birthdate");
         String pattern = "MM/dd/yyyy";
         DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setMinWidth(300);
+        dialogPane.setMinHeight(300);
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         HBox hbox = new HBox();
         Label label = new Label("Patient ID: ");
@@ -141,7 +132,9 @@ public class BirthDatePickerDialog {
         }
         VBox vb = new VBox();
         vb.getChildren().addAll(unknownRadio, femaleRadio, maleRadio, otherRadio);
-        dialogPane.getChildren().addAll(hbox, vb, pickerBox);
+        VBox allElementsBox = new VBox();
+        allElementsBox.getChildren().addAll(hbox, vb, pickerBox);
+        dialogPane.setContent(allElementsBox);
         dialog.setResultConverter((ButtonType button) -> {
             if (button == ButtonType.OK) {
                 String patientId = textField.getText().strip();
