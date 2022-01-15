@@ -6,13 +6,8 @@ import org.monarchinitiative.fenominal.core.decorators.TokenDecorator;
 
 import java.util.Map;
 
-public class NegationTokenDecorator implements TokenDecorator {
-
-    private final Map<String, String> negationClues;
-
-    public NegationTokenDecorator(Map<String, String> negationClues) {
-        this.negationClues = negationClues;
-    }
+public record NegationTokenDecorator(
+        Map<String, String> negationClues) implements TokenDecorator {
 
     @Override
     public SimpleToken decorate(SimpleToken simpleToken) {
