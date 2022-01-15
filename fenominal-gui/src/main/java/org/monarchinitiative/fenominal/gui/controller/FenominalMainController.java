@@ -168,13 +168,9 @@ public class FenominalMainController {
         return Period.between(birthdate, encounterDate);
     }
 
-    private void parsePhenopacket(Set<PhenotypeTerm> approved, LocalDate encounterDate) {
-
-    }
-
     @FXML
     private void parseButtonPressed(ActionEvent e) {
-        LOGGER.error("Parse button pressed");
+        LOGGER.trace("Parse button pressed");
 
         Ontology ontology = this.optionalResources.getOntology();
         if (ontology == null) {
@@ -240,8 +236,8 @@ public class FenominalMainController {
                     .map(pterm -> FenominalTerm.fromMainPhenotypeTermWithAge(pterm, age))
                     .sorted()
                     .collect(Collectors.toList());
-            model.addHpoFeatures(approvedTerms);
-            int encountersSoFar = model.casesMined();
+            pmodel.addHpoFeatures(approvedTerms);
+            int encountersSoFar = pmodel.casesMined();
             this.parseButton.setText(String.format("Mine encounter %d", encountersSoFar + 1));
         } else if (miningTaskType.equals(PHENOPACKET_BY_AGE)) {
             Period agePeriod = Period.parse(isoAge);
@@ -368,9 +364,11 @@ public class FenominalMainController {
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
-        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
-        LocalDate bdate = dialog.showDatePickerDialog();
+
         this.model = new PhenopacketModel(phenopacketImp);
+        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
+        LocalDate bdate = dialog.showDatePickerDialog();
+        model.setBirthdate(bdate);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
         populateTableWithData(model.getModelData());
@@ -598,8 +596,8 @@ public class FenominalMainController {
                     break;
                 case "Phenopacket (by age at encounter)":
                     // initPhenopacketWithManualAge();
-                    System.out.println("Update phenopacket by age");
-                    break;
+                    throw new FenominalRunTimeException("Not Implemented yet");
+
                 case "Cancel":
                 default:
                     return;
@@ -618,8 +616,11 @@ public class FenominalMainController {
 
     private Optional<PhenopacketImporter> loadPhenopacketFromFile() {
         FileChooser fileChooser = new FileChooser();
+        // limit to *.json
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
-        File file = fileChooser.showSaveDialog(stage);
+        File file = fileChooser.showOpenDialog(stage);
         if (file == null) {
             return Optional.empty();
         }

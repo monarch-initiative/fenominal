@@ -48,7 +48,7 @@ public class PhenopacketImporter {
 
     private PhenopacketImporter(Phenopacket phenopacket, Ontology ontology) {
         this.phenopacket = phenopacket;
-        List<FenominalTerm> termList = new ArrayList<>();
+        this.fenominalTermList = new ArrayList<>();
         List<PhenotypicFeature> featureList = phenopacket.getPhenotypicFeaturesList();
         for (var feat : featureList) {
             boolean excluded = feat.getExcluded();
@@ -70,17 +70,17 @@ public class PhenopacketImporter {
                 if (onsetElem.hasAge()) {
                     Age age = onsetElem.getAge();
                     Period agePeriod = Period.parse(age.getIso8601Duration());
-                    termList.add(FenominalTerm.fromMainPhenotypeTermWithAge(pterm, agePeriod));
+                    fenominalTermList.add(FenominalTerm.fromMainPhenotypeTermWithAge(pterm, agePeriod));
                 } else {
                     String errorString = String.format("Age time element (%s) did not have iso8601 age", feat);
                     logger.error(errorString);
                     throw new PhenolRuntimeException(errorString);
                 }
             } else {
-                termList.add(FenominalTerm.fromMainPhenotypeTerm(pterm));
+                fenominalTermList.add(FenominalTerm.fromMainPhenotypeTerm(pterm));
             }
         }
-        this.fenominalTermList = List.copyOf(termList);
+
         MetaData meta = phenopacket.getMetaData();
         this.createdOn = meta.getCreated();
         this.createdBy = meta.getCreatedBy();
