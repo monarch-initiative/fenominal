@@ -1,5 +1,7 @@
 package org.monarchinitiative.fenominal.gui.model;
 
+import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
+
 import java.util.*;
 
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.N_CURATED_KEY;
@@ -13,6 +15,12 @@ public class PhenopacketByAgeModel extends AbstractPhenopacketModel implements T
 
     public PhenopacketByAgeModel(String id) {
         super(id);
+        terms = new ArrayList<>();
+        data.put(PATIENT_ID_KEY, id);
+    }
+
+    public PhenopacketByAgeModel(PhenopacketImporter importer) {
+        super(importer);
         terms = new ArrayList<>();
         data.put(PATIENT_ID_KEY, id);
     }

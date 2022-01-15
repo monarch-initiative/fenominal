@@ -355,24 +355,7 @@ public class FenominalMainController {
         populateTableWithData(model.getModelData());
     }
 
-    /**
-     * Loads a prexisting Phenopacket and populates the model
-     *
-     * @param phenopacketImp Importer object
-     */
-    private void loadPhenopacket(PhenopacketImporter phenopacketImp) {
-        this.parseButton.setDisable(false);
-        this.parseButton.setText("Mine time point 1");
-        this.miningTaskType = PHENOPACKET;
 
-        this.model = new PhenopacketModel(phenopacketImp);
-        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
-        LocalDate bdate = dialog.showDatePickerDialog();
-        model.setBirthdate(bdate);
-        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
-        model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
-        populateTableWithData(model.getModelData());
-    }
 
     private void initPhenopacketWithManualAge() {
         this.parseButton.setDisable(false);
@@ -572,6 +555,41 @@ public class FenominalMainController {
         e.consume();
     }
 
+    /**
+     * Loads a prexisting Phenopacket and populates the model
+     *
+     * @param phenopacketImp Importer object
+     */
+    private void loadPhenopacket(PhenopacketImporter phenopacketImp) {
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine time point 1");
+        this.miningTaskType = PHENOPACKET;
+
+        this.model = new PhenopacketModel(phenopacketImp);
+        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
+        LocalDate bdate = dialog.showDatePickerDialog();
+        model.setBirthdate(bdate);
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
+        model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
+        populateTableWithData(model.getModelData());
+    }
+
+    /**
+     * Loads a prexisting Phenopacket and populates the model
+     *
+     * @param phenopacketImp Importer object
+     */
+    private void loadPhenopacketWithManualAge(PhenopacketImporter phenopacketImp) {
+        this.parseButton.setDisable(false);
+        this.parseButton.setText("Mine time point 1");
+        this.miningTaskType = PHENOPACKET;
+
+        this.model = new PhenopacketByAgeModel(phenopacketImp);
+        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
+        model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
+        populateTableWithData(model.getModelData());
+    }
+
     public void updatePhenopacket(ActionEvent actionEvent) {
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter age via brithdate/encounter date", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter dage directly", false);
@@ -583,21 +601,21 @@ public class FenominalMainController {
         dialog.setContentText("Select a phenopacket file for updating.");
         Optional<ButtonType> opt = dialog.showAndWait();
         if (opt.isPresent()) {
+            Optional<PhenopacketImporter> optpp = loadPhenopacketFromFile();
+            if (optpp.isEmpty()) {
+                PopUps.showInfoMessage("Error", "Could not load phenopacket file");
+                return;
+            }
             ButtonType btype = opt.get();
             switch (btype.getText()) {
                 case "Phenopacket":
-                    Optional<PhenopacketImporter> optpp = loadPhenopacketFromFile();
-                    if (optpp.isEmpty()) {
-                        PopUps.showInfoMessage("Error", "Could not load phenopacket file");
-                        return;
-                    }
                     loadPhenopacket(optpp.get());
-                    System.out.println("Update phenopacket");
+                    this.miningTaskType = PHENOPACKET;
                     break;
                 case "Phenopacket (by age at encounter)":
-                    // initPhenopacketWithManualAge();
-                    throw new FenominalRunTimeException("Not Implemented yet");
-
+                    loadPhenopacketWithManualAge(optpp.get());
+                    this.miningTaskType = PHENOPACKET_BY_AGE;
+                    break;
                 case "Cancel":
                 default:
                     return;

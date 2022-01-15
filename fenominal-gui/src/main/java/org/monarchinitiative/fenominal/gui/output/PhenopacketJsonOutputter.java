@@ -29,12 +29,16 @@ import java.util.Map;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
 
-public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
-        implements PhenoOutputter{
+public class PhenopacketJsonOutputter implements PhenoOutputter{
     private static final Logger LOGGER = LoggerFactory.getLogger(PhenopacketJsonOutputter.class);
 
+    private final PhenopacketModel phenopacketModel;
 
-    MetaData getMetaData() {
+    public PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) {
+        this.phenopacketModel = phenopacketModel;
+    }
+
+    private MetaData getMetaData() {
         Map<String,String> data = phenopacketModel.getModelData();
         String biocurator = data.getOrDefault(BIOCURATOR_ID_PROPERTY, "n/a");
         String hpoVersion = data.getOrDefault(HPO_VERSION_KEY, "n/a");
@@ -56,11 +60,11 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
                 updates.add(upd);
             }
             return MetaData.newBuilder()
-                            .setCreated(createdOn)
-                            .setCreatedBy(createdBy)
-                            .addAllUpdates(updates)
-                            .addResources(Resources.hpoVersion(hpoVersion))
-                            .build();
+                    .setCreated(createdOn)
+                    .setCreatedBy(createdBy)
+                    .addAllUpdates(updates)
+                    .addResources(Resources.hpoVersion(hpoVersion))
+                    .build();
         } else {
             return MetaDataBuilder
                     .create(LocalDate.now().toString(), biocurator)
@@ -68,6 +72,7 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
                     .build();
         }
     }
+
 
 
     @Override
