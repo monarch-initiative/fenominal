@@ -1,9 +1,7 @@
 package org.monarchinitiative.fenominal.gui.output;
 
 import com.google.protobuf.util.JsonFormat;
-import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
-import org.monarchinitiative.fenominal.gui.model.MedicalEncounter;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
 import java.util.Map;
 
 public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)

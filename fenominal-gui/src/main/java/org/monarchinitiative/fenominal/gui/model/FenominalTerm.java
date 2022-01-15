@@ -8,14 +8,16 @@ import java.time.Period;
 
 /**
  * Encapsulates one (text-mined) HPO term and a boolean to indicate
- * whether the term was observed or excluded.
+ * whether the term was observed or excluded, and optionally has an
+ * onset date
  * @author  Peter N Robinson
  */
 public class FenominalTerm implements Comparable<FenominalTerm> {
-
+    /** The mined Human Phenotype Ontology term */
     private final Term term;
+    /** The age of onset of the term. */
     private final Period age;
-
+    /** A flag indicating whether the HPO term was observed (true) or excluded (false).*/
     private final boolean observed;
 
     public FenominalTerm(Term term, Period age, boolean observed) {
@@ -24,6 +26,11 @@ public class FenominalTerm implements Comparable<FenominalTerm> {
         this.observed = observed;
     }
 
+    /**
+     * Use this constructor if the age of onset of  the feature is not available.
+     * @param term HPO term mined by fenominal
+     * @param observed A flag indicating whether the HPO term was observed (true) or excluded (false).
+     */
     public FenominalTerm(Term term, boolean observed) {
         this.term = term;
         this.age = null;
@@ -72,17 +79,6 @@ public class FenominalTerm implements Comparable<FenominalTerm> {
         if (age == null) {
             throw new FenominalRunTimeException("Attempt to get isoAge string although age is null");
         }
-        int y = age.getYears();
-        int m = age.getMonths();
-        int d = age.getDays();
-        if (d==0) {
-            if (m==0) {
-                return String.format("P%dY", y);
-            } else {
-                return String.format("P%dY%dM", y, m);
-            }
-        } else {
-            return String.format("P%dY%dM%dD", y, m, d);
-        }
+        return String.format("P%dY%dM%dD", age.getYears(), age.getMonths(), age.getDays());
     }
 }

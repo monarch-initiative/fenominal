@@ -4,12 +4,6 @@ package org.monarchinitiative.fenominal.gui.model;
 import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
-import org.phenopackets.schema.v2.Phenopacket;
-import org.phenopackets.schema.v2.core.Age;
-import org.phenopackets.schema.v2.core.OntologyClass;
-import org.phenopackets.schema.v2.core.PhenotypicFeature;
-import org.phenopackets.schema.v2.core.TimeElement;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -31,6 +25,8 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     private LocalDate birthdate = null;
 
+    private int caseMined = 0;
+
     public PhenopacketModel(String id) {
         this.id = id;
         this.terms = new ArrayList<>();
@@ -46,13 +42,14 @@ public class PhenopacketModel implements TextMiningResultsModel {
 
     @Override
     public void addHpoFeatures(List<FenominalTerm> fterms) {
+        caseMined++;
         terms.addAll(fterms);
     }
 
 
     @Override
     public int casesMined() {
-        return 0;
+        return caseMined;
     }
 
     @Override
