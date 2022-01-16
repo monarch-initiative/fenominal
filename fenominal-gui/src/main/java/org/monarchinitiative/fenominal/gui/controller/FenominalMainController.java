@@ -312,10 +312,16 @@ public class FenominalMainController {
             return;
         }
         CohortDataPane dataPane = new CohortDataPane();
-        dataPane.showDataEntryPane();
-        String pmid = dataPane.getPmid();
-        String omimId = dataPane.getOmimId();
-        String diseasename = dataPane.getDiseaseName();
+        Optional<CohortPublicationData> opt = dataPane.show();
+        if (opt.isEmpty()) {
+            PopUps.showInfoMessage("Error", "Could not retrieve publication data");
+            return;
+        }
+        CohortPublicationData cpd = opt.get();
+
+        String pmid = cpd.getPmid();
+        String omimId = cpd.getOmimId();
+        String diseasename = cpd.diseasename();
         try {
             TermId tid = TermId.of(omimId);
         } catch (PhenolRuntimeException e) {
@@ -334,6 +340,7 @@ public class FenominalMainController {
         model.setModelDataItem("Disease", diseasename);
         model.setModelDataItem("PMID", pmid);
         populateTableWithData(model.getModelData());
+        this.questionnaireButtn.setDisable(true); // questionnaire does not apply to cohorts!
     }
 
     /**
@@ -345,7 +352,7 @@ public class FenominalMainController {
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
         BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
-        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialog();
+        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialogSIB();
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not retrieve id/sex/birthdate");
             return;
@@ -367,9 +374,8 @@ public class FenominalMainController {
 
     private void initPhenopacketWithManualAge() {
         this.parseButton.setDisable(false);
-        String id = PopUps.getStringFromUser("Patient ID", "Enter patient ID (no PHI)", "Patient ID");
-
-        Optional<PatientSexAndId> opt = PatientSexAndIdDialog.show();
+        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
+        Optional<PatientSexAndId> opt = dialog.showDatePickerDialogSI();
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not initialize Phenopacket");
             return;
@@ -472,6 +478,7 @@ public class FenominalMainController {
         } catch (IOException e) {
             PopUps.showInfoMessage("Could not write to file: " + e.getMessage(), "IO Error");
         }
+        this.questionnaireButtn.setDisable(false);
     }
 
     @FXML
@@ -582,7 +589,7 @@ public class FenominalMainController {
 
         this.model = new PhenopacketModel(phenopacketImp);
         BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
-        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialog();
+        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialogSIB();
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not load phenopacket");
             return;

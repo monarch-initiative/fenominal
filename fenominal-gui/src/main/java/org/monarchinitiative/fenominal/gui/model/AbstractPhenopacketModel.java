@@ -63,6 +63,9 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
         return id;
     }
 
+    public Sex sex() {return this.sex; }
+
+
     public List<FenominalTerm> getTerms() {
         return terms;
     }

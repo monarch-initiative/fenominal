@@ -1,10 +1,16 @@
 package org.monarchinitiative.fenominal.gui.guitools;
 
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
+import org.monarchinitiative.fenominal.gui.model.PatientSexAndId;
 import org.monarchinitiative.fenominal.gui.model.PatientSexIdAndBirthdate;
 import org.monarchinitiative.fenominal.gui.model.Sex;
 
@@ -67,36 +73,9 @@ public class BirthDatePickerDialog {
                 "</body></html>";
     }
 
-
-
-    public Optional<PatientSexIdAndBirthdate> showDatePickerDialog() {
-        Dialog<PatientSexIdAndBirthdate> dialog = new Dialog<>();
-        dialog.setTitle("Demographics");
-        dialog.setHeaderText("Please enter patient sex, ID, and birthdate");
-        String pattern = "MM/dd/yyyy";
-        DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.setMinWidth(300);
-        dialogPane.setMinHeight(300);
-        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        HBox hbox = new HBox();
-        Label label = new Label("Patient ID: ");
-        TextField textField = new TextField();
-        hbox.getChildren().addAll(label, textField);
-
-        ToggleGroup group = new ToggleGroup();
-        RadioButton unknownRadio = new RadioButton("Unknown");
-        unknownRadio.setToggleGroup(group);
-        unknownRadio.setId("unknown");
-        RadioButton femaleRadio = new RadioButton("Female");
-        femaleRadio.setToggleGroup(group);
-        femaleRadio.setId("female");
-        RadioButton maleRadio = new RadioButton("Male");
-        maleRadio.setToggleGroup(group);
-        maleRadio.setId("male");
-        RadioButton otherRadio = new RadioButton("Other");
-        otherRadio.setToggleGroup(group);
-        otherRadio.setId("other");
+    private DatePicker getDPD() {
         final DatePicker datePicker = new DatePicker();
+        String pattern = "MM/dd/yyyy";
         datePicker.setEditable(false);
         datePicker.setOnAction((actionEvent) -> {
             LocalDate date = datePicker.getValue();
@@ -124,23 +103,101 @@ public class BirthDatePickerDialog {
             }
         };
         datePicker.setDayCellFactory(dayCellFactory);
-        Label selection = new Label("Select birthdate:  ");
-        HBox pickerBox = new HBox(selection, datePicker);
 
-        if (isNull(group.getSelectedToggle())) {
-            group.selectToggle(unknownRadio);
-        }
+        return datePicker;
+    }
+
+    public TextFlow getInitPhenopacketSIB() {
+        Text header = new Text("Fenomimal Phenopacket generator\n");
+
+        Text body1 = new Text("""
+                Fenominal allows users to indicate the age of patients by having users
+                indicate the birthdate as well as the dates of the medical encounters
+                that are being recorded.
+                 """);
+        Text body2 = new Text("""
+                Fenominal subtracts the birthdate from the encounter dates to get the
+                age of the patient during each encounter.
+                """);
+        Text body3 = new Text("Fenominal does not store or output the birthdate.");
+        header.setFont(Font.font("Verdana", FontWeight.BOLD,18));
+        body1.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        body2.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        body3.setFont(Font.font("Verdana",FontWeight.BOLD, 12));
+        TextFlow flow = new TextFlow();
+        flow.getChildren().addAll(header, body1, body2, body3);
+        return flow;
+    }
+
+    public TextFlow getInitPhenopacketSI() {
+        Text header = new Text("Fenomimal Phenopacket generator\n");
+
+        Text body1 = new Text("""
+                Fenominal allows users to indicate the age of patients by having users
+                indicate the birthdate as well as the dates of the medical encounters
+                that are being recorded.
+                 """);
+        Text body2 = new Text("""
+                In this mode, users enter the age of the patient at each encounter.
+                """);
+        header.setFont(Font.font("Verdana", FontWeight.BOLD,18));
+        body1.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        body2.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        TextFlow flow = new TextFlow();
+        flow.getChildren().addAll(header, body1, body2);
+        return flow;
+    }
+
+    /**
+     * Gather information about patient sex and id.
+     * @return optional object with information about the patient sex and id
+     */
+    public Optional<PatientSexAndId> showDatePickerDialogSI() {
+        Dialog<PatientSexAndId> dialog = new Dialog<>();
+        dialog.setTitle("Demographics");
+        dialog.setHeaderText("Please enter patient sex and ID");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setMinWidth(200);
+        dialogPane.setMinHeight(300);
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        TextFlow tflow = getInitPhenopacketSI();
+        HBox hbox = new HBox();
+        Label label = new Label("Patient ID: ");
+        TextField textField = new TextField();
+        hbox.getChildren().addAll(label, textField);
+
+        ToggleGroup group = new ToggleGroup();
+        RadioButton unknownRadio = new RadioButton("Unknown");
+        unknownRadio.setToggleGroup(group);
+        unknownRadio.setId("unknown");
+        RadioButton femaleRadio = new RadioButton("Female");
+        femaleRadio.setToggleGroup(group);
+        femaleRadio.setId("female");
+        RadioButton maleRadio = new RadioButton("Male");
+        maleRadio.setToggleGroup(group);
+        maleRadio.setId("male");
+        RadioButton otherRadio = new RadioButton("Other");
+        otherRadio.setToggleGroup(group);
+        otherRadio.setId("other");
         VBox vb = new VBox();
         vb.getChildren().addAll(unknownRadio, femaleRadio, maleRadio, otherRadio);
+        Separator hseparator = new Separator(Orientation.HORIZONTAL);
+        hseparator.setStyle("""
+                -fx-padding: 5px;
+                    -fx-border-insets: 5px;
+                    -fx-background-insets: 5px;""");
         VBox allElementsBox = new VBox();
-        allElementsBox.getChildren().addAll(hbox, vb, pickerBox);
+        allElementsBox.getChildren().addAll(tflow,hseparator, hbox, vb);
         dialogPane.setContent(allElementsBox);
         dialog.setResultConverter((ButtonType button) -> {
             if (button == ButtonType.OK) {
                 String patientId = textField.getText().strip();
-                Sex sex = Sex.fromString(group.getSelectedToggle().toString());
-                LocalDate birthdate = datePicker.getValue();
-                return new PatientSexIdAndBirthdate(sex, patientId, birthdate);
+                Sex sex = Sex.UNKNOWN_SEX;
+                if (maleRadio.isSelected()) sex = Sex.MALE;
+                else if (femaleRadio.isSelected()) sex = Sex.FEMALE;
+                else if (otherRadio.isSelected()) sex = Sex.OTHER_SEX;
+                return new PatientSexAndId(sex, patientId);
             }
             return null;
         });
@@ -148,27 +205,74 @@ public class BirthDatePickerDialog {
         return dialog.showAndWait();
     }
 
-    public String getId() {
-        return id;
+
+    /**
+     * Gather information about patient sex, id, and birthdate
+     * @return
+     */
+    public Optional<PatientSexIdAndBirthdate> showDatePickerDialogSIB() {
+        Dialog<PatientSexIdAndBirthdate> dialog = new Dialog<>();
+        dialog.setTitle("Demographics");
+        dialog.setHeaderText("Please enter patient sex, ID, and birthdate");
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setMinWidth(300);
+        dialogPane.setMinHeight(400);
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        TextFlow tflow = getInitPhenopacketSIB();
+        Separator hseparator = new Separator(Orientation.HORIZONTAL);
+        hseparator.setStyle("""
+                -fx-padding: 5px;
+                    -fx-border-insets: 5px;
+                    -fx-background-insets: 5px;""");
+        HBox hbox = new HBox();
+        Label label = new Label("Patient ID: ");
+        TextField textField = new TextField();
+        hbox.getChildren().addAll(label, textField);
+
+        ToggleGroup group = new ToggleGroup();
+        RadioButton unknownRadio = new RadioButton("Unknown");
+        unknownRadio.setToggleGroup(group);
+        unknownRadio.setId("unknown");
+        RadioButton femaleRadio = new RadioButton("Female");
+        femaleRadio.setToggleGroup(group);
+        femaleRadio.setId("female");
+        RadioButton maleRadio = new RadioButton("Male");
+        maleRadio.setToggleGroup(group);
+        maleRadio.setId("male");
+        RadioButton otherRadio = new RadioButton("Other");
+        otherRadio.setToggleGroup(group);
+        otherRadio.setId("other");
+
+        DatePicker datePicker = getDPD();
+
+        Label selection = new Label("Select birthdate:  ");
+        HBox pickerBox = new HBox(selection, datePicker);
+        if (isNull(group.getSelectedToggle())) {
+            group.selectToggle(unknownRadio);
+        }
+        VBox vb = new VBox();
+        vb.getChildren().addAll(unknownRadio, femaleRadio, maleRadio, otherRadio);
+        VBox allElementsBox = new VBox();
+        allElementsBox.getChildren().addAll(tflow,hseparator, hbox, vb, pickerBox);
+        dialogPane.setContent(allElementsBox);
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                String patientId = textField.getText().strip();
+                Sex sex = Sex.UNKNOWN_SEX;
+                if (maleRadio.isSelected()) sex = Sex.MALE;
+                else if (femaleRadio.isSelected()) sex = Sex.FEMALE;
+                else if (otherRadio.isSelected()) sex = Sex.OTHER_SEX;
+                LocalDate birthdate = datePicker.getValue();
+                return new PatientSexIdAndBirthdate(sex, patientId, birthdate);
+            }
+            return null;
+        });
+        return dialog.showAndWait();
     }
 
-    public void setSex(String s) {
-        this.sex = Sex.fromString(s);
-        System.out.println("SEETING TO " + s);
-    }
-
-    public Sex sex() {
-        return this.sex;
-    }
 
 
-
-    private final static String setupHtml ="<html><body><h3>Fenomimal Phenopacket generator</h3>" +
-            "<p><i>Fenominal</i> allows users to indicate the age of patients by having users indicate the birthdate as" +
-            " well as the dates of the medical encounters that are being recorded.<p>" +
-            "<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
-            " It does not store or output the birthdate.</p>" +
-            "</body></html>";
 
     private final static String updateHtml = """
             <html><body><h3>Fenomimal Phenopacket generator</h3>
@@ -182,7 +286,7 @@ public class BirthDatePickerDialog {
             """;
 
     public static BirthDatePickerDialog getBirthDate() {
-        return new BirthDatePickerDialog(setupHtml);
+        return new BirthDatePickerDialog("");
     }
 
     /**
