@@ -351,8 +351,7 @@ public class FenominalMainController {
         this.parseButton.setDisable(false);
         this.parseButton.setText("Mine time point 1");
         this.miningTaskType = PHENOPACKET;
-        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
-        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialogSIB();
+        Optional<PatientSexIdAndBirthdate> opt = BirthDatePickerDialog.showDatePickerDialogSIB();
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not retrieve id/sex/birthdate");
             return;
@@ -374,8 +373,7 @@ public class FenominalMainController {
 
     private void initPhenopacketWithManualAge() {
         this.parseButton.setDisable(false);
-        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate();
-        Optional<PatientSexAndId> opt = dialog.showDatePickerDialogSI();
+        Optional<PatientSexAndId> opt = BirthDatePickerDialog.showDatePickerDialogSI();
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not initialize Phenopacket");
             return;
@@ -588,14 +586,13 @@ public class FenominalMainController {
         this.miningTaskType = PHENOPACKET;
 
         this.model = new PhenopacketModel(phenopacketImp);
-        BirthDatePickerDialog dialog = BirthDatePickerDialog.getBirthDate(phenopacketImp.getId());
-        Optional<PatientSexIdAndBirthdate> opt = dialog.showDatePickerDialogSIB();
+        Optional<LocalDate> opt = BirthDatePickerDialog.showDatePickerDialogBirthDate(phenopacketImp);
         if (opt.isEmpty()) {
             PopUps.showInfoMessage("Error", "Could not load phenopacket");
             return;
         }
-        PatientSexIdAndBirthdate psib = opt.get();
-        model.setBirthdate(psib.birthdate());
+        LocalDate birthdate = opt.get();
+        model.setBirthdate(birthdate);
         model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
         model.setModelDataItem(PATIENT_ID_KEY, phenopacketImp.getId());
         populateTableWithData(model.getModelData());
@@ -653,7 +650,7 @@ public class FenominalMainController {
             this.model.setModelDataItem(BIOCURATOR_ID_PROPERTY, biocurator);
         }
         this.questionnaireButtn.setDisable(false);
-        // We can only update a phenoppacket once, so now disable the button
+        // We can only update a phenopacket once, so now disable the button
         this.updatePhenopacketButton.setDisable(true);
         actionEvent.consume();
     }

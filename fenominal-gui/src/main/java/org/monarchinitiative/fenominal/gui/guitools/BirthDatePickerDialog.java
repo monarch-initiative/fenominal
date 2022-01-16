@@ -10,6 +10,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
+import org.monarchinitiative.fenominal.gui.io.PhenopacketImporter;
 import org.monarchinitiative.fenominal.gui.model.PatientSexAndId;
 import org.monarchinitiative.fenominal.gui.model.PatientSexIdAndBirthdate;
 import org.monarchinitiative.fenominal.gui.model.Sex;
@@ -22,66 +23,16 @@ import static java.util.Objects.isNull;
 
 public class BirthDatePickerDialog {
 
-    private final Browser browser;
-
-    private LocalDate birthDate =null;
-
-    private String id;
-
-    private Sex sex = Sex.UNKNOWN_SEX;
-
-    private final boolean isUpdate ;
-
-    private final static String buttonStyle =
-            " -fx-background-color:" +
-                    "        linear-gradient(#f2f2f2, #d6d6d6)," +
-                    "        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%)," +
-                    "        linear-gradient(#dddddd 0%, #f6f6f6 50%);" +
-                    "    -fx-background-radius: 8,7,6;" +
-                    "    -fx-background-insets: 0,1,2;" +
-                    "    -fx-text-fill: black;\n" +
-                    "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );";
-
     /**
-     * This is called for initializing a case
+     * Setup a datapicker to choose the birth date
+     * @return a setup datapicker
      */
-    public BirthDatePickerDialog(String msg) {
-        this(msg, false, null);
-    }
-
-    /**
-     * This is called for updating an existing phenopacket.
-     */
-    public BirthDatePickerDialog(String msg, boolean isUpdate, String id) {
-        this.isUpdate = isUpdate;
-        browser = new Browser(msg);
-        this.id = id;
-    }
-
-
-
-    private void setBirthDate(LocalDate d) {
-       this.birthDate = d;
-    }
-
-
-    public String getHtmlWithDates(LocalDate birthdate) {
-        return "<html><body><h3>Fenomimal Phenopacket generator</h3>" +
-                "<p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter." +
-                " It does not store or output the birthdate.</p>" +
-                "<p>Birthdate: " + birthdate.toString() + "</p>" +
-                "</body></html>";
-    }
-
-    private DatePicker getDPD() {
+    private static DatePicker getDPD() {
         final DatePicker datePicker = new DatePicker();
         String pattern = "MM/dd/yyyy";
         datePicker.setEditable(false);
         datePicker.setOnAction((actionEvent) -> {
             LocalDate date = datePicker.getValue();
-            setBirthDate(date);
-            String html = getHtmlWithDates(this.birthDate);
-            this.browser.setContent(html);
             actionEvent.consume();
         });
         DatePickerDialog.FxDatePickerConverter converter = new DatePickerDialog.FxDatePickerConverter(pattern);
@@ -107,7 +58,7 @@ public class BirthDatePickerDialog {
         return datePicker;
     }
 
-    public TextFlow getInitPhenopacketSIB() {
+    public static TextFlow getInitPhenopacketSIB() {
         Text header = new Text("Fenomimal Phenopacket generator\n");
 
         Text body1 = new Text("""
@@ -129,7 +80,7 @@ public class BirthDatePickerDialog {
         return flow;
     }
 
-    public TextFlow getInitPhenopacketSI() {
+    public static TextFlow getInitPhenopacketSI() {
         Text header = new Text("Fenomimal Phenopacket generator\n");
 
         Text body1 = new Text("""
@@ -149,10 +100,71 @@ public class BirthDatePickerDialog {
     }
 
     /**
+     * Gather information about patient birthdate when the user is importing and
+     * existing phenopacket. Note that we extract the patient ID and sex from the
+     * existing phenopacket.
+     * @return optional object with information about the birthdate
+     */
+    public static Optional<LocalDate> showDatePickerDialogBirthDate(PhenopacketImporter importer) {
+        Dialog<LocalDate> dialog = new Dialog<>();
+        dialog.setTitle("Import existing phenopacket");
+        dialog.setHeaderText("Please enter patient birthdate");
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setMinWidth(200);
+        dialogPane.setMinHeight(300);
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Text header = new Text("Fenomimal Phenopacket generator\n");
+        Text text1 = new Text("""
+                Fenominal allows users to indicate the age of patients by
+                having users indicate the birthdate as
+                well as the dates of the medical encounters that are being recorded.
+                """);
+        Text text2 = new Text("""
+                 Fenominal subtracts the birthdate from the encounter dates to get the age
+                 of the patient during each encounter.
+                 It does not store or output the birthdate.
+                """);
+        Text text3 = new Text("""
+                  You are updating an existing Phenopacket. It is essential that you use the
+                  same birthdate. Fenominal cannot check this because it does not store the
+                  birthdate for privacy reasons!
+                """);
+        String s4 = String.format("You are updating the Phenopacket with ID %s (Sex: %s)",
+                importer.getId(), importer.getSex());
+        Text text4 = new Text(s4);
+        header.setFont(Font.font("Verdana", FontWeight.BOLD,18));
+        text1.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        text2.setFont(Font.font("Verdana",FontWeight.NORMAL, 12));
+        text3.setFont(Font.font("Verdana",FontWeight.BOLD, 12));
+        text4.setFont(Font.font("Verdana",FontWeight.BOLD, 12));
+        TextFlow tflow = new TextFlow();
+        tflow.getChildren().addAll(header, text1, text2, text3, text4);
+        Separator hseparator = new Separator(Orientation.HORIZONTAL);
+        DatePicker datePicker = getDPD();
+        hseparator.setStyle("""
+                -fx-padding: 5px;
+                    -fx-border-insets: 5px;
+                    -fx-background-insets: 5px;""");
+
+        VBox allElementsBox = new VBox();
+        allElementsBox.getChildren().addAll(tflow,hseparator, datePicker);
+        dialogPane.setContent(allElementsBox);
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return datePicker.getValue();
+            }
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+
+    /**
      * Gather information about patient sex and id.
      * @return optional object with information about the patient sex and id
      */
-    public Optional<PatientSexAndId> showDatePickerDialogSI() {
+    public static Optional<PatientSexAndId> showDatePickerDialogSI() {
         Dialog<PatientSexAndId> dialog = new Dialog<>();
         dialog.setTitle("Demographics");
         dialog.setHeaderText("Please enter patient sex and ID");
@@ -208,9 +220,9 @@ public class BirthDatePickerDialog {
 
     /**
      * Gather information about patient sex, id, and birthdate
-     * @return
+     * @return optional information about the  patient sex, id, and birthdate
      */
-    public Optional<PatientSexIdAndBirthdate> showDatePickerDialogSIB() {
+    public static Optional<PatientSexIdAndBirthdate> showDatePickerDialogSIB() {
         Dialog<PatientSexIdAndBirthdate> dialog = new Dialog<>();
         dialog.setTitle("Demographics");
         dialog.setHeaderText("Please enter patient sex, ID, and birthdate");
@@ -270,34 +282,6 @@ public class BirthDatePickerDialog {
         });
         return dialog.showAndWait();
     }
-
-
-
-
-    private final static String updateHtml = """
-            <html><body><h3>Fenomimal Phenopacket generator</h3>
-            <p><i>Fenominal</i> allows users to indicate the age of patients by having users indicate the birthdate as
-             well as the dates of the medical encounters that are being recorded.<p>
-            <p>Fenominal subtracts the birthdate from the encounter dates to get the age of the patient during each encounter.
-            It does not store or output the birthdate.</p>
-            <p><b>You are updating an existing Phenopacket. It is essential that you use the same birthdate.</b></p>
-            <p>Fenominal cannot check this because it does not store the birthdate for privacy reasons!</p>
-             </body></html>
-            """;
-
-    public static BirthDatePickerDialog getBirthDate() {
-        return new BirthDatePickerDialog("");
-    }
-
-    /**
-     * This method is called when we import an existing Phenopacket
-     * @param id Identifier of the pre-existing phenopacket
-     * @return birthdate picker, which qllows clients to retrieve birthdate and id
-     */
-    public static BirthDatePickerDialog getBirthDate(String id) {
-        return new BirthDatePickerDialog(updateHtml, true, id);
-    }
-
 
 
 }
