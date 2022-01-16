@@ -1,93 +1,126 @@
 package org.monarchinitiative.fenominal.gui.output;
 
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
-import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.gui.model.MedicalEncounter;
+import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
+import org.monarchinitiative.fenominal.gui.model.SimpleUpdate;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.phenopackets.phenotools.builder.PhenopacketBuilder;
-import org.phenopackets.phenotools.builder.builders.MetaDataBuilder;
-import org.phenopackets.phenotools.builder.builders.PhenotypicFeatureBuilder;
-import org.phenopackets.phenotools.builder.builders.Resources;
-import org.phenopackets.phenotools.builder.builders.TimeElements;
+import org.phenopackets.phenotools.builder.builders.*;
 import org.phenopackets.schema.v2.Phenopacket;
+import org.phenopackets.schema.v2.core.Individual;
 import org.phenopackets.schema.v2.core.MetaData;
 import org.phenopackets.schema.v2.core.PhenotypicFeature;
+import org.phenopackets.schema.v2.core.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel)
-        implements PhenoOutputter{
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.BIOCURATOR_ID_PROPERTY;
+import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
+
+public class PhenopacketJsonOutputter implements PhenoOutputter{
     private static final Logger LOGGER = LoggerFactory.getLogger(PhenopacketJsonOutputter.class);
+
+    private final PhenopacketModel phenopacketModel;
+
+    public PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) {
+        this.phenopacketModel = phenopacketModel;
+    }
+
+    private MetaData getMetaData() {
+        Map<String,String> data = phenopacketModel.getModelData();
+        String biocurator = data.getOrDefault(BIOCURATOR_ID_PROPERTY, "n/a");
+        String hpoVersion = data.getOrDefault(HPO_VERSION_KEY, "n/a");
+        if (phenopacketModel.isUpdateOfExistingPhenopacket()) {
+            Timestamp createdOn = phenopacketModel.getCreatedOn();
+            String createdBy = phenopacketModel.getCreatedBy();
+            List<SimpleUpdate> simpleUpdates = phenopacketModel.getUpdates();
+            // Now add an update for the current curation task
+            // Take the current biocurator (default to createdBy, but this should always work
+            String currentBiocurator = phenopacketModel.getModelData().getOrDefault(BIOCURATOR_ID_PROPERTY,createdBy);
+            Instant now = Instant.now();
+            Timestamp timestamp =
+                    Timestamp.newBuilder().setSeconds(now.getEpochSecond())
+                            .setNanos(now.getNano()).build();
+            simpleUpdates.add(new SimpleUpdate(currentBiocurator, timestamp));
+            List<Update> updates = new ArrayList<>();
+            for (var supd : simpleUpdates) {
+                Update upd = Update.newBuilder().setTimestamp(supd.createdOn()).setUpdatedBy(supd.createdBy()).build();
+                updates.add(upd);
+            }
+            return MetaData.newBuilder()
+                    .setCreated(createdOn)
+                    .setCreatedBy(createdBy)
+                    .addAllUpdates(updates)
+                    .addResources(Resources.hpoVersion(hpoVersion))
+                    .build();
+        } else {
+            return MetaDataBuilder
+                    .create(LocalDate.now().toString(), biocurator)
+                    .resource(Resources.hpoVersion(hpoVersion))
+                    .build();
+        }
+    }
+
+
 
     @Override
     public void output(Writer writer) throws IOException {
-        Map<String,String> data = phenopacketModel.getModelData();
-        String biocurator = data.getOrDefault("biocurator", "n/a");
-        String hpoVersion = data.getOrDefault("HPO", "n/a");
-        MetaData meta = MetaDataBuilder
-                .create(LocalDate.now().toString(), biocurator)
-                .resource(Resources.hpoVersion("TODO"))
-                .build();
-        PhenopacketBuilder builder =PhenopacketBuilder.create(generatePhenopacketId(), meta);
-        List<MedicalEncounter> encounters = phenopacketModel.getEncounters();
-        List<LocalDate> encounterDates = phenopacketModel.getEncounterDates();
-        if (encounterDates.size() != encounters.size()) {
-            // should never happen, sanity check
-            throw new FenominalRunTimeException("Mismatched encounter and encounterDates list");
-        }
-        for (int i = 0; i < encounters.size(); i++) {
-            LocalDate encounterDate = encounterDates.get(i);
-            String isoAge = iso8601(encounterDate);
-            MedicalEncounter encounter = encounters.get(i);
-            for (var phenotype : encounter.getTerms()) {
-                Term term = phenotype.getTerm();
-                boolean observed = phenotype.isObserved();
-                PhenotypicFeature pf;
-                if (observed)
-                    pf = PhenotypicFeatureBuilder
-                            .create(term.getId().getValue(), term.getName())
-                            .onset(TimeElements.age(isoAge))
-                            .build();
-                else
-                    pf = PhenotypicFeatureBuilder
-                            .create(term.getId().getValue(), term.getName())
-                            .onset(TimeElements.age(isoAge))
-                            .excluded()
-                            .build();
-                builder.phenotypicFeature(pf); // add feature, one at a time
+        MetaData meta = getMetaData();
+        PhenopacketBuilder builder = PhenopacketBuilder.create(generatePhenopacketId(), meta);
+        org.phenopackets.schema.v2.core.Sex sx = switch (phenopacketModel.sex()) {
+            case MALE -> org.phenopackets.schema.v2.core.Sex.MALE;
+            case FEMALE -> org.phenopackets.schema.v2.core.Sex.FEMALE;
+            case OTHER_SEX -> org.phenopackets.schema.v2.core.Sex.OTHER_SEX;
+            default -> org.phenopackets.schema.v2.core.Sex.UNKNOWN_SEX;
+        };
+        Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
+        for (FenominalTerm fenominalTerm : phenopacketModel.getTerms()) {
+            Term term = fenominalTerm.getTerm();
+            boolean observed = fenominalTerm.isObserved();
+            PhenotypicFeature pf;
+            if (fenominalTerm.hasAge() && observed) {
+                String isoAge = fenominalTerm.getIso8601Age();
+                pf = PhenotypicFeatureBuilder
+                        .create(term.getId().getValue(), term.getName())
+                        .onset(TimeElements.age(isoAge))
+                        .build();
+            } else if (fenominalTerm.hasAge() ){
+                String isoAge = fenominalTerm.getIso8601Age();
+                pf = PhenotypicFeatureBuilder
+                        .create(term.getId().getValue(), term.getName())
+                        .onset(TimeElements.age(isoAge))
+                        .excluded()
+                        .build();
+            } else if (observed) {
+                pf = PhenotypicFeatureBuilder
+                        .create(term.getId().getValue(), term.getName())
+                        .build();
+            } else {
+                pf = PhenotypicFeatureBuilder
+                        .create(term.getId().getValue(), term.getName())
+                        .excluded()
+                        .build();
             }
+            builder.phenotypicFeature(pf); // add feature, one at a time
         }
+        builder.individual(subject);
         // The Phenopacket is now complete and we would like to write it as JSON
         Phenopacket phenopacket = builder.build();
         String json =  JsonFormat.printer().print(phenopacket);
         writer.write(json);
     }
 
-    private String iso8601(LocalDate encounterDate) {
-        // Period.between takes (start, end), inclusive
-        if (phenopacketModel.getBirthdate() == null) {
-            LOGGER.error("Could not get phenopacket birthdate");
-            return "P0";
-        }
-        if (encounterDate == null) {
-            LOGGER.error("Could not get encounterDate");
-            return "P0";
-        }
 
-        Period diff = Period.between( phenopacketModel.getBirthdate(), encounterDate);
-        int y = diff.getYears();
-        int m = diff.getMonths();
-        int d = diff.getDays();
-        return "P" + y + "Y" + m + "M" + d + "D";
-    }
 
     private String generatePhenopacketId() {
         String date = LocalDate.now().toString();

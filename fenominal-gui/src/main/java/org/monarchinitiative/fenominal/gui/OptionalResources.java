@@ -17,7 +17,6 @@ public class OptionalResources {
      * Use this name to save HP.json file on the local filesystem.
      */
     public static final String DEFAULT_HPO_FILE_NAME = "hp.json";
-    public static final String BIOCURATOR_ID_PROPERTY = "biocurator.id";
     public static final String ONTOLOGY_PATH_PROPERTY = "hp.json.path";
 
     // default value does not harm here

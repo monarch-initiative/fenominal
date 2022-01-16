@@ -14,7 +14,7 @@
 
 <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.29797979797979796" prefHeight="600.0"
            prefWidth="1200.0" xmlns="http://javafx.com/javafx/9"
-           fx:controller="org.monarchinitiative.fenominal.gui.hpotextminingwidget.Main">
+           fx:controller="org.monarchinitiative.fenominal.gui.hpotextminingwidget.HpoTextMiningMain">
     <StackPane fx:id="leftStackPane">
     </StackPane>
     <ScrollPane fitToHeight="true" fitToWidth="true">
