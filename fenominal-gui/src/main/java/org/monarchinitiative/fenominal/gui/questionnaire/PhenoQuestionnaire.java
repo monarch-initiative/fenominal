@@ -40,7 +40,7 @@ public class PhenoQuestionnaire {
      * @return {@link PhenoQuestionnaire} object with development questions
      */
     public static PhenoQuestionnaire development(Ontology ontology) {
-        String questionFilePath = "/questions/development.txt";
+        String questionFilePath = "/questions/development.tsv";
         InputStream is = PhenoQuestionnaire.class.getResourceAsStream(questionFilePath);
         if (is == null) {
             throw new PhenolRuntimeException("Could not find development questionnaire file" + questionFilePath);

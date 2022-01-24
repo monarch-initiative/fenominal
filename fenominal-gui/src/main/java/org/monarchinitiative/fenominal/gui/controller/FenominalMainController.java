@@ -399,6 +399,9 @@ public class FenominalMainController {
 
     @FXML
     private void getStarted(ActionEvent e) {
+        if (! cleanBeforeNewCase()) {
+            return;
+        }
         var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report", "Enter data about one individual, one time point", true);
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
         var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
@@ -686,6 +689,27 @@ public class FenominalMainController {
         }
         PhenopacketImporter ppacket = PhenopacketImporter.fromJson(file, ontology);
         return Optional.of(ppacket);
+    }
+
+    public boolean cleanBeforeNewCase() {
+        if (model == null) {
+            return true;
+        }
+        if (model.isChanged()) {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Warning - Unsaved Data");
+            dialog.setHeaderText("Discard changes?");
+            dialog.setContentText("Cancel revokes the new case request");
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
+            Optional<ButtonType> opt = dialog.showAndWait();
+            if (opt.isEmpty()) return false;
+            ButtonType btype = opt.get();
+            if (btype.equals(ButtonType.CANCEL)) return false;
+            return  (btype.equals(ButtonType.YES));
+        }
+        // if we get here, somethinbg probably went wrong, let's cancel the quit request
+        return false;
     }
 
     public boolean shutdown() {

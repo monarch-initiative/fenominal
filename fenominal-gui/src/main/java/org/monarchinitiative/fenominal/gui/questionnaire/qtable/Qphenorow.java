@@ -55,9 +55,7 @@ public class Qphenorow {
        phenoItem.updateAnswer(answer);
     }
 
-    public Optional<AgeRule> ageRuleOpt() {
-        return phenoItem.ageRuleOpt();
-    }
+   public String getExplanation() { return phenoItem.explanation(); }
 
     public String getTitle() {
         return title.get();
@@ -113,9 +111,6 @@ public class Qphenorow {
      * @return the PhenoItem on which the row is based
      */
     public PhenoItem toPhenoItem() {
-        if (ageRuleOpt().isPresent()) {
-            phenoItem.updateAge(new PhenoAge(getYears(), getMonths(), getDays()));
-        }
         return phenoItem;
     }
 
@@ -141,12 +136,6 @@ public class Qphenorow {
 
 
     public PhenoAnswer phenoAnswer() {
-        if (ageRuleOpt().isPresent()) {
-            phenoItem.updateAge(new PhenoAge(getYears(), getMonths(), getDays()));
-        }
         return new DefaultPhenoAnswer(phenoItem);
     }
-
-
-
 }
