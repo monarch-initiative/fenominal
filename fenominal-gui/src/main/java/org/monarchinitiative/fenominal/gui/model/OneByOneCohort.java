@@ -15,6 +15,8 @@ public class OneByOneCohort implements TextMiningResultsModel {
     private final String omimId;
     private final String diseasename;
 
+    private boolean changed;
+
 
     public  OneByOneCohort(String pmid, String omimId, String diseasename){
         cases = new ArrayList<>();
@@ -23,9 +25,11 @@ public class OneByOneCohort implements TextMiningResultsModel {
         this.omimId = omimId;
         this.diseasename = diseasename;
         data = new HashMap<>();
+        changed = false;
     }
 
     public void addCase(CaseReport caseReport) {
+        changed = true;
         cases.add(caseReport);
     }
 
@@ -72,6 +76,7 @@ public class OneByOneCohort implements TextMiningResultsModel {
 
     @Override
     public void setModelDataItem(String k, String v) {
+        changed = true;
         data.put(k, v);
     }
 
@@ -80,11 +85,22 @@ public class OneByOneCohort implements TextMiningResultsModel {
         CaseReport caseReport = new CaseReport();
         caseReport.addHpoFeatures(terms);
         this.addCase(caseReport);
+        changed = true;
     }
 
     @Override
     public String getInitialFileName() {
         return pmid + "-" + diseasename.replaceAll(" ", "_") + "-fenominal.json";
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void resetChanged() {
+        changed = false;
     }
 
     public String getPmid() {

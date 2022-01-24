@@ -123,6 +123,15 @@ public class FenominalMainController {
         this.previwButton.setDisable(true);
         this.outputButton.setDisable(true);
         this.questionnaireButtn.setDisable(true);
+        Platform.runLater(() ->{
+            Scene scene = this.parseButton.getScene();
+            scene.getWindow().setOnCloseRequest(ev -> {
+                if (!shutdown()) {
+                    ev.consume();
+                }
+            });
+        });
+
         // set up table view
         TableColumn<Map, String> itemColumn = new TableColumn<>("item");
         itemColumn.setCellValueFactory(new MapValueFactory<>("item"));
@@ -444,14 +453,17 @@ public class FenominalMainController {
 
     @FXML
     private void quitApplication(ActionEvent e) {
+        if (shutdown()) {
+            Platform.exit();
+        }
         e.consume();
-        Platform.exit();
     }
 
     @FXML
     public void outputButtonPressed(ActionEvent actionEvent) {
         actionEvent.consume();
         String initialFilename = model.getInitialFileName();
+        LOGGER.info("Saving data with initial file name {}", initialFilename);
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) this.outputButton.getScene().getWindow();
         fileChooser.setInitialFileName(initialFilename);
@@ -476,6 +488,7 @@ public class FenominalMainController {
         } catch (IOException e) {
             PopUps.showInfoMessage("Could not write to file: " + e.getMessage(), "IO Error");
         }
+        this.model.resetChanged(); // we have now saved all unsaved data if we get here.
         this.questionnaireButtn.setDisable(false);
     }
 
@@ -673,5 +686,23 @@ public class FenominalMainController {
         }
         PhenopacketImporter ppacket = PhenopacketImporter.fromJson(file, ontology);
         return Optional.of(ppacket);
+    }
+
+    public boolean shutdown() {
+        if (model.isChanged()) {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Warning - Unsaved Data");
+            dialog.setHeaderText("Discard changes?");
+            dialog.setContentText("Cancel revokes the exit request");
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
+            Optional<ButtonType> opt = dialog.showAndWait();
+            if (opt.isEmpty()) return false;
+            ButtonType btype = opt.get();
+            if (btype.equals(ButtonType.CANCEL)) return false;
+            return  (btype.equals(ButtonType.YES));
+        }
+        // if we get here, somethinbg probably went wrong, let's cancel the quit request
+        return false;
     }
 }

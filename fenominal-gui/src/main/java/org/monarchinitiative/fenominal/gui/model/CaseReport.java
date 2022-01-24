@@ -14,10 +14,13 @@ public class CaseReport implements TextMiningResultsModel {
 
     private final Map<String, String> data;
 
+    private boolean changed;
+
     public CaseReport(String id, String age) {
         this.caseId = id;
         this.isoAge = age;
         data = new HashMap<>();
+        changed = false;
     }
     public CaseReport() {
         // used by the OneByOneCohort, this is ugly, refactor
@@ -30,6 +33,7 @@ public class CaseReport implements TextMiningResultsModel {
 
     @Override
     public void addHpoFeatures(List<FenominalTerm> terms) {
+        changed = true;
         this.terms = List.copyOf(terms);
     }
 
@@ -50,12 +54,23 @@ public class CaseReport implements TextMiningResultsModel {
 
     @Override
     public void setModelDataItem(String k, String v) {
+        changed = true;
         data.put(k, v);
     }
 
     @Override
     public String getInitialFileName() {
         return caseId + "-fenominal.json";
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void resetChanged() {
+        changed = true;
     }
 
     public String getCaseId() {

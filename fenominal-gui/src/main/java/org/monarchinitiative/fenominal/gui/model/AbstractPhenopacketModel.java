@@ -19,6 +19,8 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
 
     protected final List<FenominalTerm> terms;
     private int caseMined = 0;
+    /** is the data "dirty", i.e., not saved yet? */
+    private boolean changed;
 
     protected final Map<String, String> data;
 
@@ -57,6 +59,7 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
         this.terms = new ArrayList<>();
         data = new HashMap<>();
         data.put(PATIENT_ID_KEY, id);
+        changed = false;
     }
 
     public String getId() {
@@ -89,6 +92,7 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
     @Override
     public void addHpoFeatures(List<FenominalTerm> fterms) {
         caseMined++;
+        changed = true;
         terms.addAll(fterms);
         setModelDataItem(N_CURATED_KEY, String.valueOf(getTermCount()));
     }
@@ -147,7 +151,18 @@ public class AbstractPhenopacketModel implements TextMiningResultsModel {
 
     @Override
     public void setModelDataItem(String k, String v) {
+        changed = true;
         data.put(k,v);
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void resetChanged() {
+        changed = false;
     }
 
 
