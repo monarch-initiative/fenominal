@@ -29,7 +29,15 @@ public class TextToHpoMapper {
     }
 
     public synchronized List<MappedSentencePart> mapText(String text) {
-        return hpoMatcher.mapText(text);
+        /**
+         * TODO: Decide where to put the fuzzy flag !!!
+         */
+        List<MappedSentencePart> list = hpoMatcher.mapText(text, true);
+        return list;
     }
 
+    public static void main(String[] args) {
+        TextToHpoMapper textToHpoMapper = new TextToHpoMapper("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
+        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
+    }
 }

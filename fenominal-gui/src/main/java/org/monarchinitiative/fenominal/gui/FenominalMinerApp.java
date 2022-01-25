@@ -32,7 +32,11 @@ public class FenominalMinerApp implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query);
+        /**
+         * TODO: Decide where to put the fuzzy flag !!!
+         */
+
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
         LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }

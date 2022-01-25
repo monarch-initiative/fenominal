@@ -29,11 +29,11 @@ public class DecorationProcessorService {
     /**
      * TODO: Implement this in a smarter way
      */
-    public MappedSentencePart process(List<SimpleToken> chunk, List<SimpleToken> nonStopWords, TermId hpoId) {
+    public MappedSentencePart process(List<SimpleToken> chunk, List<SimpleToken> nonStopWords, TermId hpoId, double similarity) {
         Map<String, String> decorations = new LinkedHashMap<>();
         for (DecorationProcessor decorationProcessor : decorationProcessors) {
             decorations.put(decorationProcessor.getDecoration(), decorationProcessor.getProcessedValue(chunk, nonStopWords));
         }
-        return new MappedSentencePart(chunk, hpoId, decorations);
+        return new MappedSentencePart(chunk, hpoId, similarity, decorations);
     }
 }
