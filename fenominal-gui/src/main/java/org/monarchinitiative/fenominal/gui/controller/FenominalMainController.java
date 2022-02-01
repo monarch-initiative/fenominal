@@ -350,6 +350,7 @@ public class FenominalMainController {
         model.setModelDataItem("PMID", pmid);
         populateTableWithData(model.getModelData());
         this.questionnaireButtn.setDisable(true); // questionnaire does not apply to cohorts!
+        this.parseButton.setDisable(false);
     }
 
     /**
