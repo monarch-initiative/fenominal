@@ -1,11 +1,13 @@
 package org.monarchinitiative.fenominal.gui.model;
 
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class OneByOneCohort implements TextMiningResultsModel {
-
+    private final static Logger LOG = LoggerFactory.getLogger(OneByOneCohort.class);
     private final Map<String, String> data;
 
     private final List<CaseReport> cases;
@@ -90,7 +92,9 @@ public class OneByOneCohort implements TextMiningResultsModel {
 
     @Override
     public String getInitialFileName() {
-        return pmid + "-" + diseasename.replaceAll(" ", "_") + "-fenominal.json";
+        String fname =  pmid + "-" + diseasename.replaceAll(" ", "_") + "-fenominal.json";
+        LOG.info("Cohort, initial file name: {}", fname);
+        return fname;
     }
 
     @Override

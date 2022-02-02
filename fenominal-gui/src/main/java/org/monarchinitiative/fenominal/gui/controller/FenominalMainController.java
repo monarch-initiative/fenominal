@@ -476,6 +476,7 @@ public class FenominalMainController {
             PopUps.showInfoMessage("Could not retrieve output file name, please try again.", "Error");
             return;
         }
+        LOGGER.info("Retrieved file for saving: {}", file.getAbsolutePath());
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
             switch (this.miningTaskType) {
