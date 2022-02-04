@@ -49,4 +49,6 @@ public interface TextMiningResultsModel {
         // no op
     }
 
+    boolean isChanged();
+    void resetChanged();
 }

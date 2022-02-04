@@ -7,7 +7,6 @@ import java.util.Optional;
 public interface PhenoAnswer {
 
     Term term();
-    Optional<PhenoAge> ageOptional();
     boolean observed();
     boolean excluded();
     boolean unknown();

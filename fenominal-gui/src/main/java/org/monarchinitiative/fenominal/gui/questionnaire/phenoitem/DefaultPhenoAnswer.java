@@ -8,13 +8,11 @@ public class DefaultPhenoAnswer implements PhenoAnswer {
 
     private final Term term;
     private final AnswerType answerType;
-    private final PhenoAge phenoAge;
     private final String question;
 
     public DefaultPhenoAnswer(PhenoItem item) {
         this.term = item.term();
         this.answerType = item.answer();
-        this.phenoAge = item.age().isPresent() ? item.age().get() : null;
         this.question = item.question();
     }
 
@@ -43,12 +41,6 @@ public class DefaultPhenoAnswer implements PhenoAnswer {
     public String question() {
         return question;
     }
-
-    @Override
-    public Optional<PhenoAge> ageOptional() {
-        return Optional.ofNullable(this.phenoAge);
-    }
-
 
 
 

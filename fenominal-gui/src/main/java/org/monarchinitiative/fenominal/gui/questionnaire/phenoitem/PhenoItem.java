@@ -11,12 +11,11 @@ import java.util.Optional;
 public interface PhenoItem {
     String termLabel();
     // Additional question, intended for Age-Rule phenoitems
-    default String question(){ return ""; }
+     String question();
+     String explanation();
 
     Term term();
     AnswerType answer();
-    default Optional<AgeRule> ageRuleOpt() { return Optional.empty(); }
-    default Optional<PhenoAge> age() { return Optional.empty(); }
     void updateAnswer(AnswerType answer);
     default void updateAge(PhenoAge age) {}
     default boolean isUnknown() { return answer().equals(AnswerType.UNKNOWN); }

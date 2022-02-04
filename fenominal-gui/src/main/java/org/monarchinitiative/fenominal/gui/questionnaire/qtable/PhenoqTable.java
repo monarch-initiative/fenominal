@@ -3,13 +3,11 @@ package org.monarchinitiative.fenominal.gui.questionnaire.qtable;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import org.monarchinitiative.fenominal.gui.guitools.PopUps;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.AgeRule;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.slf4j.Logger;
@@ -47,11 +45,11 @@ public class PhenoqTable extends TableView<Qphenorow> {
         TableColumn<Qphenorow, String> titleCol = titleColumn();
         TableColumn<Qphenorow, TermSelectionButton> segmentedCol = segmentedButtonColumn();
         TableColumn<Qphenorow, String> questionCol = questionColumn();
-        TableColumn<Qphenorow, AgeBox> ageThresholdCol = ageSliderColumn();
+        TableColumn<Qphenorow, Button> explanationColumn = explanationColumn();
         getColumns().add(titleCol);
         getColumns().add(segmentedCol);
         getColumns().add(questionCol);
-        getColumns().add(ageThresholdCol);
+        getColumns().add(explanationColumn);
         phenolist.addAll(items);
         getItems().addAll(phenolist);
     }
@@ -132,16 +130,6 @@ public class PhenoqTable extends TableView<Qphenorow> {
                             if (getTableRow() == null || getTableRow().getIndex() < 0) {
                                 return;
                             }
-                            int i = getTableRow().getIndex();
-                            Qphenorow myModel = getTableView().getItems().get(i);
-                            Term term = myModel.getHpoTerm();
-                            Optional<AgeRule> opt = myModel.ageRuleOpt();
-                            if (opt.isPresent()) {
-                                AgeRule ageRule = opt.get();
-                                String msg = String.format("Threshold: %s", ageRule);
-                                tooltip.setText(msg);
-                                setTooltip(tooltip);
-                            }
                             Text text = new Text(item);
                             text.setStyle("-fx-text-alignment:justify;");
                             text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
@@ -157,25 +145,24 @@ public class PhenoqTable extends TableView<Qphenorow> {
         return titleCol;
     }
 
-    private TableColumn<Qphenorow, AgeBox> ageSliderColumn() {
-        TableColumn<Qphenorow, AgeBox> ageBoxCol = new TableColumn<>();
-        ageBoxCol.setCellValueFactory(cdf -> {
+    private TableColumn<Qphenorow, Button> explanationColumn() {
+        TableColumn<Qphenorow, Button> explCol = new TableColumn<>();
+        explCol.setCellValueFactory(cdf -> {
             Qphenorow pr = cdf.getValue();
-            if (pr.ageRuleOpt().isPresent()) {
-                AgeBox ageBox = new AgeBox();
-                pr.yearsProperty().bind(ageBox.yearsPropertyProperty());
-                pr.monthsProperty().bind(ageBox.monthsPropertyProperty());
-                pr.daysProperty().bind(ageBox.daysPropertyProperty());
-                // wrap it so it can be displayed in the TableView
-                return new ReadOnlyObjectWrapper<>(ageBox);
-            } else {
-                return new ReadOnlyObjectWrapper<>(null);
-            }
+            String explanation = pr.getExplanation();
+            Button button = new Button("Explanation");
+            button.setOnAction((e) -> {
+                PopUps.showInfoMessage(pr.getExplanation(),pr.getQuestion());
+                e.consume();
+            });
+
+            return new ReadOnlyObjectWrapper<>(button);
+
         });
-        ageBoxCol.setEditable(false);
-        ageBoxCol.setSortable(false);
-        ageBoxCol.setMinWidth(300);
-        return ageBoxCol;
+        explCol.setEditable(false);
+        explCol.setSortable(false);
+        explCol.setMinWidth(300);
+        return explCol;
     }
 
 
