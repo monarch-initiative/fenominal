@@ -8,13 +8,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.monarchinitiative.fenominal.gui.guitools.PopUps;
-import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.AgeRule;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Main table of this widget. Each row contains a question for a questionnaire.
@@ -76,7 +74,7 @@ public class PhenoqTable extends TableView<Qphenorow> {
                             int i = getTableRow().getIndex();
                             Qphenorow myModel = getTableView().getItems().get(i);
                             Term term = myModel.getHpoTerm();
-                            String msg = String.format("Question for %s (%s)", term.getName(), term.getId().getValue());
+                            String msg = String.format("Question for %s (%s)", term.getName(), term.id().getValue());
                             tooltip.setText(msg);
                             setTooltip(tooltip);
                             Text text = new Text(item);

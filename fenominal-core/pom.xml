@@ -32,6 +32,11 @@
             <artifactId>phenol-core</artifactId>
             <version>${phenol.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.monarchinitiative.phenol</groupId>
+            <artifactId>phenol-io</artifactId>
+            <version>${phenol.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>commons-net</groupId>

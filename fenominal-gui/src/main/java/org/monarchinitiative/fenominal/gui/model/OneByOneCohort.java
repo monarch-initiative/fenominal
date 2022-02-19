@@ -40,7 +40,7 @@ public class OneByOneCohort implements TextMiningResultsModel {
         Map<TermId, Integer> countsMap = new HashMap<>();
         for (var report : cases) {
             for (var term : report.getTerms()) {
-                TermId hpoId = term.getTerm().getId();
+                TermId hpoId = term.getTerm().id();
                 countsMap.putIfAbsent(hpoId, 0);
                 if (term.isObserved()) {
                     countsMap.merge(hpoId, 1, Integer::sum);
@@ -65,7 +65,7 @@ public class OneByOneCohort implements TextMiningResultsModel {
         Set<TermId> terms = new HashSet<>();
         for (var report : cases) {
             for (var fenominalTerm : report.getTerms()) {
-                terms.add(fenominalTerm.getTerm().getId());
+                terms.add(fenominalTerm.getTerm().id());
             }
         }
         return terms.size();

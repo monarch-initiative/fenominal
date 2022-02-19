@@ -30,16 +30,9 @@ import java.util.Map;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
 
-public class PhenopacketByAgeJsonOutputter
+public record PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel)
         implements PhenoOutputter {
     private final static Logger LOGGER = LoggerFactory.getLogger(PhenopacketByAgeJsonOutputter.class);
-
-    private final PhenopacketByAgeModel phenopacketModel;
-
-   public PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel) {
-       this.phenopacketModel = phenopacketModel;
-   }
-
 
     private MetaData getMetaData() {
         Map<String,String> data = phenopacketModel.getModelData();
@@ -99,22 +92,22 @@ public class PhenopacketByAgeJsonOutputter
             PhenotypicFeature pf;
             if (observed && hasAge) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .build();
             } else if (hasAge) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .excluded()
                         .build();
             } else if (observed) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .build();
             } else {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .excluded()
                         .build();
             }

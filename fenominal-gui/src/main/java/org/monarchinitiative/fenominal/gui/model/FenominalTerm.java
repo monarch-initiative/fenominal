@@ -64,7 +64,7 @@ public class FenominalTerm implements Comparable<FenominalTerm> {
 
     @Override
     public String toString() {
-        return String.format("%s (%s): %s", term.getName(), term.getId().getValue(), (this.observed ? "observed" : "excluded"));
+        return String.format("%s (%s): %s", term.getName(), term.id().getValue(), (this.observed ? "observed" : "excluded"));
     }
 
     public boolean hasAge() {

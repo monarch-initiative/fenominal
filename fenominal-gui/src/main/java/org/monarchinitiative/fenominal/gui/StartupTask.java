@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.gui;
 
 import javafx.concurrent.Task;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public final class StartupTask extends Task<Void> {
                 updateMessage(msg);
                 LOGGER.info(msg);
                 try {
-                final Ontology ontology = JsonHpoParser.loadOntology(ontologyPath);
+                final Ontology ontology = OntologyLoader.loadOntology(new File(ontologyPath));
                 optionalResources.setOntology(ontology);
                 updateMessage("Ontology loaded");
                 } catch (FenominalRunTimeException e) {
