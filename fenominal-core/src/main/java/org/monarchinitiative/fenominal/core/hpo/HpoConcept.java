@@ -46,4 +46,14 @@ public class HpoConcept {
     public int wordCount() {
         return this.nonStopWords.size();
     }
+
+    /**
+     * We will use the presence or absence of commas to decide 'ties' between matches that are equally
+     * long. If a match does not have a comma, we will consider it is a better mqtch.
+     * @return true if the original string contains a comma
+     */
+    public boolean hasComma() {
+        return originalConcept.contains(",");
+    }
+
 }
