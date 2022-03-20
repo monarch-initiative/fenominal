@@ -5,7 +5,7 @@
     <parent>
         <artifactId>fenominal</artifactId>
         <groupId>org.monarchinitiative.fenominal</groupId>
-        <version>0.4.4</version>
+        <version>0.4.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,6 +16,11 @@
             <groupId>org.monarchinitiative.fenominal</groupId>
             <artifactId>fenominal-core</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.phenopackets.phenotools</groupId>
+            <artifactId>phenotools-builder</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.phenopackets.phenotools</groupId>

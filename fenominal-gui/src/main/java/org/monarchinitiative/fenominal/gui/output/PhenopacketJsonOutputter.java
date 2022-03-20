@@ -51,7 +51,7 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) implem
                 Update upd = Update.newBuilder().setTimestamp(supd.createdOn()).setUpdatedBy(supd.createdBy()).build();
                 updates.add(upd);
             }
-            return MetaData.newBuilder()
+            return  MetaData.newBuilder()
                     .setCreated(createdOn)
                     .setCreatedBy(createdBy)
                     .addAllUpdates(updates)
@@ -77,6 +77,8 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) implem
             case OTHER_SEX -> org.phenopackets.schema.v2.core.Sex.OTHER_SEX;
             default -> org.phenopackets.schema.v2.core.Sex.UNKNOWN_SEX;
         };
+        //IndividualBuilder individualBuilder = IndividualBuilder.create(phenopacketModel.getId());
+
         Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
         for (FenominalTerm fenominalTerm : phenopacketModel.getTerms()) {
             Term term = fenominalTerm.getTerm();
