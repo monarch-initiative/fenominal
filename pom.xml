@@ -28,7 +28,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <javafx.version>${java.version}</javafx.version>
+        <javafx.version>18</javafx.version>
         <phenol.version>2.0.0-RC1</phenol.version>
         <phenopacket.version>2.0.0</phenopacket.version>
         <spring.version>4.3.8.RELEASE</spring.version>

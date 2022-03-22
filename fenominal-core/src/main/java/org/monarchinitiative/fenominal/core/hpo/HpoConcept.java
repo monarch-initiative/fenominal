@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  * This class contains one HPO label or synonym and provides functions for
  * searching for matches in input texts. For instance, we store all of the non-stop words in a set and can
  * check not only for exact matches with the label etc but permutations thereof.
+ * This object is intended to represent a concept from the Ontology and not a hit in an actual text.
+ * @author Peter N Robinson
  */
 public class HpoConcept {
 

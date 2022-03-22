@@ -32,10 +32,13 @@ public final class StartupTask extends Task<Void> {
 
     private final Properties pgProperties;
 
+    private final File appHomeDir;
 
-    public StartupTask(OptionalResources optionalResources, Properties pgProperties) {
+
+    public StartupTask(OptionalResources optionalResources, Properties pgProperties, File appHomeDirectory) {
         this.optionalResources = optionalResources;
         this.pgProperties = pgProperties;
+        this.appHomeDir = appHomeDirectory;
     }
 
     /**
@@ -55,7 +58,10 @@ public final class StartupTask extends Task<Void> {
         This way we ensure that GUI elements dependent on ontology presence (labels, buttons) stay disabled
         and that the user will be notified about the fact that the ontology is missing.
          */
-        String ontologyPath = pgProperties.getProperty(OptionalResources.ONTOLOGY_PATH_PROPERTY);
+        if (this.appHomeDir == null) {
+            throw new FenominalRunTimeException("Could not find application home directory");
+        }
+        String ontologyPath = this.appHomeDir.getAbsolutePath() + File.separator + "hp.json";
         if (ontologyPath != null) {
             final File hpJsonFile = new File(ontologyPath);
             if (hpJsonFile.isFile()) {

@@ -10,7 +10,7 @@ import java.util.*;
  * the heuristic searching for matches to multiword concepts a little more efficiently. Each
  * object contains all such concepts from the HPO and offers functions for searching.
  */
-public class HpoConceptMultiWordMapper implements HpoConceptMatch {
+public class HpoConceptMultiWordMapper implements HpoConceptMapper {
 
     private final int n_words;
     /**
@@ -40,14 +40,15 @@ public class HpoConceptMultiWordMapper implements HpoConceptMatch {
      * @param clusters list of lexical clusters mapped to the original text that have been preprocessed to remove stopwords
      * @return Optionally, the corresponding first match
      */
-    public Optional<HpoConcept> getMatch(List<String> clusters) {
+    public Optional<HpoConceptHit> getMatch(List<String> clusters) {
         Set<String> clusterSet = new HashSet<>(clusters);
         for (String cluster : clusters) {
             if (this.componentWordToConceptMap.containsKey(cluster)) {
                 List<HpoConcept> conceptList = this.componentWordToConceptMap.get(cluster);
                 for (HpoConcept hpoc : conceptList) {
                     if (lexicalResources.getClusters(hpoc.getNonStopWords()).equals(clusterSet)) {
-                        return Optional.of(hpoc);
+                        HpoConceptHit hit = new DefaultHpoConceptHit(hpoc); // TOOD add information about length of match
+                        return Optional.of(hit);
                     }
                 }
             }

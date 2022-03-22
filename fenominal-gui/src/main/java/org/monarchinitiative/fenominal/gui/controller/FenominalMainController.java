@@ -34,7 +34,9 @@ import org.monarchinitiative.fenominal.gui.output.*;
 import org.monarchinitiative.fenominal.gui.questionnaire.PhenoQuestionnaire;
 import org.monarchinitiative.fenominal.gui.questionnaire.QuestionnairePane;
 import org.monarchinitiative.fenominal.gui.questionnaire.phenoitem.PhenoAnswer;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +113,7 @@ public class FenominalMainController {
 
     public void initialize() {
         // run the initialization task on a separate thread
-        StartupTask task = new StartupTask(optionalResources, pgProperties);
+        StartupTask task = new StartupTask(optionalResources, pgProperties, this.appHomeDirectory);
         this.hpoReadyLabel.textProperty().bind(task.messageProperty());
         task.setOnSucceeded(e -> this.hpoReadyLabel.textProperty().unbind());
         this.executor.submit(task);
@@ -329,10 +331,12 @@ public class FenominalMainController {
         if (! cleanBeforeNewCase()) {
             return;
         }
+        var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report", "Enter data about one individual, one time point", true);
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
+        var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter data about one individual, multiple ages", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Go back and do not delete current work", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, cancel);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
         dialog.setContentText("Fenominal supports four types of HPO biocuration.");
@@ -348,7 +352,6 @@ public class FenominalMainController {
                     break;
                 case "Cancel":
             }
-
             // If we are here, then we are starting a new Phenopacket and
             // we should not offer the update option.
             this.updatePhenopacketButton.setDisable(true);
@@ -627,6 +630,9 @@ public class FenominalMainController {
     }
 
     public boolean shutdown() {
+        if (model == null) {
+            return true; // in this case, the use has not started anything and just wants out
+        }
         if (model.isChanged()) {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Warning - Unsaved Data");
