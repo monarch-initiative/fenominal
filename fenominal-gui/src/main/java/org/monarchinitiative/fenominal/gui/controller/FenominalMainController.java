@@ -113,7 +113,7 @@ public class FenominalMainController {
 
     public void initialize() {
         // run the initialization task on a separate thread
-        StartupTask task = new StartupTask(optionalResources, pgProperties);
+        StartupTask task = new StartupTask(optionalResources, pgProperties, this.appHomeDirectory);
         this.hpoReadyLabel.textProperty().bind(task.messageProperty());
         task.setOnSucceeded(e -> this.hpoReadyLabel.textProperty().unbind());
         this.executor.submit(task);
@@ -220,20 +220,7 @@ public class FenominalMainController {
 
         Set<PhenotypeTerm> approved = hpoTextMining.getApprovedTerms();
 
-        if (this.miningTaskType.equals(CASE_REPORT) ||
-                this.miningTaskType.equals(COHORT_ONE_BY_ONE)) {
-            List<FenominalTerm> approvedTerms = approved.stream()
-                    .map(FenominalTerm::fromMainPhenotypeTerm)
-                    .sorted()
-                    .collect(Collectors.toList());
-            if (miningTaskType.equals(CASE_REPORT))
-                model.addHpoFeatures(approvedTerms);
-            else {
-                model.addHpoFeatures(approvedTerms);
-                int casesSoFar = model.casesMined();
-                this.parseButton.setText(String.format("Mine case report %d", casesSoFar + 1));
-            }
-        } else if (miningTaskType.equals(PHENOPACKET)) {
+        if (miningTaskType.equals(PHENOPACKET)) {
             PhenopacketModel pmodel = (PhenopacketModel) this.model;
             Optional<LocalDate> bdateOpt = pmodel.getBirthdate();
             if (bdateOpt.isEmpty()) {
@@ -294,65 +281,6 @@ public class FenominalMainController {
     }
 
 
-    private void initCaseReport() {
-        CaseDataEntryPane dataEntryPane = new CaseDataEntryPane();
-        dataEntryPane.showAgePickerDialog();
-        String isoAge = dataEntryPane.getIsoAge();
-        String id = dataEntryPane.getCaseId();
-        this.parseButton.setDisable(false);
-        this.parseButton.setText("Mine case report");
-        this.miningTaskType = CASE_REPORT;
-        this.model = new CaseReport(id, isoAge);
-        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
-        model.setModelDataItem("id", id);
-        model.setModelDataItem("age", isoAge);
-        populateTableWithData(model.getModelData());
-    }
-
-
-    /**
-     * Set up parsing for a small cohort whose clinical data we enter one by one. The purpose of this is
-     * for papers that describe say 2-10 patients with a disease, and we would like to generate n/m frequencies
-     * for the HPO terms.
-     */
-    private void initCohortOneByOne() {
-        if (pgProperties.getProperty(BIOCURATOR_ID_PROPERTY) == null) {
-            PopUps.showInfoMessage("Please enter your biocurator ID (edit menu) before entering cohort data", "Error");
-            return;
-        }
-        CohortDataPane dataPane = new CohortDataPane();
-        Optional<CohortPublicationData> opt = dataPane.show();
-        if (opt.isEmpty()) {
-            PopUps.showInfoMessage("Error", "Could not retrieve publication data");
-            return;
-        }
-        CohortPublicationData cpd = opt.get();
-
-        String pmid = cpd.getPmid();
-        String omimId = cpd.getOmimId();
-        String diseasename = cpd.diseasename();
-        try {
-            TermId tid = TermId.of(omimId);
-        } catch (PhenolRuntimeException e) {
-            PopUps.showException("Error", "Could not parse OMIM id", "Please start again, OMIM id should be like OMIM:600123", e);
-            return;
-        }
-
-
-        this.parseButton.setDisable(false);
-        this.parseButton.setText("Mine case report 1");
-        this.miningTaskType = COHORT_ONE_BY_ONE;
-        this.model = new OneByOneCohort(pmid, omimId, diseasename);
-        model.setModelDataItem(HPO_VERSION_KEY, getHpoVersion());
-        model.setModelDataItem("Curated so far", "0");
-        model.setModelDataItem("OMIM id", omimId);
-        model.setModelDataItem("Disease", diseasename);
-        model.setModelDataItem("PMID", pmid);
-        populateTableWithData(model.getModelData());
-        this.questionnaireButtn.setDisable(true); // questionnaire does not apply to cohorts!
-        this.parseButton.setDisable(false);
-    }
-
     /**
      * Set up parsing for a single individual over one or more time points with the goal of outputting a
      * GA4GH phenopacket with one or multiple time points
@@ -403,12 +331,10 @@ public class FenominalMainController {
         if (! cleanBeforeNewCase()) {
             return;
         }
-        var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report", "Enter data about one individual, one time point", true);
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
-        var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter data about one individual, multiple ages", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Go back and do not delete current work", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
         dialog.setContentText("Fenominal supports four types of HPO biocuration.");
@@ -416,17 +342,11 @@ public class FenominalMainController {
         if (opt.isPresent()) {
             ButtonType btype = opt.get();
             switch (btype.getText()) {
-                case "Case report":
-                    initCaseReport();
-                    break;
                 case "Phenopacket":
                     initPhenopacket();
                     break;
                 case "Phenopacket (by age at encounter)":
                     initPhenopacketWithManualAge();
-                    break;
-                case "Cohort":
-                    initCohortOneByOne();
                     break;
                 case "Cancel":
             }
@@ -435,7 +355,7 @@ public class FenominalMainController {
             this.updatePhenopacketButton.setDisable(true);
         }
         String biocurator = this.pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
-        if (biocurator != null) {
+        if (biocurator != null && model != null) {
             this.model.setModelDataItem(BIOCURATOR_ID_PROPERTY, biocurator);
         }
         this.questionnaireButtn.setDisable(false);
@@ -480,11 +400,6 @@ public class FenominalMainController {
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
             PhenoOutputter phenoOutputter;
             switch (this.miningTaskType) {
-                case CASE_REPORT -> phenoOutputter = new CaseReportTsvOutputter((CaseReport) this.model);
-                case COHORT_ONE_BY_ONE -> {
-                    String biocuratorId = pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
-                    phenoOutputter = new PhenoteFxTsvOutputter((OneByOneCohort) this.model, biocuratorId);
-                }
                 case PHENOPACKET -> phenoOutputter = new PhenopacketJsonOutputter((PhenopacketModel) this.model);
                 case PHENOPACKET_BY_AGE -> phenoOutputter = new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
                 default -> phenoOutputter = new ErrorOutputter();
@@ -503,8 +418,6 @@ public class FenominalMainController {
         LOGGER.info("preview output");
         Writer writer = new StringWriter();
         phenoOutputter = switch (this.miningTaskType) {
-            case CASE_REPORT -> new CaseReportTsvOutputter((CaseReport) this.model);
-            case COHORT_ONE_BY_ONE -> new PhenoteFxTsvOutputter((OneByOneCohort) this.model, pgProperties.getProperty(BIOCURATOR_ID_PROPERTY));
             case PHENOPACKET -> new PhenopacketJsonOutputter((PhenopacketModel) this.model);
             case PHENOPACKET_BY_AGE -> new PhenopacketByAgeJsonOutputter((PhenopacketByAgeModel) this.model);
             default -> new ErrorOutputter();
@@ -715,6 +628,9 @@ public class FenominalMainController {
     }
 
     public boolean shutdown() {
+        if (model == null) {
+            return true; // in this case, the use has not started anything and just wants out
+        }
         if (model.isChanged()) {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Warning - Unsaved Data");

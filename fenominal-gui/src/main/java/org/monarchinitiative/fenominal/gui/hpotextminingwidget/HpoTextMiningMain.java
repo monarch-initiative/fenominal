@@ -129,7 +129,7 @@ public class HpoTextMiningMain {
      */
     public void initialize() {
         // initialize behaviour of columns of the TableView
-        hpoIdTableColumn.setCellValueFactory(cdf -> new ReadOnlyStringWrapper(cdf.getValue().getTerm().getId().getValue()));
+        hpoIdTableColumn.setCellValueFactory(cdf -> new ReadOnlyStringWrapper(cdf.getValue().getTerm().id().getValue()));
         hpoNameTableColumn.setCellValueFactory(cdf -> new ReadOnlyStringWrapper(cdf.getValue().getTerm().getName()));
         observedTableColumn.setCellValueFactory(cdf -> new ReadOnlyStringWrapper((cdf.getValue().isPresent()) ? "YES" : "NOT"));
         definitionTableColumn.setCellValueFactory(cdf -> new ReadOnlyStringWrapper(cdf.getValue().getTerm().getDefinition()));

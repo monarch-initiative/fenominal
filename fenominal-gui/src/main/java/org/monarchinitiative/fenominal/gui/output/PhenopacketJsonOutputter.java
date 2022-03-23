@@ -27,14 +27,8 @@ import java.util.Map;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
 
-public class PhenopacketJsonOutputter implements PhenoOutputter{
+public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) implements PhenoOutputter{
     private static final Logger LOGGER = LoggerFactory.getLogger(PhenopacketJsonOutputter.class);
-
-    private final PhenopacketModel phenopacketModel;
-
-    public PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) {
-        this.phenopacketModel = phenopacketModel;
-    }
 
     private MetaData getMetaData() {
         Map<String,String> data = phenopacketModel.getModelData();
@@ -57,7 +51,7 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
                 Update upd = Update.newBuilder().setTimestamp(supd.createdOn()).setUpdatedBy(supd.createdBy()).build();
                 updates.add(upd);
             }
-            return MetaData.newBuilder()
+            return  MetaData.newBuilder()
                     .setCreated(createdOn)
                     .setCreatedBy(createdBy)
                     .addAllUpdates(updates)
@@ -83,6 +77,8 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
             case OTHER_SEX -> org.phenopackets.schema.v2.core.Sex.OTHER_SEX;
             default -> org.phenopackets.schema.v2.core.Sex.UNKNOWN_SEX;
         };
+        //IndividualBuilder individualBuilder = IndividualBuilder.create(phenopacketModel.getId());
+
         Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
         for (FenominalTerm fenominalTerm : phenopacketModel.getTerms()) {
             Term term = fenominalTerm.getTerm();
@@ -91,23 +87,23 @@ public class PhenopacketJsonOutputter implements PhenoOutputter{
             if (fenominalTerm.hasAge() && observed) {
                 String isoAge = fenominalTerm.getIso8601Age();
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .build();
             } else if (fenominalTerm.hasAge() ){
                 String isoAge = fenominalTerm.getIso8601Age();
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .excluded()
                         .build();
             } else if (observed) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .build();
             } else {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .create(term.id().getValue(), term.getName())
                         .excluded()
                         .build();
             }

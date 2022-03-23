@@ -59,7 +59,7 @@ public class PhenotypeTerm {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhenotypeTerm that = (PhenotypeTerm) o;
-        return term.getId().getValue().equals(that.term.getId().getValue()) &&
+        return term.id().getValue().equals(that.term.id().getValue()) &&
                 begin == that.begin &&
                 end == that.end &&
                 present == that.present;
@@ -67,7 +67,7 @@ public class PhenotypeTerm {
 
     @Override
     public int hashCode() {
-        return Objects.hash(term.getId().getValue(), begin, end, present);
+        return Objects.hash(term.id().getValue(), begin, end, present);
     }
 
     @Override

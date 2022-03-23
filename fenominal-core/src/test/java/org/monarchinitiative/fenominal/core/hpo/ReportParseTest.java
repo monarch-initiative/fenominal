@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.FenominalTermMiner;
 import org.monarchinitiative.fenominal.core.MinedTerm;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -59,7 +59,7 @@ public class ReportParseTest {
         if (! hpoFile.isFile()) {
             throw new FileNotFoundException("Could not get report1.txt from URL");
         }
-        hpo = JsonHpoParser.loadOntology(hpoFile);
+        hpo = OntologyLoader.loadOntology(hpoFile);
         miner = new FenominalTermMiner(hpo);
         Path fileName =report1.toPath();
 
