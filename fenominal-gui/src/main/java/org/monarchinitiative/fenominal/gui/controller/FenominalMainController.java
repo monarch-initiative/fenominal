@@ -331,12 +331,10 @@ public class FenominalMainController {
         if (! cleanBeforeNewCase()) {
             return;
         }
-        var caseReport = new CommandLinksDialog.CommandLinksButtonType("Case report", "Enter data about one individual, one time point", true);
         var phenopacketByBirthDate = new CommandLinksDialog.CommandLinksButtonType("Phenopacket", "Enter data about one individual, multiple time points", false);
-        var cohortTogether = new CommandLinksDialog.CommandLinksButtonType("Cohort", "Enter data about cohort", false);
         var phenopacketByIso8601Age = new CommandLinksDialog.CommandLinksButtonType("Phenopacket (by age at encounter)", "Enter data about one individual, multiple ages", false);
         var cancel = new CommandLinksDialog.CommandLinksButtonType("Cancel", "Go back and do not delete current work", false);
-        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, caseReport, cohortTogether, cancel);
+        CommandLinksDialog dialog = new CommandLinksDialog(phenopacketByBirthDate, phenopacketByIso8601Age, cancel);
         dialog.setTitle("Get started");
         dialog.setHeaderText("Select type of curation");
         dialog.setContentText("Fenominal supports four types of HPO biocuration.");
@@ -357,7 +355,7 @@ public class FenominalMainController {
             this.updatePhenopacketButton.setDisable(true);
         }
         String biocurator = this.pgProperties.getProperty(BIOCURATOR_ID_PROPERTY);
-        if (biocurator != null) {
+        if (biocurator != null && model != null) {
             this.model.setModelDataItem(BIOCURATOR_ID_PROPERTY, biocurator);
         }
         this.questionnaireButtn.setDisable(false);
