@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class QuestionnairePane extends BorderPane {
 Logger LOGGER = LoggerFactory.getLogger(QuestionnairePane.class);
     private PhenoqTable phenoqTable;
-    private VBox root = new VBox();
+    private final VBox root = new VBox();
     Button cancelButton = new Button("Cancel");
     Button acceptButton = new Button("Done");
 

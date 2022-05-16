@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.monarchinitiative.fenominal.gui.controller.FenominalMainController;
 import org.monarchinitiative.fenominal.gui.guitools.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -93,7 +93,7 @@ public class Present {
 
     private final Consumer<TermId> focusToTermHook;
 
-    private final Consumer<Main.Signal> signal;
+    private final Consumer<HpoTextMiningMain.Signal> signal;
 
     /**
      * The GUI element responsible for presentation of analyzed text with highlighted regions.
@@ -145,12 +145,12 @@ public class Present {
 
 
     /**
-     * @param signal          {@link Consumer} of {@link Main.Signal}
+     * @param signal          {@link Consumer} of {@link HpoTextMiningMain.Signal}
      *                        that will notify the upstream controller about status of the analysis
      * @param focusToTermHook {@link Consumer} that will accept {@link TermId} in order to show appropriate {@link Term} in ontology
      *                        tree view
      */
-    Present(Consumer<Main.Signal> signal, Consumer<TermId> focusToTermHook) {
+    Present(Consumer<HpoTextMiningMain.Signal> signal, Consumer<TermId> focusToTermHook) {
         this.signal = signal;
         this.focusToTermHook = focusToTermHook;
     }
@@ -188,10 +188,10 @@ public class Present {
         Set<String> ids = new HashSet<>();
         List<PhenotypeTerm> deduplicated = new ArrayList<>();
         for (PhenotypeTerm term : terms) {
-            if (!ids.contains(term.getTerm().getId().getId())) {
+            if (!ids.contains(term.getTerm().id().getId())) {
                 deduplicated.add(term);
             }
-            ids.add(term.getTerm().getId().getId());
+            ids.add(term.getTerm().id().getId());
         }
         return deduplicated;
     }
@@ -221,11 +221,11 @@ public class Present {
             htmlBuilder.append(
                     // highlighted text
                     String.format(HIGHLIGHTED_TEMPLATE,
-                            term.getTerm().getId().getValue(),
+                            term.getTerm().id().getValue(),
                             query.substring(start, term.getEnd()),
 
                             // tooltip text -> HPO id & label
-                            String.format(TOOLTIP_TEMPLATE, term.getTerm().getId().getValue(), term.getTerm().getName())));
+                            String.format(TOOLTIP_TEMPLATE, term.getTerm().id().getValue(), term.getTerm().getName())));
 
             offset = term.getEnd();
         }
@@ -238,12 +238,12 @@ public class Present {
     }
 
     /**
-     * End of analysis. Add approved terms into {@link Main}'s <code>hpoTermsTableView</code> and display configure
+     * End of analysis. Add approved terms into {@link HpoTextMiningMain}'s <code>hpoTermsTableView</code> and display configure
      * Dialog to allow next round of text-mining analysis.
      */
     @FXML
     void addTermsButtonAction() {
-        signal.accept(Main.Signal.DONE);
+        signal.accept(HpoTextMiningMain.Signal.DONE);
     }
 
     /**
@@ -252,7 +252,7 @@ public class Present {
      */
     @FXML
     void cancelButtonAction() {
-        signal.accept(Main.Signal.CANCELLED);
+        signal.accept(HpoTextMiningMain.Signal.CANCELLED);
     }
 
     /**
@@ -311,11 +311,7 @@ public class Present {
                             event.consume();
                         });
 
-                        if (checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm())) {
-                            checkBox.setSelected(true);
-                        } else {
-                            checkBox.setSelected(false);
-                        }
+                        checkBox.setSelected(checkBoxesState.contains(((PhenotypeTerm) checkBox.getUserData()).getTerm()));
 
                         checkBox.selectedProperty().addListener((selected, oldvalue, newvalue) -> {
                             if (newvalue) {

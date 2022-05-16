@@ -55,7 +55,7 @@ public class OntologyTree {
     /**
      * Map of term names to term IDs.
      */
-    private Map<String, TermId> labels = new HashMap<>();
+    private final Map<String, TermId> labels = new HashMap<>();
 
     /**
      * Text field with autocompletion for jumping to a particular HPO term in the tree view.
@@ -181,7 +181,7 @@ public class OntologyTree {
             });
 
             // create Map for lookup of the terms in the ontology based on their Name
-            ontology.getTermMap().values().forEach(term -> labels.putIfAbsent(term.getName(), term.getId()));
+            ontology.getTermMap().values().forEach(term -> labels.putIfAbsent(term.getName(), term.id()));
             WidthAwareTextFields.bindWidthAwareAutoCompletion(searchTextField, labels.keySet());
 
             // show intro message in the infoWebView
@@ -219,11 +219,11 @@ public class OntologyTree {
      * @param term {@link Term} to be displayed
      */
     private void expandUntilTerm(Term term) {
-        if (OntologyAlgorithm.existsPath(ontology, term.getId(), ontology.getRootTermId())) {
+        if (OntologyAlgorithm.existsPath(ontology, term.id(), ontology.getRootTermId())) {
             // find root -> term path through the tree
             Stack<Term> termStack = new Stack<>();
             termStack.add(term);
-            Set<TermId> parents = ontology.getParentTermIds(term.getId()); //getTermParents(term);
+            Set<TermId> parents = ontology.getParentTermIds(term.id()); //getTermParents(term);
             while (parents.size() != 0) {
                 TermId parent = parents.iterator().next();
                 termStack.add(ontology.getTermMap().get(parent));
@@ -249,7 +249,7 @@ public class OntologyTree {
             ontologyTreeView.getSelectionModel().select(target);
             ontologyTreeView.scrollTo(ontologyTreeView.getSelectionModel().getSelectedIndex());
         } else {
-            LOGGER.warn("Unable to find the path from {} to {}", ontology.getRootTermId(), term.getId());
+            LOGGER.warn("Unable to find the path from {} to {}", ontology.getRootTermId(), term.id());
         }
     }
 
@@ -283,7 +283,7 @@ public class OntologyTree {
                 "<p><b>Definition:</b> %s</p>" +
                 "</body></html>";
 
-        String termID = term.getId().getValue();
+        String termID = term.id().getValue();
         String synonyms = (term.getSynonyms() == null) ? "" : term.getSynonyms().stream()
                 .map(TermSynonym::getValue)
                 .collect(Collectors.joining(", ")); // Synonyms
@@ -326,7 +326,7 @@ public class OntologyTree {
          */
         @Override
         public boolean isLeaf() {
-            return OntologyAlgorithm.getChildTerms(ontology, getValue().getId(), false).size() == 0;
+            return OntologyAlgorithm.getChildTerms(ontology, getValue().id(), false).size() == 0;
         }
 
 
@@ -340,7 +340,7 @@ public class OntologyTree {
             if (childrenList == null) {
                 LOGGER.debug(String.format("Getting children for term %s", getValue().getName()));
                 childrenList = FXCollections.observableArrayList();
-                Set<Term> children = OntologyAlgorithm.getChildTerms(ontology, getValue().getId(), false).stream()
+                Set<Term> children = OntologyAlgorithm.getChildTerms(ontology, getValue().id(), false).stream()
                         .map(ontology.getTermMap()::get)
                         .collect(Collectors.toSet());
 

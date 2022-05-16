@@ -31,7 +31,7 @@
                 <Region prefHeight="200.0" prefWidth="200.0" styleClass="menu-bar" HBox.hgrow="SOMETIMES" />
                 <MenuBar HBox.hgrow="NEVER">
                     <Menu mnemonicParsing="false" text="Help">
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" onAction="#openAboutDialog"  text="About" />
                     </Menu>
                 </MenuBar>
             </HBox>
@@ -51,6 +51,14 @@
                 <HBox prefHeight="400.0" prefWidth="300.0">
                     <VBox prefHeight="200.0" prefWidth="400.0">
                         <Button fx:id="setupButton" mnemonicParsing="false" onAction="#getStarted" prefWidth="200" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Get started">
+                            <VBox.margin>
+                                <Insets left="20.0" />
+                            </VBox.margin>
+                            <VBox.margin>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="updatePhenopacketButton" mnemonicParsing="false" onAction="#updatePhenopacket" prefWidth="200" styleClass="bevel-grey" stylesheets="@fenominal.css" text="Update Phenopacket">
                             <VBox.margin>
                                 <Insets left="20.0" />
                             </VBox.margin>

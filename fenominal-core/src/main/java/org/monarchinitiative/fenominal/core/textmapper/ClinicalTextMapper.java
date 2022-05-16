@@ -4,7 +4,8 @@ import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
-import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
+import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
+import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
@@ -16,13 +17,13 @@ import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HpoMatcher.class);
-    private final HpoMatcher hpoMatcher;
-    private TokenDecoratorService tokenDecoratorService;
-    private DecorationProcessorService decorationProcessorService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultHpoMatcher.class);
+    private final DefaultHpoMatcher hpoMatcher;
+    private final TokenDecoratorService tokenDecoratorService;
+    private final DecorationProcessorService decorationProcessorService;
 
     public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
-        this.hpoMatcher = new HpoMatcher(ontology, lexicalResources);
+        this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
         this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
         this.decorationProcessorService = new DecorationProcessorService();
     }
@@ -53,10 +54,10 @@ public class ClinicalTextMapper {
                     continue; // last portion is smaller, we will get it in corresponding loop
                 }
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
-                Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
+                Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get().getHpoId());
+                            decorationProcessorService.process(chunk, nonStopWords, opt.get());
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());

@@ -63,7 +63,7 @@ public class SimpleSentenceTest extends TestBase {
     }
 
 
-    /**
+    /*
      * This can be used to test problems on the full ontology if needed.
     @Test
     public void testProblematicSentence() {

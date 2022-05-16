@@ -51,14 +51,9 @@ public class HpoTextMining {
     // ---------------------------------- CONTROLLERS and PARENTS ------------------------------------------------------
 
     /**
-     * Main parent, contains all GUI elements of the widget.
-     */
-    //private final Parent mainParent;
-
-    /**
      * Main controller, part of the API.
      */
-    private final Main main;
+    private final HpoTextMiningMain main;
 
     /**
      * The query text is submitted here.
@@ -87,9 +82,9 @@ public class HpoTextMining {
     public HpoTextMining(Ontology ontology,
                           TermMiner miner,
                           ExecutorService executorService) {
-        main = new Main();
+        main = new HpoTextMiningMain();
         // Set up "Configure" part of the screen
-        Consumer<Main.Signal> configureSignal = signal -> {
+        Consumer<HpoTextMiningMain.Signal> configureSignal = signal -> {
             switch (signal) {
                 case DONE -> {
                     Set<PhenotypeTerm> phenotypeTerms = configure.getTerms().stream()
@@ -106,7 +101,7 @@ public class HpoTextMining {
         configure = new Configure(miner, executorService, configureSignal);
 
         // Set up "Present" part of the screen
-        Consumer<Main.Signal> presentSignal = signal -> {
+        Consumer<HpoTextMiningMain.Signal> presentSignal = signal -> {
             switch (signal) {
                 case DONE -> {
                     main.addPhenotypeTerms(present.getApprovedTerms());
@@ -125,7 +120,7 @@ public class HpoTextMining {
 
         // Simple controller factory treating controller created above as singletons.
         Callback<Class<?>, Object> controllerFactory = clazz -> {
-            if (clazz.equals(Main.class)) {
+            if (clazz.equals(HpoTextMiningMain.class)) {
                 return main;
             } else if (clazz.equals(Configure.class)) {
                 return configure;
@@ -142,11 +137,11 @@ public class HpoTextMining {
 //
         try {
 
-            URL url = HpoTextMining.class.getResource("/fxml/Main.fxml");
+            URL url = HpoTextMining.class.getResource("/fxml/HpoTextMiningMain.fxml");
             FXMLLoader mainLoader = new FXMLLoader(url);
             mainLoader.setClassLoader(HpoTextMining.class.getClassLoader());
             File f = new File(url.getFile());
-            LOGGER.info("Resource for Main.fxml: {} - exists? {}", url, f.isFile());
+            LOGGER.info("Resource for HpoTextMiningMain.fxml: {} - exists? {}", url, f.isFile());
             mainLoader.setControllerFactory(controllerFactory);
             mainParent = mainLoader.load();
 

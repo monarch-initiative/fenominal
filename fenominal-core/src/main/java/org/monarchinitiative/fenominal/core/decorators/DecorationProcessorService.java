@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.core.decorators;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.decorators.impl.NegationDecorationProcessor;
+import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class DecorationProcessorService {
 
-    private List<DecorationProcessor> decorationProcessors;
+    private final List<DecorationProcessor> decorationProcessors;
 
     public DecorationProcessorService() {
         decorationProcessors = new ArrayList<>();
@@ -29,11 +30,12 @@ public class DecorationProcessorService {
     /**
      * TODO: Implement this in a smarter way
      */
-    public MappedSentencePart process(List<SimpleToken> chunk, List<SimpleToken> nonStopWords, TermId hpoId) {
+    public MappedSentencePart process(List<SimpleToken> chunk, List<SimpleToken> nonStopWords, HpoConceptHit conceptHit) {
         Map<String, String> decorations = new LinkedHashMap<>();
         for (DecorationProcessor decorationProcessor : decorationProcessors) {
             decorations.put(decorationProcessor.getDecoration(), decorationProcessor.getProcessedValue(chunk, nonStopWords));
         }
+        TermId hpoId = conceptHit.hpoConcept().getHpoId();
         return new MappedSentencePart(chunk, hpoId, decorations);
     }
 }

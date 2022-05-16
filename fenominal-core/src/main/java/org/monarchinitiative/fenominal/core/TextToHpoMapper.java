@@ -3,9 +3,10 @@ package org.monarchinitiative.fenominal.core;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,9 +19,9 @@ public class TextToHpoMapper {
     private final LexicalResources lexicalResources;
 
     public TextToHpoMapper(String pathToHpJson) {
-        JsonHpoParser parser = new JsonHpoParser(pathToHpJson);
+        Ontology hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
         lexicalResources = new LexicalResources();
-        hpoMatcher = new ClinicalTextMapper(parser.getHpo(), lexicalResources);
+        hpoMatcher = new ClinicalTextMapper(hpo, lexicalResources);
     }
 
     public TextToHpoMapper(Ontology ontology) {

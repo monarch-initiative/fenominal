@@ -35,7 +35,7 @@ public class Configure {
 
     private final ExecutorService executorService;
 
-    private final Consumer<Main.Signal> signal;
+    private final Consumer<HpoTextMiningMain.Signal> signal;
 
     private final Set<MinedTerm> terms = new HashSet<>();
 
@@ -52,7 +52,7 @@ public class Configure {
     private Button analyzeButton;
 
 
-    Configure(TermMiner miner, ExecutorService executorService, Consumer<Main.Signal> signal) {
+    Configure(TermMiner miner, ExecutorService executorService, Consumer<HpoTextMiningMain.Signal> signal) {
         this.miner = miner;
         this.executorService = executorService;
         this.signal = signal;
@@ -77,7 +77,7 @@ public class Configure {
         // wrap into the Task so that mining will not cause freezing of the GUI
         Task<Collection<MinedTerm>> task = new Task<>() {
             @Override
-            protected Collection<MinedTerm> call() throws Exception {
+            protected Collection<MinedTerm> call() {
                 return miner.doMining(query);
             }
         };
@@ -86,10 +86,10 @@ public class Configure {
             try {
                 terms.clear();
                 terms.addAll(task.get());
-                signal.accept(Main.Signal.DONE); // results are ready, notify top-level controller
+                signal.accept(HpoTextMiningMain.Signal.DONE); // results are ready, notify top-level controller
             } catch (InterruptedException | ExecutionException ex) {
                 LOGGER.warn(ex.getMessage());
-                signal.accept(Main.Signal.FAILED);
+                signal.accept(HpoTextMiningMain.Signal.FAILED);
             }
         });
 
@@ -99,10 +99,10 @@ public class Configure {
                         msg = String.format("Unable to connect to %s. Is your internet connection working?", e.getSource().getException().getCause().getMessage());
                     }
                     PopUps.showThrowableDialog("HPO text mining", "Text mining failed", msg, e.getSource().getException().getCause());
-                    signal.accept(Main.Signal.FAILED);
+                    signal.accept(HpoTextMiningMain.Signal.FAILED);
                 }
         );
-        task.setOnCancelled(e -> signal.accept(Main.Signal.CANCELLED));
+        task.setOnCancelled(e -> signal.accept(HpoTextMiningMain.Signal.CANCELLED));
 
         executorService.submit(task);
     }

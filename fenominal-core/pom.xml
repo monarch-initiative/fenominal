@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.monarchinitiative.fenominal</groupId>
         <artifactId>fenominal</artifactId>
-        <version>0.3.6</version>
+        <version>0.4.6</version>
     </parent>
 
     <name>fenominal-core</name>
@@ -30,6 +30,11 @@
         <dependency>
             <groupId>org.monarchinitiative.phenol</groupId>
             <artifactId>phenol-core</artifactId>
+            <version>${phenol.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.monarchinitiative.phenol</groupId>
+            <artifactId>phenol-io</artifactId>
             <version>${phenol.version}</version>
         </dependency>
 

@@ -3,7 +3,8 @@ package org.monarchinitiative.fenominal.json.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.common.collect.ComparisonChain;
+
+import java.util.Comparator;
 
 /**
  * An edge connects two nodes via a predicate
@@ -65,13 +66,15 @@ public class Edge implements NodeOrEdge, Comparable<Edge> {
 		return meta;
 	}
 
+
+	private final static Comparator<Edge> edgeComparator = Comparator.comparing(Edge::getSub)
+			.thenComparing(Edge::getPred)
+			.thenComparing(Edge::getObj);
+
+
 	@Override
 	public int compareTo(Edge other) {
-		return ComparisonChain.start()
-				.compare(this.getSub(), other.getSub())
-				.compare(this.getPred(), other.getPred())
-				.compare(this.getObj(), other.getObj())
-				.result();
+		return edgeComparator.compare(this, other);
 	}
 
 	public static class Builder {
