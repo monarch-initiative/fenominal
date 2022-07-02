@@ -30,13 +30,8 @@ public class KmerGenerator {
     }
 
     public KmerGenerator(Ontology ontology) {
-        LOGGER.info("Loading ontology ...");
+        LOGGER.info("Loading ontology (term count: {})", ontology.countAllTerms());
         HpoLoader hpoLoader = new HpoLoader(ontology);
-
-        /*
-         * TODO: textToTerm inside the HPOLoader does not distinguish between the various types of synonyms;
-         * We probably should distinguish ...
-         */
         this.termMap = hpoLoader.textToTermMap();
         this.kmerDB = new KmerDB();
     }
@@ -47,19 +42,13 @@ public class KmerGenerator {
         double sTime = System.currentTimeMillis();
         for (String termText : termMap.keySet()) {
             String hpoId = termMap.get(termText).getId();
-            /*
-             * Reusing the text processing component for consistency. What happens though with terms that contain punctuation?
-             */
+            //Reusing the text processing component for consistency. What happens though with terms that contain punctuation?
             FmCoreDocument fmCoreDocument = new FmCoreDocument(termText);
-
-            /*
-             * Expecting exactly one sentence from one term. Not sure what to do with it if it's more than one sentence ...
-             */
+            // Expecting exactly one sentence from one term. Not sure what to do with it if it's more than one sentence ...
             if (fmCoreDocument.getSentences().size() != 1) {
                 LOGGER.warn("Unable to process term [{}]: {}", hpoId, termText);
                 continue;
             }
-
             List<SimpleToken> tokens = fmCoreDocument.getSentences().get(0).getTokens()
                     .stream()
                     .filter(Predicate.not(token -> StopWords.isStop(token.getToken()))).toList();
@@ -67,7 +56,6 @@ public class KmerGenerator {
             this.kmerDB.addLabel(termText, flattenedLabel);
             for (SimpleToken simpleToken : tokens) {
                 List<String> kmers = TextMapperUtil.kmers(simpleToken.getLowerCaseToken(), k);
-
                 for (String kmer : kmers) {
                     kmerDBK.add(kmer, hpoId, termText);
                 }
