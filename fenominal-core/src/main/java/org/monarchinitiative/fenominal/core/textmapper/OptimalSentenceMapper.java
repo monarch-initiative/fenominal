@@ -11,6 +11,7 @@ import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +61,10 @@ public class OptimalSentenceMapper implements SentenceMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
+                    TermId hpoId = opt.get().hpoConcept().getHpoId();
+                    double TODO_DEFAULT_SIM = 1.0;
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get());
+                            decorationProcessorService.process(chunk, nonStopWords, hpoId, TODO_DEFAULT_SIM);
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);

@@ -21,7 +21,10 @@ public class FenominalMinerApp implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FenominalMinerApp.class);
     private final ClinicalTextMapper mapper;
 
+    private final Ontology ontology;
+
     public FenominalMinerApp(Ontology ontology) {
+        this.ontology = ontology;
         LexicalResources lexicalResources = new LexicalResources();
         this.mapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
@@ -32,7 +35,7 @@ public class FenominalMinerApp implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        /**
+        /*
          * TODO: Decide where to put the fuzzy flag !!!
          */
 
@@ -42,7 +45,7 @@ public class FenominalMinerApp implements TermMiner {
     }
 
     public Ontology getHpo() {
-        return this.mapper.getHpo();
+        return this.ontology;
     }
 
 

@@ -46,7 +46,8 @@ public class ClinicalTextMapperTest {
                 "intellectual impairment (IQ 65), macrocephaly and dysmorphisms (dolichocephalic " +
                 "head shape, broad nasal bridge, narrow palate, brachydactyly, see Fig. 1A) raised " +
                 "the suspicion of Sotos syndrome.";
-        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query);
+        boolean doFuzzyMatch = false;
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
         MappedSentencePart part1 = mappedSentenceParts.get(0);
         assertEquals(47, part1.getStartpos());
         assertEquals(66, part1.getEndpos());

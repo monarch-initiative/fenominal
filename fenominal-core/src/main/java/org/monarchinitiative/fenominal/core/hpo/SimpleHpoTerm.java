@@ -17,7 +17,7 @@ public class SimpleHpoTerm {
     private final  Set<String> synonyms;
 
     public SimpleHpoTerm(Term term) {
-        this.id = term.id();
+        this.id = term.getId();
         this.name = term.getName();
         this.def = term.getDefinition();
         xrefs = term.getXrefs().stream().map(Dbxref::getName).collect(Collectors.toSet());

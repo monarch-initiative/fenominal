@@ -5,7 +5,7 @@ import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
 import org.monarchinitiative.fenominal.core.textmapper.TextMapperUtil;
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
+//import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class KmerGenerator {
 
     private Map<String, TermId> termMap;
 
-    private KmerDB kmerDB;
+    private final KmerDB kmerDB;
 
     public KmerGenerator(KmerDB kmerDB) {
         this.kmerDB = kmerDB;
@@ -33,7 +33,7 @@ public class KmerGenerator {
         LOGGER.info("Loading ontology ...");
         HpoLoader hpoLoader = new HpoLoader(ontology);
 
-        /**
+        /*
          * TODO: textToTerm inside the HPOLoader does not distinguish between the various types of synonyms;
          * We probably should distinguish ...
          */
@@ -47,12 +47,12 @@ public class KmerGenerator {
         double sTime = System.currentTimeMillis();
         for (String termText : termMap.keySet()) {
             String hpoId = termMap.get(termText).getId();
-            /**
+            /*
              * Reusing the text processing component for consistency. What happens though with terms that contain punctuation?
              */
             FmCoreDocument fmCoreDocument = new FmCoreDocument(termText);
 
-            /**
+            /*
              * Expecting exactly one sentence from one term. Not sure what to do with it if it's more than one sentence ...
              */
             if (fmCoreDocument.getSentences().size() != 1) {
@@ -62,8 +62,7 @@ public class KmerGenerator {
 
             List<SimpleToken> tokens = fmCoreDocument.getSentences().get(0).getTokens()
                     .stream()
-                    .filter(Predicate.not(token -> StopWords.isStop(token.getToken())))
-                    .collect(Collectors.toList());
+                    .filter(Predicate.not(token -> StopWords.isStop(token.getToken()))).toList();
             List<String> flattenedLabel = tokens.stream().map(SimpleToken::getLowerCaseToken).collect(Collectors.toList());
             this.kmerDB.addLabel(termText, flattenedLabel);
             for (SimpleToken simpleToken : tokens) {
@@ -100,6 +99,7 @@ public class KmerGenerator {
         return new KmerGenerator(kmerDB);
     }
 
+    /*
     public static void main(String[] args) {
         Ontology hpo = JsonHpoParser.loadOntology("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
         KmerGenerator kmerGenerator = new KmerGenerator(hpo);
@@ -112,15 +112,13 @@ public class KmerGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static void main2(String[] args) {
         try {
             KmerGenerator kmerGenerator = KmerGenerator.loadKmerDB("/home/tudor/tmp/test.ser");
             kmerGenerator.print();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

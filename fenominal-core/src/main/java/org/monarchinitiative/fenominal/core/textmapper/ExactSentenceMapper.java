@@ -7,7 +7,9 @@ import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
+import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -15,9 +17,9 @@ import java.util.stream.Collectors;
 
 public class ExactSentenceMapper implements SentenceMapper {
 
-    private HpoMatcher hpoMatcher;
-    private TokenDecoratorService tokenDecoratorService;
-    private DecorationProcessorService decorationProcessorService;
+    private final HpoMatcher hpoMatcher;
+    private final TokenDecoratorService tokenDecoratorService;
+    private final DecorationProcessorService decorationProcessorService;
 
     public ExactSentenceMapper(HpoMatcher hpoMatcher, TokenDecoratorService tokenDecoratorService, DecorationProcessorService decorationProcessorService) {
         this.hpoMatcher = hpoMatcher;
@@ -40,10 +42,11 @@ public class ExactSentenceMapper implements SentenceMapper {
                     continue; // last portion is smaller, we will get it in corresponding loop
                 }
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
-                Optional<HpoConcept> opt = this.hpoMatcher.getMatch(stringchunk);
+                Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
+                    TermId hpoId = opt.get().hpoConcept().getHpoId();
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get().getHpoId(), 1.0);
+                            decorationProcessorService.process(chunk, nonStopWords, hpoId, 1.0);
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());

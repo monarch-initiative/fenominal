@@ -101,9 +101,6 @@ public record PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketMod
                 pf = PhenotypicFeatureBuilder
                         .builder(term.getId().getValue(), term.getName())
                         .onset(TimeElements.age(fterm.getIso8601Age()))
-                        .create(term.id().getValue(), term.getName())
-                        .onset(TimeElements.age(isoAge))
-
                         .build();
             } else if (fterm.hasAge()) {
                 pf = PhenotypicFeatureBuilder

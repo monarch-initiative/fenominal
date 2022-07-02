@@ -1,8 +1,6 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
-import org.monarchinitiative.fenominal.core.corenlp.FmCoreDocument;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.corenlp.SimpleSentence;
+import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 
@@ -14,10 +12,13 @@ import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
 
@@ -30,8 +31,9 @@ public class ClinicalTextMapper {
  
     private final TokenDecoratorService tokenDecoratorService;
     private final DecorationProcessorService decorationProcessorService;
+    private final HpoMatcher hpoMatcher;
 
-    private Map<Boolean, SentenceMapper> sentenceMappers;
+    private final Map<Boolean, SentenceMapper> sentenceMappers;
 
     /**
      * TODO: Add k-mer DB file to the constructor + k-mer size !
@@ -74,8 +76,10 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
+                    double TODO_DEFAULT_SIM = 1.0;
+                    TermId hpoId = opt.get().hpoConcept().getHpoId();
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get());
+                            decorationProcessorService.process(chunk, nonStopWords, hpoId, TODO_DEFAULT_SIM);
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
@@ -115,11 +119,5 @@ public class ClinicalTextMapper {
         }
         return max;
     }
-
-
-    public Ontology getHpo() {
-        return this.hpoMatcher.getHpoPhenotypicAbnormality();
-    }
-
 
 }
