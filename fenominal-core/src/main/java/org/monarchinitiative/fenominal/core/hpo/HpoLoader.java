@@ -21,7 +21,7 @@ public class HpoLoader {
         this.hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
     }
 
-    HpoLoader(Ontology ontology) {
+    public HpoLoader(Ontology ontology) {
         this.hpo = ontology;
     }
 

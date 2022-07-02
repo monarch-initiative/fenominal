@@ -2,12 +2,21 @@ package org.monarchinitiative.fenominal.gui.output;
 
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.google.protobuf.Message;
+
+
 import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketModel;
 import org.monarchinitiative.fenominal.gui.model.SimpleUpdate;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.phenopackets.phenotools.builder.PhenopacketBuilder;
-import org.phenopackets.phenotools.builder.builders.*;
+import org.phenopackets.phenopackettools.builder.PhenopacketBuilder;
+import org.phenopackets.phenopackettools.builder.builders.*;
 import org.phenopackets.schema.v2.Phenopacket;
 import org.phenopackets.schema.v2.core.Individual;
 import org.phenopackets.schema.v2.core.MetaData;
@@ -59,8 +68,8 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) implem
                     .build();
         } else {
             return MetaDataBuilder
-                    .create(LocalDate.now().toString(), biocurator)
-                    .resource(Resources.hpoVersion(hpoVersion))
+                    .builder(LocalDate.now().toString(), biocurator)
+                    .addResource(Resources.hpoVersion(hpoVersion))
                     .build();
         }
     }
@@ -87,27 +96,28 @@ public record PhenopacketJsonOutputter(PhenopacketModel phenopacketModel) implem
             if (fenominalTerm.hasAge() && observed) {
                 String isoAge = fenominalTerm.getIso8601Age();
                 pf = PhenotypicFeatureBuilder
-                        .create(term.id().getValue(), term.getName())
+                        .builder(term.getId().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .build();
             } else if (fenominalTerm.hasAge() ){
                 String isoAge = fenominalTerm.getIso8601Age();
                 pf = PhenotypicFeatureBuilder
-                        .create(term.id().getValue(), term.getName())
+                        .builder(term.getId().getValue(), term.getName())
                         .onset(TimeElements.age(isoAge))
                         .excluded()
                         .build();
             } else if (observed) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.id().getValue(), term.getName())
+
+                        .builder(term.getId().getValue(), term.getName())
                         .build();
             } else {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.id().getValue(), term.getName())
+                        .builder(term.getId().getValue(), term.getName())
                         .excluded()
                         .build();
             }
-            builder.phenotypicFeature(pf); // add feature, one at a time
+            builder.addPhenotypicFeature(pf); // add feature, one at a time
         }
         builder.individual(subject);
         // The Phenopacket is now complete and we would like to write it as JSON
