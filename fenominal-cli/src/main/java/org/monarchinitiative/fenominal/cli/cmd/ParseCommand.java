@@ -4,6 +4,7 @@ import org.monarchinitiative.fenominal.cli.analysis.PassageParser;
 import picocli.CommandLine;
 
 
+import java.io.File;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "parse", aliases = {"P"},
@@ -19,6 +20,10 @@ public class ParseCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        File f = new File(hpoJsonPath);
+        if (! f.isFile()) {
+            System.out.printf("[ERROR] Could not find hp.json file at %s\nRun download command first\n", hpoJsonPath);
+        }
         PassageParser parser = new PassageParser(hpoJsonPath, input, output);
         parser.parse();
         return 0;

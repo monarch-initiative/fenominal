@@ -35,14 +35,18 @@ public class FenominalMinerApp implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        /*
-         * TODO: Decide where to put the fuzzy flag !!!
-         */
-
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
         LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
+
+    @Override
+    public Collection<MinedTerm> doFuzzyMining(final String query) {
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, true);
+        LOGGER.trace("(Fuzzy match) Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
+        return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
+    }
+
 
     public Ontology getHpo() {
         return this.ontology;

@@ -30,11 +30,19 @@ public class FenominalTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        /**
-         * TODO: Decide where to put the fuzzy flag!!!
-         */
-
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
+        LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
+        return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
+    }
+
+    /**
+     * Do text mining with kmer-fuzzy match algorithm
+     * @param query Query string for mining HPO terms (for instance, text that was pasted into the GUI window for mining).
+     * @return collection of mined HPO terms to display in the GUI
+     */
+    @Override
+    public Collection<MinedTerm> doFuzzyMining(final String query) {
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, true);
         LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }

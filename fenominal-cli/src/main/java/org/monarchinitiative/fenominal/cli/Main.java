@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.cli;
 
+import org.monarchinitiative.fenominal.cli.cmd.CreateKmerDbCommand;
 import org.monarchinitiative.fenominal.cli.cmd.DownloadCommand;
 import org.monarchinitiative.fenominal.cli.cmd.ParseCommand;
 import picocli.CommandLine;
@@ -8,7 +9,7 @@ import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "fenominal",
         mixinStandardHelpOptions = true,
-        version = "0.0.4",
+        version = "0.5.0",
         description = "phenotype/disease NER")
 public class Main implements Callable<Integer> {
 
@@ -19,6 +20,7 @@ public class Main implements Callable<Integer> {
         }
         CommandLine cline = new CommandLine(new Main())
                 .addSubcommand("download", new DownloadCommand())
+                .addSubcommand("kmer", new CreateKmerDbCommand())
                 .addSubcommand("parse", new ParseCommand());
         cline.setToggleBooleanFlags(false);
         int exitCode = cline.execute(args);

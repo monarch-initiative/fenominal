@@ -1,10 +1,16 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
-import org.monarchinitiative.fenominal.cli.io.HpoDownloader;
+import org.monarchinitiative.biodownload.BioDownloader;
+import org.monarchinitiative.biodownload.BioDownloaderBuilder;
+import org.monarchinitiative.biodownload.FileDownloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -28,8 +34,17 @@ public class DownloadCommand implements Callable<Integer>{
     @Override
     public Integer call() {
         logger.info(String.format("Download analysis to %s", datadir));
-        HpoDownloader downloader = new HpoDownloader(datadir, overwrite);
-        downloader.download();
+        Path destination = Paths.get(datadir);
+        BioDownloaderBuilder builder = BioDownloader.builder(destination);
+        BioDownloader downloader = builder.hpoJson().overwrite(overwrite).build();
+        try {
+            List<File> files = downloader.download();
+            for (File f : files) {
+                System.out.printf("[INFO] Downloaded %s\n", f.getAbsolutePath());
+            }
+        } catch (FileDownloadException e) {
+            System.err.printf("[ERROR] Could not download hp.json: %s\n", e.getMessage());
+        }
         return 0;
     }
 
