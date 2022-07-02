@@ -100,7 +100,7 @@ public class KmerGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     public static void main2(String[] args) {
         try {
@@ -109,5 +109,5 @@ public class KmerGenerator {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

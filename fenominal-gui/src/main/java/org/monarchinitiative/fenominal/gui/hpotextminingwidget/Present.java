@@ -208,8 +208,7 @@ public class Present {
 
         // sort to process minedText sequentially.
         final List<PhenotypeTerm> sortedByBegin = terms.stream()
-                .sorted(Comparator.comparing(PhenotypeTerm::getBegin))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(PhenotypeTerm::getBegin)).toList();
 
         int offset = 0;
         for (PhenotypeTerm term : sortedByBegin) {

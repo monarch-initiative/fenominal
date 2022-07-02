@@ -7,7 +7,7 @@ import java.util.*;
 public class KmerDBK implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 5124126177924192049L;
+    private static final long serialVersionUID = 2L;
 
     private Map<String, Map<String, List<String>>> kmerSet;
 

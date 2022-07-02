@@ -10,7 +10,7 @@ import java.util.TreeMap;
 public class KmerDB implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -7533091038176758334L;
+    private static final long serialVersionUID = 2L;
 
     private Map<Integer, KmerDBK> kmerDBKMap;
 
@@ -35,7 +35,7 @@ public class KmerDB implements Serializable {
         if (this.kmerDBKMap.containsKey(kmerSize)) {
             return this.kmerDBKMap.get(kmerSize).getKmerSet().get(kmer);
         }
-        return null;
+        return Map.of();
     }
 
     public Map<Integer, KmerDBK> getKmerDBKMap() {

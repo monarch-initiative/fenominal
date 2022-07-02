@@ -55,11 +55,7 @@ public class FuzzySentenceMapper implements SentenceMapper {
             this.kmerDB = (KmerDB) objectInputStream.readObject();
             objectInputStream.close();
             this.valid = true;
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
-        } catch (IOException e) {
-            LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
         }
     }
@@ -88,7 +84,7 @@ public class FuzzySentenceMapper implements SentenceMapper {
                     for (String hpoId : hpoIds.keySet()) {
                         Map<String, Integer> map = tokenLevel.containsKey(hpoId) ? tokenLevel.get(hpoId) : new HashMap<>();
                         for (String label : hpoIds.get(hpoId)) {
-                            int count = map.containsKey(label) ? map.get(label) : 0;
+                            int count = map.getOrDefault(label, 0);
                             count++;
                             map.put(label, count);
                         }
@@ -140,10 +136,7 @@ public class FuzzySentenceMapper implements SentenceMapper {
         }
 
 
-        /**
-         * FROM EXACT SENTENCE MATCHING
-         */
-
+        // FROM EXACT SENTENCE MATCHING
         // When we get here, we have zero, one, or more MappedSentenceParts.
         // Our heuristic is to take the longest match first
         // First get and sort the start positions

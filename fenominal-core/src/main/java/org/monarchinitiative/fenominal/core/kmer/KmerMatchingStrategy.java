@@ -2,6 +2,7 @@ package org.monarchinitiative.fenominal.core.kmer;
 
 import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.textmapper.TextMapperUtil;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,10 +35,10 @@ public class KmerMatchingStrategy {
         }
 
         for (String hpoId : this.hpoDict.keySet()) {
-            List<Integer> sortedIdx = this.hpoDict.get(hpoId).keySet().stream().collect(Collectors.toList());
+            List<Integer> sortedIdx = new ArrayList<>(this.hpoDict.get(hpoId).keySet());
             Collections.sort(sortedIdx);
 
-            Map<List<SimpleToken>, Double> matches = new LinkedHashMap();
+            Map<List<SimpleToken>, Double> matches = new LinkedHashMap<>();
 
             List<Integer> currentList = new ArrayList<>();
             int prevIdx = -1;
@@ -57,9 +58,7 @@ public class KmerMatchingStrategy {
                         int labelLength = this.kmerDB.getLabelLength(label);
                         List<String> labelTokens = this.kmerDB.getLabelTokens(label);
                         if (labelLength == -1 || labelTokens == null) {
-                            //TODO: THIS SHOULD NEVER HAPPEN!!!
-                            System.out.println("This should not happen !!!");
-                            continue;
+                            throw new PhenolRuntimeException(" Could not get labelLength/labelTokens-should never happen");
                         }
 
                         if (labelLength == currentList.size()) {
@@ -67,7 +66,6 @@ public class KmerMatchingStrategy {
                             matches.put(toks, this.computeMatch(labelTokens, toks.stream().map(SimpleToken::getLowerCaseToken).collect(Collectors.toList())));
                         }
                     }
-
 
                     currentList = new ArrayList<>();
                     prevIdx = idx;

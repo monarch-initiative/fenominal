@@ -279,7 +279,6 @@ public class HpoTextMining {
 
         /**
          * @return a new {@link HpoTextMining} instance
-         * @throws IOException in case if the building fails
          */
         public HpoTextMining build() {
             TermMiner usedMiner;
