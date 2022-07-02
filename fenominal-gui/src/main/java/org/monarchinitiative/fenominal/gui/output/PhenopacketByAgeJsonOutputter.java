@@ -1,16 +1,26 @@
 package org.monarchinitiative.fenominal.gui.output;
 
-import com.google.protobuf.Timestamp;
+//import com.fasterxml.jackson.annotation.JsonFormat;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+
+
+import com.google.protobuf.Timestamp;
 import org.monarchinitiative.fenominal.gui.model.FenominalTerm;
 import org.monarchinitiative.fenominal.gui.model.PhenopacketByAgeModel;
 import org.monarchinitiative.fenominal.gui.model.SimpleUpdate;
 import org.monarchinitiative.phenol.ontology.data.Term;
-import org.phenopackets.phenotools.builder.PhenopacketBuilder;
-import org.phenopackets.phenotools.builder.builders.MetaDataBuilder;
-import org.phenopackets.phenotools.builder.builders.PhenotypicFeatureBuilder;
-import org.phenopackets.phenotools.builder.builders.Resources;
-import org.phenopackets.phenotools.builder.builders.TimeElements;
+import org.phenopackets.phenopackettools.builder.PhenopacketBuilder;
+import org.phenopackets.phenopackettools.builder.builders.MetaDataBuilder;
+import org.phenopackets.phenopackettools.builder.builders.PhenotypicFeatureBuilder;
+import org.phenopackets.phenopackettools.builder.builders.Resources;
+import org.phenopackets.phenopackettools.builder.builders.TimeElements;
 import org.phenopackets.schema.v2.Phenopacket;
 import org.phenopackets.schema.v2.core.Individual;
 import org.phenopackets.schema.v2.core.MetaData;
@@ -70,8 +80,8 @@ public class PhenopacketByAgeJsonOutputter
                     .build();
         } else {
             return MetaDataBuilder
-                    .create(LocalDate.now().toString(), biocurator)
-                    .resource(Resources.hpoVersion(hpoVersion))
+                    .builder(LocalDate.now().toString(), biocurator)
+                    .addResource(Resources.hpoVersion(hpoVersion))
                     .build();
         }
     }
@@ -93,32 +103,29 @@ public class PhenopacketByAgeJsonOutputter
         Individual subject = Individual.newBuilder().setId(phenopacketModel.getId()).setSex(sx).build();
         for (FenominalTerm fterm : phenopacketModel.getTerms()) {
             Term term = fterm.getTerm();
-            boolean observed = fterm.isObserved();
-            boolean hasAge = fterm.hasAge();
-            String isoAge = fterm.hasAge() ? fterm.getIso8601Age() : null;
             PhenotypicFeature pf;
-            if (observed && hasAge) {
+            if (fterm.isObserved() && fterm.hasAge()) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
-                        .onset(TimeElements.age(isoAge))
+                        .builder(term.getId().getValue(), term.getName())
+                        .onset(TimeElements.age(fterm.getIso8601Age()))
                         .build();
-            } else if (hasAge) {
+            } else if (fterm.hasAge()) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
-                        .onset(TimeElements.age(isoAge))
+                        .builder(term.getId().getValue(), term.getName())
+                        .onset(TimeElements.age(fterm.getIso8601Age()))
                         .excluded()
                         .build();
-            } else if (observed) {
+            } else if (fterm.isObserved()) {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .builder(term.getId().getValue(), term.getName())
                         .build();
             } else {
                 pf = PhenotypicFeatureBuilder
-                        .create(term.getId().getValue(), term.getName())
+                        .builder(term.getId().getValue(), term.getName())
                         .excluded()
                         .build();
             }
-            builder.phenotypicFeature(pf); // add feature, one at a time
+            builder.addPhenotypicFeature(pf); // add feature, one at a time
         }
         builder.individual(subject);
 
