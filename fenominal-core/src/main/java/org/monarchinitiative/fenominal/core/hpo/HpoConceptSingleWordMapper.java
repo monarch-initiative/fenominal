@@ -5,7 +5,7 @@ import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 
 import java.util.*;
 
-public class HpoConceptSingleWordMapper implements HpoConceptMatch {
+public class HpoConceptSingleWordMapper implements HpoConceptMapper {
 
     private final Map<String, HpoConcept> componentWordToConceptMap;
     private final LexicalResources lexicalResources;
@@ -31,7 +31,7 @@ public class HpoConceptSingleWordMapper implements HpoConceptMatch {
      * @return Optionally, the corresponding first match
      */
     @Override
-    public Optional<HpoConcept> getMatch(List<String> clusters) {
+    public Optional<HpoConceptHit> getMatch(List<String> clusters) {
         if (clusters.size() != 1) {
             throw new FenominalRunTimeException("Error, we were expecting a single word but got "
                     + String.join("-", clusters));
@@ -39,7 +39,9 @@ public class HpoConceptSingleWordMapper implements HpoConceptMatch {
         String cluster = clusters.get(0);
 
         if (this.componentWordToConceptMap.containsKey(cluster)) {
-            return Optional.of(this.componentWordToConceptMap.get(cluster));
+            HpoConcept concept = this.componentWordToConceptMap.get(cluster);
+            HpoConceptHit hit = new DefaultHpoConceptHit(concept); // single-word hit will have len of 1
+            return Optional.of(hit);
         } else {
             return Optional.empty();
         }

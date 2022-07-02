@@ -2,8 +2,6 @@ package org.monarchinitiative.fenominal.gui.questionnaire.phenoitem;
 
 import org.monarchinitiative.phenol.ontology.data.Term;
 
-import java.util.Optional;
-
 public class PhenoItemWithQandE implements PhenoItem {
 
     private final Term hpoTerm;
@@ -49,7 +47,7 @@ public class PhenoItemWithQandE implements PhenoItem {
 
     @Override
     public String toString() {
-        return String.format("%s (%s): \"%s\" - (Question %s)", term().getName(), term().getId().getValue(),
+        return String.format("%s (%s): \"%s\" - (Question %s)", term().getName(), term().id().getValue(),
                 answer(), this.question);
     }
 }

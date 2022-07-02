@@ -1,63 +1,46 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
-import org.monarchinitiative.fenominal.core.corenlp.FmCoreDocument;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleSentence;
+import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
+import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
-
-import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
-
 import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
-
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-public class ClinicalTextMapper {
+/**
+ * This is the default text miner for HPO. Here we follow these steps.
+ * 1. Remove stop words
+ * 2. Divide the sentence up into partitions with chunks of a defined length, where the
+ * chunks go for i=1..10
+ * 3. Use the {@link DefaultHpoMatcher} to match each chunk to ontology terms of the appropriate size
+ * 4. Put the candidate into a map indexed by the start position of the match
+ * 5. Greedy match -- at any position i, choose the longest posible match and mask out the text accordingly.
+ * @author Peter Robinson
+ */
+public class SimpleSentenceMapper implements SentenceMapper {
 
-
-    private final static int KMER_SIZE = 3;
-    private final static String KMER_DB_FILE = "/home/tudor/tmp/kmer.ser";
-
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultHpoMatcher.class);
- 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSentenceMapper.class);
+    private final DefaultHpoMatcher hpoMatcher;
     private final TokenDecoratorService tokenDecoratorService;
     private final DecorationProcessorService decorationProcessorService;
 
-    private Map<Boolean, SentenceMapper> sentenceMappers;
-
-    /**
-     * TODO: Add k-mer DB file to the constructor + k-mer size !
-     */
-    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
-        this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
+    public SimpleSentenceMapper(DefaultHpoMatcher hpoMatcher, LexicalResources lexicalResources){
+        this.hpoMatcher = hpoMatcher;
         this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
         this.decorationProcessorService = new DecorationProcessorService();
-        FuzzySentenceMapper fuzzySentenceMapper = new FuzzySentenceMapper(KMER_DB_FILE, KMER_SIZE, tokenDecoratorService, decorationProcessorService);
-        this.sentenceMappers = Map.of(false, new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService),
-                true, fuzzySentenceMapper.isValid() ? fuzzySentenceMapper : new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService));
     }
 
-    public synchronized List<MappedSentencePart> mapText(String text, boolean fuzzy) {
-        FmCoreDocument coreDocument = new FmCoreDocument(text);
-        List<SimpleSentence> sentences = coreDocument.getSentences();
-        List<MappedSentencePart> mappedParts = new ArrayList<>();
-        for (var ss : sentences) {
-            List<MappedSentencePart> sentenceParts = sentenceMappers.get(fuzzy).mapSentence(ss);
-            mappedParts.addAll(sentenceParts);
-        }
-        return mappedParts;
-    }
-
-
-    private List<MappedSentencePart> mapSentence(SimpleSentence ss) {
+    public List<MappedSentencePart> mapSentence(SimpleSentence ss) {
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
                 .filter(Predicate.not(token -> StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
@@ -76,7 +59,6 @@ public class ClinicalTextMapper {
                 if (opt.isPresent()) {
                     MappedSentencePart mappedSentencePart =
                             decorationProcessorService.process(chunk, nonStopWords, opt.get());
-
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
@@ -115,11 +97,4 @@ public class ClinicalTextMapper {
         }
         return max;
     }
-
-
-    public Ontology getHpo() {
-        return this.hpoMatcher.getHpoPhenotypicAbnormality();
-    }
-
-
 }

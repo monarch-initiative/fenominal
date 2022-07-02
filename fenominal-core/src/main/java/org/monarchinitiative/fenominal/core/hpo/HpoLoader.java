@@ -1,10 +1,11 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
-import org.monarchinitiative.fenominal.json.JsonHpoParser;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +18,7 @@ public class HpoLoader {
     private final Ontology hpo;
 
     public HpoLoader(String pathToHpJson) {
-        JsonHpoParser parser = new JsonHpoParser(pathToHpJson);
-        this.hpo = parser.getHpo();
+        this.hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
     }
 
     public HpoLoader(Ontology ontology) {

@@ -3,7 +3,8 @@ package org.monarchinitiative.fenominal.json.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.common.collect.ComparisonChain;
+
+import java.util.Comparator;
 
 /**
  * A graph node corresponds to a class, individual or property
@@ -71,13 +72,13 @@ public class Node implements NodeOrEdge, Comparable<Node> {
     }
 
 
+    static final Comparator<Node> nodeComparator = Comparator.comparing(Node::getId)
+            .thenComparing(Node::getLabel)
+            .thenComparing(Node::getType);
+
     @Override
     public int compareTo(Node other) {
-        return ComparisonChain.start()
-                .compare(this.getId(), other.getId())
-                .compare(this.getLabel(), other.getLabel())
-                .compare(this.getType(), other.getType())
-                .result();
+        return nodeComparator.compare(this, other);
     }
 
     @Override

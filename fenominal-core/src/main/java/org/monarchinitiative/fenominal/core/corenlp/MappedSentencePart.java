@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MappedSentencePart {
-    private final String matchingString;
+    private final List<SimpleToken> tokens;
     private final TermId tid;
     private final Map<String, String> decorations;
     private final int startpos;
@@ -25,7 +25,7 @@ public class MappedSentencePart {
     }
 
     public String getMatchingString() {
-        return matchingString;
+        return tokens.stream().map(SimpleToken::getToken).collect(Collectors.joining(" "));
     }
 
     public TermId getTid() {

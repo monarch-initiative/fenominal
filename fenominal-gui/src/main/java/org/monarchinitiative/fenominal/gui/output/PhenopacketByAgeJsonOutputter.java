@@ -40,16 +40,9 @@ import java.util.Map;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.BIOCURATOR_ID_PROPERTY;
 import static org.monarchinitiative.fenominal.gui.config.FenominalConfig.HPO_VERSION_KEY;
 
-public class PhenopacketByAgeJsonOutputter
+public record PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel)
         implements PhenoOutputter {
     private final static Logger LOGGER = LoggerFactory.getLogger(PhenopacketByAgeJsonOutputter.class);
-
-    private final PhenopacketByAgeModel phenopacketModel;
-
-   public PhenopacketByAgeJsonOutputter(PhenopacketByAgeModel phenopacketModel) {
-       this.phenopacketModel = phenopacketModel;
-   }
-
 
     private MetaData getMetaData() {
         Map<String,String> data = phenopacketModel.getModelData();
@@ -108,6 +101,9 @@ public class PhenopacketByAgeJsonOutputter
                 pf = PhenotypicFeatureBuilder
                         .builder(term.getId().getValue(), term.getName())
                         .onset(TimeElements.age(fterm.getIso8601Age()))
+                        .create(term.id().getValue(), term.getName())
+                        .onset(TimeElements.age(isoAge))
+
                         .build();
             } else if (fterm.hasAge()) {
                 pf = PhenotypicFeatureBuilder
@@ -117,11 +113,13 @@ public class PhenopacketByAgeJsonOutputter
                         .build();
             } else if (fterm.isObserved()) {
                 pf = PhenotypicFeatureBuilder
+
                         .builder(term.getId().getValue(), term.getName())
                         .build();
             } else {
                 pf = PhenotypicFeatureBuilder
                         .builder(term.getId().getValue(), term.getName())
+
                         .excluded()
                         .build();
             }
