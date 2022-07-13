@@ -31,4 +31,6 @@ public interface TermMiner {
 
      */
     Collection<MinedTerm> doMining(final String query);
+
+    Collection<MinedTerm> doFuzzyMining(final String query);
 }

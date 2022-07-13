@@ -6,7 +6,6 @@ import org.monarchinitiative.fenominal.core.TermMiner;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
-
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,19 @@ public class FenominalTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> doMining(final String query) {
-        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query);
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
+        LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
+        return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
+    }
+
+    /**
+     * Do text mining with kmer-fuzzy match algorithm
+     * @param query Query string for mining HPO terms (for instance, text that was pasted into the GUI window for mining).
+     * @return collection of mined HPO terms to display in the GUI
+     */
+    @Override
+    public Collection<MinedTerm> doFuzzyMining(final String query) {
+        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, true);
         LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }

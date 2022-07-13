@@ -4,16 +4,16 @@
 [![Documentation Status](https://readthedocs.org/projects/fenominal/badge/?version=latest)](https://fenominal.readthedocs.io/en/latest/?badge=latest)
 
 
-Phenomenal text mining for disease and phenotype concepts
+Phenomenal text mining for disease and phenotype concepts.
 
-Most users should download the latest fenominal JAR file from the [Releases page](https://github.com/monarch-initiative/fenominal/releases).
+This repository comprises a programming library as well as a small command-line application for testing.
+Many users will prefer the [GUI Version of fenominal](https://github.com/monarch-initiative/fenominal-gui).
 
 Please consult the Read the docs site for [detailed documentation](https://fenominal.readthedocs.io/en/latest).
 
 ## How to build
 
-Fenominal is written in Java 16, and thus it must be built using Java 16 and newer. We will release the GUI as a standalone
-app, and we are building it with Java 16.
+Fenominal is written in Java 17, and thus it must be built using Java 17 and newer. 
 
 Please refer to one of Java distributions to learn how to install the appropriate version on your platform of choice.
 
@@ -47,12 +47,3 @@ all (HP:0000001;533-536)
 `cardiomyopathy (HP:0001638;99-113)` means that Cardiomyopathy (HP:0001638) 
 was found at positions 99-113 of the original text (zero-based).
 
-## Running GUI app
-
-Assuming the build completed successfully, the GUI is ran by the following command: 
-
-```bash
-java -jar fenominal-gui/target/fenominal-gui-${project.version}.jar
-```
-
-Please refer to the documentation to learn more about various GUI features.

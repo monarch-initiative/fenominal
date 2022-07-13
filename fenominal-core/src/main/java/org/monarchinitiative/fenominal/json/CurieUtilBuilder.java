@@ -48,7 +48,7 @@ public class CurieUtilBuilder {
   /**
    * Reads curie_map.yaml and put the k-v entries into curieMap, which will be used for initialization of
    * CurieUtil. The original curie_map.yaml is available at Dipper's Github:
-   * https://github.com/monarch-initiative/dipper/blob/master/dipper/curie_map.yaml.
+   * <a href="https://github.com/monarch-initiative/dipper/blob/master/dipper/curie_map.yaml">curie_map.yaml</a>.
    */
   private static Map<String, String> generate() {
     try (InputStream inputStream = CurieUtilBuilder.class.getClassLoader().getResourceAsStream("curie_map.yaml")) {

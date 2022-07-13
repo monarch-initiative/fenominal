@@ -32,3 +32,4 @@ target/
 /fenominal-gui/src/main/resources/.Rhistory
 /fenominal-mined.txt
 /fenomimal.txt
+/data/*.ser

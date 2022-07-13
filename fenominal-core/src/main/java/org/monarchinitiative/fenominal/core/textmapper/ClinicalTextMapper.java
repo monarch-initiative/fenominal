@@ -3,11 +3,18 @@ package org.monarchinitiative.fenominal.core.textmapper;
 import org.monarchinitiative.fenominal.core.corenlp.*;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
-import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
+
+import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
+
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
+
+import org.monarchinitiative.fenominal.core.kmer.KmerDB;
+import org.monarchinitiative.fenominal.core.kmer.KmerGenerator;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,28 +23,67 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClinicalTextMapper.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultHpoMatcher.class);
-    private final DefaultHpoMatcher hpoMatcher;
+    private final static int KMER_SIZE = 3;
+    private final static String KMER_DB_FILE = "/home/tudor/tmp/kmer.ser";
+
+
+
+ 
     private final TokenDecoratorService tokenDecoratorService;
     private final DecorationProcessorService decorationProcessorService;
+    private final HpoMatcher hpoMatcher;
 
-    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
+    private final Map<Boolean, SentenceMapper> sentenceMappers;
+
+    /**
+     * TODO: Add k-mer DB file to the constructor + k-mer size !
+     */
+    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources, String kmerDbFile) {
+        LOGGER.trace("Initializing ClinicalTextMapper with kmer file at {}", kmerDbFile);
         this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
         this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
         this.decorationProcessorService = new DecorationProcessorService();
+        Optional<KmerDB> opt = KmerDB.loadKmerDB(kmerDbFile);
+        if (opt.isEmpty()) {
+            throw new PhenolRuntimeException("Could not initialze KMer DB from " + kmerDbFile);
+        }
+        KmerDB kmerDB = opt.get();
+
+        FuzzySentenceMapper fuzzySentenceMapper = new FuzzySentenceMapper(kmerDB, KMER_SIZE, tokenDecoratorService, decorationProcessorService);
+        this.sentenceMappers = Map.of(false, new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService),
+                true, fuzzySentenceMapper.isValid() ? fuzzySentenceMapper : new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService));
     }
 
-    public synchronized List<MappedSentencePart> mapText(String text) {
+    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
+        LOGGER.trace("Initializing ClinicalTextMapper without kmer file (kmer resources will be generated on the fly)");
+        this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
+        this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
+        this.decorationProcessorService = new DecorationProcessorService();
+        KmerGenerator kmerGenerator = new KmerGenerator(ontology);
+        kmerGenerator.doKMers(KMER_SIZE);
+        Optional<KmerDB> opt = kmerGenerator.getKmerDB();
+        if (opt.isEmpty()) {
+            throw new PhenolRuntimeException("Could not initialze KMer DB on the fly");
+        }
+        KmerDB kmerDB = opt.get();
+        FuzzySentenceMapper fuzzySentenceMapper = new FuzzySentenceMapper(kmerDB, KMER_SIZE, tokenDecoratorService, decorationProcessorService);
+        this.sentenceMappers = Map.of(false, new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService),
+                true, fuzzySentenceMapper.isValid() ? fuzzySentenceMapper : new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService));
+    }
+
+    public synchronized List<MappedSentencePart> mapText(String text, boolean fuzzy) {
         FmCoreDocument coreDocument = new FmCoreDocument(text);
         List<SimpleSentence> sentences = coreDocument.getSentences();
         List<MappedSentencePart> mappedParts = new ArrayList<>();
         for (var ss : sentences) {
-            List<MappedSentencePart> sentenceParts = mapSentence(ss);
+            List<MappedSentencePart> sentenceParts = sentenceMappers.get(fuzzy).mapSentence(ss);
             mappedParts.addAll(sentenceParts);
         }
         return mappedParts;
     }
+
 
     private List<MappedSentencePart> mapSentence(SimpleSentence ss) {
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
@@ -56,8 +102,10 @@ public class ClinicalTextMapper {
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
                 if (opt.isPresent()) {
+                    double TODO_DEFAULT_SIM = 1.0;
+                    TermId hpoId = opt.get().hpoConcept().getHpoId();
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get());
+                            decorationProcessorService.process(chunk, nonStopWords, hpoId, TODO_DEFAULT_SIM);
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
@@ -97,10 +145,5 @@ public class ClinicalTextMapper {
         }
         return max;
     }
-
-    public Ontology getHpo() {
-        return this.hpoMatcher.getHpoPhenotypicAbnormality();
-    }
-
 
 }

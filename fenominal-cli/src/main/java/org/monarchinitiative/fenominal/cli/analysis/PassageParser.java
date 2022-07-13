@@ -6,6 +6,8 @@ import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class PassageParser {
+    Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
     private final TextToHpoMapper mapper;
     protected final Ontology ontology;
 
@@ -38,6 +41,7 @@ public class PassageParser {
 
 
     public void parse() {
+        LOGGER.info("Parsing {} and writing results to {}", input, output);
         File f = new File(input);
         if (!f.isFile()) {
             throw new FenominalRunTimeException("Could not find input file at \"" + input + "\"");
@@ -57,6 +61,7 @@ public class PassageParser {
                 String label = opt.get();
                 writer.write(tid.getValue() + "\t" + label + "\n");
             }
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

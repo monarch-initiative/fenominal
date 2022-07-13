@@ -6,10 +6,10 @@ import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
-import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
+import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +56,11 @@ public class SimpleSentenceMapper implements SentenceMapper {
                 }
                 List<String> stringchunk = chunk.stream().map(SimpleToken::getToken).collect(Collectors.toList());
                 Optional<HpoConceptHit> opt = this.hpoMatcher.getMatch(stringchunk);
+                double TODO_DWEFAULT_SIM = 1.0;
                 if (opt.isPresent()) {
+                    TermId hpoId = opt.get().hpoConcept().getHpoId();
                     MappedSentencePart mappedSentencePart =
-                            decorationProcessorService.process(chunk, nonStopWords, opt.get());
+                            decorationProcessorService.process(chunk, nonStopWords, hpoId, TODO_DWEFAULT_SIM);
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);

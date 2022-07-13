@@ -12,11 +12,15 @@ public class MappedSentencePart {
     private final Map<String, String> decorations;
     private final int startpos;
     private final int endpos;
+    private final double similarity;
+    private final String matchingString;
 
 
-    public MappedSentencePart(List<SimpleToken> tokens, TermId tid, Map<String, String> decorations) {
+    public MappedSentencePart(List<SimpleToken> tokens, TermId tid, double similarity, Map<String, String> decorations) {
+        this.matchingString = tokens.stream().map(SimpleToken::getToken).collect(Collectors.joining(" "));
         this.tokens = tokens;
         this.tid = tid;
+        this.similarity = similarity;
         this.decorations = decorations;
         this.startpos = tokens.get(0).getStartpos();
         this.endpos = tokens.get(tokens.size() - 1).getEndpos();
@@ -42,12 +46,16 @@ public class MappedSentencePart {
         return endpos;
     }
 
-    public int getTokenCount() {
-        return tokens.size();
+    public double getSimilarity() {
+        return similarity;
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s;%d-%d)", getMatchingString(), tid.getValue(), startpos, endpos);
+        return String.format("%s (%s;%f;%d-%d)", matchingString, tid.getValue(), similarity, startpos, endpos);
+    }
+
+    public int getTokenCount() {
+        return this.tokens.size();
     }
 }

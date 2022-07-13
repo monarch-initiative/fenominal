@@ -4,6 +4,7 @@ import org.monarchinitiative.fenominal.cli.analysis.PassageParser;
 import picocli.CommandLine;
 
 
+import java.io.File;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "parse", aliases = {"P"},
@@ -17,8 +18,15 @@ public class ParseCommand implements Callable<Integer> {
     @CommandLine.Option(names = { "-o", "--output"}, description = "path to output file")
     private String output = "fenominal-mined.txt";
 
+    @CommandLine.Option(names = {"-k", "--kmer"}, required = false, description = "path to kmer file")
+    private String kmerFile = "data/kmer5.ser";
+
     @Override
     public Integer call() {
+        File f = new File(hpoJsonPath);
+        if (! f.isFile()) {
+            System.out.printf("[ERROR] Could not find hp.json file at %s\nRun download command first\n", hpoJsonPath);
+        }
         PassageParser parser = new PassageParser(hpoJsonPath, input, output);
         parser.parse();
         return 0;
