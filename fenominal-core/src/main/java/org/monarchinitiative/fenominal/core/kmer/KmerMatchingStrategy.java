@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public class KmerMatchingStrategy {
 
-    private KmerDB kmerDB;
-    private Map<Integer, Map<String, List<String>>> kmerData;
-    private List<SimpleToken> tokens;
+    private final KmerDB kmerDB;
+    private final Map<Integer, Map<String, List<String>>> kmerData;
+    private final List<SimpleToken> tokens;
 
-    private Map<String, Map<Integer, List<String>>> hpoDict;
-    private Map<String, Map<List<SimpleToken>, Double>> candidates;
+    private final Map<String, Map<Integer, List<String>>> hpoDict;
+    private final Map<String, Map<List<SimpleToken>, Double>> candidates;
 
     public KmerMatchingStrategy(Map<Integer, Map<String, List<String>>> kmerData, List<SimpleToken> tokens, KmerDB kmerDB) {
         this.kmerData = kmerData;

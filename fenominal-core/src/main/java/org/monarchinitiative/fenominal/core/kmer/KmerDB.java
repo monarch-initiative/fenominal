@@ -7,13 +7,13 @@ import java.io.*;
 import java.util.*;
 
 public class KmerDB implements Serializable {
-    private static Logger LOGGER = LoggerFactory.getLogger(KmerDB.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KmerDB.class);
     @Serial
     private static final long serialVersionUID = 2L;
 
     private Map<Integer, KmerDBK> kmerDBKMap;
 
-    private Map<String, List<String>> labelTokens;
+    private final Map<String, List<String>> labelTokens;
 
     public KmerDB() {
         kmerDBKMap = new TreeMap<>();

@@ -8,15 +8,10 @@ import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorServic
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 import org.monarchinitiative.fenominal.core.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.kmer.KmerMatchingStrategy;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -25,15 +20,15 @@ public class FuzzySentenceMapper implements SentenceMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzySentenceMapper.class);
 
-    private boolean valid;
+    private final boolean valid;
 
-    private KmerDB kmerDB;
+    private final KmerDB kmerDB;
 
-    private int kmerSize;
+    private final int kmerSize;
 
-    private TokenDecoratorService tokenDecoratorService;
+    private final TokenDecoratorService tokenDecoratorService;
 
-    private DecorationProcessorService decorationProcessorService;
+    private final DecorationProcessorService decorationProcessorService;
 
     public FuzzySentenceMapper(KmerDB kmerDB,
                                int kmerSize,

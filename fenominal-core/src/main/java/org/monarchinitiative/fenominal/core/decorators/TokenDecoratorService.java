@@ -9,9 +9,9 @@ import java.util.List;
 
 public class TokenDecoratorService {
 
-    private LexicalResources lexicalResources;
+    private final LexicalResources lexicalResources;
 
-    private List<TokenDecorator> decorators;
+    private final List<TokenDecorator> decorators;
 
     public TokenDecoratorService(LexicalResources lexicalResources) {
         this.lexicalResources = lexicalResources;

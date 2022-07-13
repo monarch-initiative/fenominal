@@ -6,7 +6,6 @@ import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
-import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;

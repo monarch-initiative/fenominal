@@ -3,7 +3,6 @@ package org.monarchinitiative.fenominal.core.decorators;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.decorators.impl.NegationDecorationProcessor;
-import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;

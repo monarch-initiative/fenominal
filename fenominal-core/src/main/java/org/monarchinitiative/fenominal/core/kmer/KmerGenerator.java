@@ -92,27 +92,4 @@ public class KmerGenerator {
         return Optional.ofNullable(kmerDB);
     }
 
-    /*
-    public static void main(String[] args) {
-        Ontology hpo = JsonHpoParser.loadOntology("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
-        KmerGenerator kmerGenerator = new KmerGenerator(hpo);
-
-        kmerGenerator.doKMers(3);
-        kmerGenerator.doKMers(4);
-        kmerGenerator.doKMers(5);
-        try {
-            kmerGenerator.serialize("/home/tudor/tmp/kmer.ser");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main2(String[] args) {
-        try {
-            KmerGenerator kmerGenerator = KmerGenerator.loadKmerDB("/home/tudor/tmp/test.ser");
-            kmerGenerator.print();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }*/
 }

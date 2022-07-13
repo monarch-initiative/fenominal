@@ -6,7 +6,6 @@ import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 
 import org.monarchinitiative.fenominal.core.hpo.HpoMatcher;
 
-import org.monarchinitiative.fenominal.core.hpo.HpoConcept;
 import org.monarchinitiative.fenominal.core.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 
