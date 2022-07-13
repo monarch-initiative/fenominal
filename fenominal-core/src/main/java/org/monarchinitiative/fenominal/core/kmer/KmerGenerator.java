@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,10 @@ public class KmerGenerator {
         KmerDB kmerDB = (KmerDB) objectInputStream.readObject();
         objectInputStream.close();
         return new KmerGenerator(kmerDB);
+    }
+
+    public Optional<KmerDB> getKmerDB() {
+        return Optional.ofNullable(kmerDB);
     }
 
     /*

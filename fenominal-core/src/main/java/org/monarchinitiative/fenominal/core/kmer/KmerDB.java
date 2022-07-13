@@ -1,14 +1,13 @@
 package org.monarchinitiative.fenominal.core.kmer;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 public class KmerDB implements Serializable {
-
+    private static Logger LOGGER = LoggerFactory.getLogger(KmerDB.class);
     @Serial
     private static final long serialVersionUID = 2L;
 
@@ -59,5 +58,19 @@ public class KmerDB implements Serializable {
         }
 
         return null;
+    }
+
+    public static Optional<KmerDB> loadKmerDB(String file) {
+        LOGGER.info("Loading K-mer DB from: {}", file);
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            KmerDB kmerDB = (KmerDB) objectInputStream.readObject();
+            objectInputStream.close();
+            return Optional.of(kmerDB);
+        } catch (IOException | ClassNotFoundException e) {
+            LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
+            return Optional.empty();
+        }
     }
 }

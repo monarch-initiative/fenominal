@@ -8,6 +8,7 @@ import org.monarchinitiative.fenominal.core.decorators.DecorationProcessorServic
 import org.monarchinitiative.fenominal.core.decorators.TokenDecoratorService;
 import org.monarchinitiative.fenominal.core.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.kmer.KmerMatchingStrategy;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class FuzzySentenceMapper implements SentenceMapper {
 
     private DecorationProcessorService decorationProcessorService;
 
-    public FuzzySentenceMapper(String kmerDBFile,
+    public FuzzySentenceMapper(KmerDB kmerDB,
                                int kmerSize,
                                TokenDecoratorService tokenDecoratorService,
                                DecorationProcessorService decorationProcessorService) {
@@ -42,23 +43,10 @@ public class FuzzySentenceMapper implements SentenceMapper {
         this.kmerSize = kmerSize;
         this.tokenDecoratorService = tokenDecoratorService;
         this.decorationProcessorService = decorationProcessorService;
-        if (kmerDBFile != null) {
-            this.loadKmerDB(kmerDBFile);
-        }
+        this.kmerDB = kmerDB;
     }
 
-    private void loadKmerDB(String file) {
-        LOGGER.info("Loading K-mer DB from: {}", file);
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            this.kmerDB = (KmerDB) objectInputStream.readObject();
-            objectInputStream.close();
-            this.valid = true;
-        } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
-        }
-    }
+
 
     public boolean isValid() {
         return valid;
