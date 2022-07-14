@@ -113,8 +113,8 @@ public class FuzzySentenceMapper implements SentenceMapper {
 
                 MappedSentencePart mappedSentencePart =
                         decorationProcessorService.process(chunk, nonStopWords, TermId.of("HP", hpoId), similarity);
-                candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
-                candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
+                candidates.putIfAbsent(mappedSentencePart.getBegin(), new ArrayList<>());
+                candidates.get(mappedSentencePart.getBegin()).add(mappedSentencePart);
             }
         }
 
@@ -137,7 +137,7 @@ public class FuzzySentenceMapper implements SentenceMapper {
             // advance to the last position of the current match
             // note that this is String position convention, and so the next hist could start at
             // currentSpan, but cannot be less than currentSpan without overlapping.
-            currentSpan = longest.getEndpos();
+            currentSpan = longest.getEnd();
         }
         return mappedSentencePartList;
     }

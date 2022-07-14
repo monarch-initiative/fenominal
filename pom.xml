@@ -95,11 +95,6 @@
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson.fasterxml.version}</version>
             </dependency>
-            <!-- <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-guava</artifactId>
-                <version>${jackson.fasterxml.version}</version>
-            </dependency> -->
             <dependency>
                 <groupId>org.monarchinitiative.biodownload</groupId>
                 <artifactId>biodownload</artifactId>

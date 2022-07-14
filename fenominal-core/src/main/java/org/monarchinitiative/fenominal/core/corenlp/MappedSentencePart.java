@@ -1,12 +1,15 @@
 package org.monarchinitiative.fenominal.core.corenlp;
 
+import org.monarchinitiative.fenominal.core.MinedTerm;
+import org.monarchinitiative.fenominal.core.decorators.Decorations;
+import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MappedSentencePart {
+public class MappedSentencePart implements MinedTerm {
     private final List<SimpleToken> tokens;
     private final TermId tid;
     private final Map<String, String> decorations;
@@ -30,21 +33,10 @@ public class MappedSentencePart {
         return tokens.stream().map(SimpleToken::getToken).collect(Collectors.joining(" "));
     }
 
-    public TermId getTid() {
-        return tid;
-    }
-
     public Map<String, String> getDecorations() {
         return decorations;
     }
 
-    public int getStartpos() {
-        return startpos;
-    }
-
-    public int getEndpos() {
-        return endpos;
-    }
 
     public double getSimilarity() {
         return similarity;
@@ -57,5 +49,29 @@ public class MappedSentencePart {
 
     public int getTokenCount() {
         return this.tokens.size();
+    }
+
+    @Override
+    public int getBegin() {
+        return startpos;
+    }
+
+    @Override
+    public int getEnd() {
+        return endpos;
+    }
+
+    @Override
+    public String getTermId() {
+        return tid.getValue();
+    }
+
+    public TermId getTid() {
+        return tid;
+    }
+
+    @Override
+    public boolean isPresent() {
+        return ! getDecorations().containsKey(Decorations.NEGATION.name());
     }
 }

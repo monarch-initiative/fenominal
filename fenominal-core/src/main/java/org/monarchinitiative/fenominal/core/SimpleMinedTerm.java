@@ -16,7 +16,7 @@ public class SimpleMinedTerm implements MinedTerm  {
 
     private final int end;
 
-    private final String  termid;
+    private final TermId termid;
 
     private final boolean isPresent;
 
@@ -24,24 +24,24 @@ public class SimpleMinedTerm implements MinedTerm  {
     SimpleMinedTerm(int begin, int end, String tid, boolean isPresent) {
         this.begin = begin;
         this.end = end;
-        this.termid = tid;
+        this.termid = TermId.of(tid);
         this.isPresent = isPresent;
     }
     SimpleMinedTerm(int begin, int end, TermId tid, boolean isPresent) {
         this.begin = begin;
         this.end = end;
-        this.termid = tid.getValue();
+        this.termid = tid;
         this.isPresent = isPresent;
     }
 
     public static SimpleMinedTerm fromMappedSentencePart(MappedSentencePart msp) {
         boolean observed = !msp.getDecorations().containsKey(Decorations.NEGATION.name()) ||
                 !msp.getDecorations().get(Decorations.NEGATION.name()).equals("true");
-        return new SimpleMinedTerm(msp.getStartpos(), msp.getEndpos(), msp.getTid(), observed);
+        return new SimpleMinedTerm(msp.getBegin(), msp.getEnd(), msp.getTermId(), observed);
     }
 
     public static SimpleMinedTerm fromExcludedMappedSentencePart(MappedSentencePart msp) {
-        return new SimpleMinedTerm(msp.getStartpos(), msp.getEndpos(), msp.getTid(), false);
+        return new SimpleMinedTerm(msp.getBegin(), msp.getEnd(), msp.getTermId(), false);
     }
 
 
@@ -59,7 +59,7 @@ public class SimpleMinedTerm implements MinedTerm  {
 
     @Override
     public String getTermId() {
-        return this.termid;
+        return this.termid.getValue();
     }
 
     @Override

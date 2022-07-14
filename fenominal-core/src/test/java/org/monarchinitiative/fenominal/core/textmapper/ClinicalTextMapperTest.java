@@ -49,21 +49,21 @@ public class ClinicalTextMapperTest {
         boolean doFuzzyMatch = false;
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
         MappedSentencePart part1 = mappedSentenceParts.get(0);
-        assertEquals(47, part1.getStartpos());
-        assertEquals(66, part1.getEndpos());
+        assertEquals(47, part1.getBegin());
+        assertEquals(66, part1.getEnd());
         assertEquals("developmental delay", part1.getMatchingString());
         assertEquals("HP:0001263", part1.getTid().getValue());
         //intellectual impairment 68 91
         //intellectual impairment is synonym of Cognitive impairment HP:0100543
         MappedSentencePart part2 = mappedSentenceParts.get(1);
-        assertEquals(68, part2.getStartpos());
-        assertEquals(91, part2.getEndpos());
+        assertEquals(68, part2.getBegin());
+        assertEquals(91, part2.getEnd());
         assertEquals("intellectual impairment", part2.getMatchingString());
         assertEquals("HP:0100543", part2.getTid().getValue());
         //macrocephaly (HP:0000256;101-113)
         MappedSentencePart part3 = mappedSentenceParts.get(2);
-        assertEquals(101, part3.getStartpos());
-        assertEquals(113, part3.getEndpos());
+        assertEquals(101, part3.getBegin());
+        assertEquals(113, part3.getEnd());
         assertEquals("macrocephaly", part3.getMatchingString());
         assertEquals("HP:0000256", part3.getTid().getValue());
         assertEquals(6, mappedSentenceParts.size());
@@ -75,8 +75,8 @@ public class ClinicalTextMapperTest {
 
         // brachydactyly 195 208  HP:0001156
         MappedSentencePart part6 = mappedSentenceParts.get(5);
-        assertEquals(195, part6.getStartpos());
-        assertEquals(208, part6.getEndpos());
+        assertEquals(195, part6.getBegin());
+        assertEquals(208, part6.getEnd());
         assertEquals("brachydactyly", part6.getMatchingString());
         assertEquals("HP:0001156", part6.getTid().getValue());
         assertEquals(6, mappedSentenceParts.size());

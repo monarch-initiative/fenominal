@@ -46,28 +46,3 @@ all (HP:0000001;533-536)
 
 `cardiomyopathy (HP:0001638;99-113)` means that Cardiomyopathy (HP:0001638) 
 was found at positions 99-113 of the original text (zero-based).
-
-
-Working on modularization -- issues with testing remain
-```bazaar
-module org.monarchinitiative.fenominal.core {
-    requires transitive com.fasterxml.jackson.annotation;
-    requires transitive com.fasterxml.jackson.databind;
-    requires org.slf4j;
-    requires org.monarchinitiative.phenol.core;
-    requires curie.util;
-    requires org.yaml.snakeyaml;
-    requires org.apache.commons.io;
-    requires org.monarchinitiative.phenol.io;
-    exports org.monarchinitiative.fenominal.core;
-    exports org.monarchinitiative.fenominal.core.hpo;
-    exports org.monarchinitiative.fenominal.core.corenlp;
-    exports org.monarchinitiative.fenominal.core.kmer;
-    exports org.monarchinitiative.fenominal;
-
-
-    opens org.monarchinitiative.fenominal to org.junit.platform.commons;
-    opens org.monarchinitiative.fenominal.core to org.junit.platform.commons;
-
-}
-```
