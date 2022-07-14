@@ -15,19 +15,6 @@ import java.util.List;
  * Note: there is no assumption that either nodes or edges are unique to a graph
  * 
  * ## Basic OBO Graphs
- * 
- * ![Node UML](node-bog.png)
- *  * 
- * @startuml node-bog.png
- * class Graph
- * class Node
- * class Edge
- * 
- * Graph-->Node : 0..*
- * Graph-->Edge : 0..*
- * @enduml
-
- * 
  * @author cjm
  *
  */

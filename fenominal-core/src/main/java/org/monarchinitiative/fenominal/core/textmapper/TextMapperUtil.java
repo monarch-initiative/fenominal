@@ -20,8 +20,8 @@ public class TextMapperUtil {
     }
 
     public static List<String> kmers(String token, int k) {
-        if (token.length() <= k) {
-            return Arrays.asList(new String[]{token});
+        if (token.length() <= k) { // cannot extract kmers sice String is not more than k characters
+            return List.of(token);
         }
         List<String> list = new ArrayList<>();
         for (int i = 0; i < token.length() - k + 1; i++) {
