@@ -3,7 +3,6 @@ package org.monarchinitiative.fenominal.core.textmapper;
 import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TextMapperUtil {

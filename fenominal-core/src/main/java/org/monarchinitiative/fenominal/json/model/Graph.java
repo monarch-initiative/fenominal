@@ -28,10 +28,6 @@ public class Graph {
         meta = builder.meta;
         nodes = builder.nodes;
         edges = builder.edges;
-//        equivalentNodesSets = builder.equivalentNodesSets;
-//        logicalDefinitionAxioms = builder.logicalDefinitionAxioms;
-//        domainRangeAxioms = builder.domainRangeAxioms;
-//        propertyChainAxioms = builder.propertyChainAxioms;
     }
 
     private final List<Node> nodes;
@@ -39,11 +35,6 @@ public class Graph {
     private final String id;
     private final String lbl;
     private final Meta meta;
-//    private final List<EquivalentNodesSet> equivalentNodesSets;
-//    private final List<LogicalDefinitionAxiom> logicalDefinitionAxioms;
-//    private final List<DomainRangeAxiom> domainRangeAxioms;
-//    private final List<PropertyChainAxiom> propertyChainAxioms;
-
 
 
     /**
@@ -89,43 +80,6 @@ public class Graph {
         return meta;
     }
 
-
-
-//    /**
-//     * @return the equivalentNodesSet
-//     */
-//    public List<EquivalentNodesSet> getEquivalentNodesSets() {
-//        return equivalentNodesSets;
-//    }
-//
-//
-//
-//    /**
-//     * @return the logicalDefinitionAxioms
-//     */
-//    public List<LogicalDefinitionAxiom> getLogicalDefinitionAxioms() {
-//        return logicalDefinitionAxioms;
-//    }
-
-
-
-//    /**
-//     * @return the domainRangeAxioms
-//     */
-//    public List<DomainRangeAxiom> getDomainRangeAxioms() {
-//        return domainRangeAxioms;
-//    }
-//
-//
-//
-//    /**
-//     * @return the propertyChainAxioms
-//     */
-//    public List<PropertyChainAxiom> getPropertyChainAxioms() {
-//        return propertyChainAxioms;
-//    }
-
-
     @Override
     public String toString() {
         return "Graph{" +
@@ -134,10 +88,6 @@ public class Graph {
                 ", id='" + id + '\'' +
                 ", lbl='" + lbl + '\'' +
                 ", meta=" + meta +
-//                ", equivalentNodesSets=" + equivalentNodesSets +
-//                ", logicalDefinitionAxioms=" + logicalDefinitionAxioms +
-//                ", domainRangeAxioms=" + domainRangeAxioms +
-//                ", propertyChainAxioms=" + propertyChainAxioms +
                 '}';
     }
 
@@ -153,14 +103,6 @@ public class Graph {
         private List<Node> nodes;
         @JsonProperty
         private List<Edge> edges;
-//        @JsonProperty
-//        private List<EquivalentNodesSet> equivalentNodesSets;
-//        @JsonProperty
-//        private List<LogicalDefinitionAxiom> logicalDefinitionAxioms;
-//        @JsonProperty
-//        private List<DomainRangeAxiom> domainRangeAxioms;
-//        @JsonProperty
-//        private List<PropertyChainAxiom> propertyChainAxioms;
 
         public Builder id(String id) {
             this.id = id;

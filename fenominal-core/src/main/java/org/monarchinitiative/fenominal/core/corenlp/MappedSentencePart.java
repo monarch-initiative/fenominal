@@ -2,7 +2,6 @@ package org.monarchinitiative.fenominal.core.corenlp;
 
 import org.monarchinitiative.fenominal.core.MinedTerm;
 import org.monarchinitiative.fenominal.core.decorators.Decorations;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.List;
