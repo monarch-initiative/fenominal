@@ -11,4 +11,5 @@ module org.monarchinitiative.fenominal.core {
     exports org.monarchinitiative.fenominal.core.hpo;
     exports org.monarchinitiative.fenominal.core.corenlp;
     exports org.monarchinitiative.fenominal.core.kmer;
+    exports org.monarchinitiative.fenominal;
 }

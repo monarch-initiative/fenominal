@@ -48,8 +48,8 @@ public class ExactSentenceMapper implements SentenceMapper {
                             decorationProcessorService.process(chunk, nonStopWords, hpoId, 1.0);
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
-                    candidates.putIfAbsent(mappedSentencePart.getStartpos(), new ArrayList<>());
-                    candidates.get(mappedSentencePart.getStartpos()).add(mappedSentencePart);
+                    candidates.putIfAbsent(mappedSentencePart.getBegin(), new ArrayList<>());
+                    candidates.get(mappedSentencePart.getBegin()).add(mappedSentencePart);
                 }
             }
         }
@@ -70,7 +70,7 @@ public class ExactSentenceMapper implements SentenceMapper {
             // advance to the last position of the current match
             // note that this is String position convention, and so the next hist could start at
             // currentSpan, but cannot be less than currentSpan without overlapping.
-            currentSpan = longest.getEndpos();
+            currentSpan = longest.getEnd();
         }
         return mappedSentencePartList;
     }

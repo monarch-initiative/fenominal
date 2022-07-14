@@ -31,9 +31,7 @@ public class TextToHpoMapper {
 
     public synchronized List<MappedSentencePart> mapText(String text) {
         // TODO: Decide where to put the fuzzy flag !!!
-
-        List<MappedSentencePart> list = hpoMatcher.mapText(text, true);
-        return list;
+        return hpoMatcher.mapText(text, true);
     }
 
     public static void main(String[] args) {

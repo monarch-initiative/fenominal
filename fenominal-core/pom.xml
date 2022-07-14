@@ -5,12 +5,14 @@
     <parent>
         <groupId>org.monarchinitiative.fenominal</groupId>
         <artifactId>fenominal</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.2</version>
     </parent>
 
     <name>fenominal-core</name>
     <description>fenominal-core contains the core functionality for NLP of phenotype/disease related texts</description>
     <artifactId>fenominal-core</artifactId>
+
+
 
     <dependencies>
         <dependency>
@@ -47,7 +49,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-        <dependency>
+       <dependency>
             <groupId>org.prefixcommons</groupId>
             <artifactId>curie-util</artifactId>
             <version>0.0.2</version>
@@ -71,7 +73,14 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.29</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
+
 
 </project>

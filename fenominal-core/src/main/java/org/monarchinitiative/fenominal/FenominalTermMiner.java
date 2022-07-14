@@ -31,7 +31,7 @@ public class FenominalTermMiner implements TermMiner {
     @Override
     public Collection<MinedTerm> doMining(final String query) {
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
-        LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
+        LOGGER.trace("Retrieved {} mapped sentence parts.", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class FenominalTermMiner implements TermMiner {
     @Override
     public Collection<MinedTerm> doFuzzyMining(final String query) {
         List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, true);
-        LOGGER.trace("Retrieved {} mapped sentence parts ", mappedSentenceParts.size());
+        LOGGER.trace("Retrieved {} mapped sentence parts (fuzzy (true).", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(SimpleMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
 }

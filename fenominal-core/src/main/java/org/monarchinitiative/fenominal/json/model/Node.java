@@ -8,18 +8,7 @@ import java.util.Comparator;
 
 /**
  * A graph node corresponds to a class, individual or property
- * 
- * ![Node UML](node-uml.png)
- * 
- * @startuml node-uml.png
- * class Node {
- *   String id
- * }
- * class Meta
- * 
- * Node-->Meta : 0..1
- * @enduml
- * 
+ *
  * @author cjm
  *
  */

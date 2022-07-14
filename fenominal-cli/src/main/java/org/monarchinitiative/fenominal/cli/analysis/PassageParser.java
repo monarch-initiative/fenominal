@@ -52,6 +52,7 @@ public class PassageParser {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.output));
             for (var mp : mappedSentenceParts) {
                 TermId tid = mp.getTid();
+             //   mp.
                 var opt = ontology.getTermLabel(tid);
                 if (opt.isEmpty()) {
                     // should never happen

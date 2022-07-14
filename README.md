@@ -46,4 +46,3 @@ all (HP:0000001;533-536)
 
 `cardiomyopathy (HP:0001638;99-113)` means that Cardiomyopathy (HP:0001638) 
 was found at positions 99-113 of the original text (zero-based).
-

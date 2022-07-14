@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,6 +111,13 @@ public class ReportParseTest {
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
+        // TermIds are represented as Strings
+        List<String> termIdList = terms.stream().map(MinedTerm::getTermId).toList();
+        assertEquals("HP:0032443", termIdList.get(0)); // HP:0032443 = Past medical history
+        assertEquals("HP:0001622", termIdList.get(1)); // Premature birth HP:0001622
+        assertEquals("HP:0100021", termIdList.get(2)); //Cerebral palsy HP:0100021
+        assertEquals("HP:0001263", termIdList.get(3)); //Global developmental delay HP:0001263
+        assertEquals("HP:0000750", termIdList.get(4)); //Delayed speech and language development HP:0000750
         assertEquals(5,  terms.size());
     }
 
@@ -137,10 +145,15 @@ public class ReportParseTest {
                 """;
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            assertFalse(mt.isPresent());
+            System.out.println(mt.getTermId());
         }
         assertEquals(1,  terms.size());
+        MinedTerm mt  = terms.iterator().next();
+        assertFalse(mt.isPresent());
+        assertEquals("HP:0002650", mt.getTermId());
+        //Scoliosis HP:0002650
     }
+
 
 
 
