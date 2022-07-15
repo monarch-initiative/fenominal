@@ -1,4 +1,4 @@
-package org.monarchinitiative.fenominal.core;
+package org.monarchinitiative.fenominal.model;
 
 public interface MinedTerm {
 

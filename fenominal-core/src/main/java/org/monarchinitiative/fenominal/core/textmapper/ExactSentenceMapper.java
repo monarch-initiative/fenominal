@@ -1,6 +1,6 @@
 package org.monarchinitiative.fenominal.core.textmapper;
 
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.model.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleSentence;
 import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.corenlp.StopWords;

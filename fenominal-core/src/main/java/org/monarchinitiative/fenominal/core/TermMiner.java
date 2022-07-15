@@ -1,6 +1,9 @@
 package org.monarchinitiative.fenominal.core;
 
 
+import org.monarchinitiative.fenominal.model.MinedTerm;
+import org.monarchinitiative.fenominal.model.SimpleMinedTerm;
+
 import java.util.Collection;
 import java.util.Set;
 

@@ -1,26 +1,27 @@
-package org.monarchinitiative.fenominal.json.model.meta;
+package org.monarchinitiative.fenominal.core.json.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
-
 /**
- * A {@link PropertyValue} that represents a textual definition of an ontology class or
- * property
+ * A generic {@link PropertyValue} that is not explicitly modeled
  *
  * @author cjm
  */
-@JsonDeserialize(builder = DefinitionPropertyValue.Builder.class)
-public class DefinitionPropertyValue extends AbstractPropertyValue {
+@JsonDeserialize(builder = BasicPropertyValue.Builder.class)
+public class BasicPropertyValue extends AbstractPropertyValue {
 
-    private DefinitionPropertyValue(Builder builder) {
+    private BasicPropertyValue(Builder builder) {
         super(builder);
     }
 
-
     public static class Builder extends AbstractPropertyValue.Builder {
+
+        public Builder pred(String pred) {
+            return (Builder) super.pred(pred);
+        }
 
         public Builder val(String val) {
             return (Builder) super.val(val);
@@ -31,8 +32,8 @@ public class DefinitionPropertyValue extends AbstractPropertyValue {
         }
 
         @JsonCreator
-        public DefinitionPropertyValue build() {
-            return new DefinitionPropertyValue(this);
+        public BasicPropertyValue build() {
+            return new BasicPropertyValue(this);
         }
     }
 

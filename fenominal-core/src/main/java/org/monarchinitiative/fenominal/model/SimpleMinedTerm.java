@@ -1,6 +1,5 @@
-package org.monarchinitiative.fenominal.core;
+package org.monarchinitiative.fenominal.model;
 
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.decorators.Decorations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -10,7 +9,7 @@ import org.monarchinitiative.phenol.ontology.data.TermId;
  * whether or not the term was excluded (NOT) in the original text.
  * @author Peter N Robinson
  */
-public class SimpleMinedTerm implements MinedTerm  {
+public class SimpleMinedTerm implements MinedTerm {
 
     private final int begin;
 

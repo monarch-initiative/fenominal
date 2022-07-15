@@ -1,9 +1,9 @@
 package org.monarchinitiative.fenominal;
 
-import org.monarchinitiative.fenominal.core.MinedTerm;
-import org.monarchinitiative.fenominal.core.SimpleMinedTerm;
+import org.monarchinitiative.fenominal.model.MinedTerm;
+import org.monarchinitiative.fenominal.model.SimpleMinedTerm;
 import org.monarchinitiative.fenominal.core.TermMiner;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.model.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

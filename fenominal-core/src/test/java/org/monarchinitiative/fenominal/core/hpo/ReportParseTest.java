@@ -3,7 +3,7 @@ package org.monarchinitiative.fenominal.core.hpo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.FenominalTermMiner;
-import org.monarchinitiative.fenominal.core.MinedTerm;
+import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;

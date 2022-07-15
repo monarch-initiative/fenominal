@@ -12,6 +12,7 @@ import org.monarchinitiative.fenominal.core.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.kmer.KmerGenerator;
 import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
+import org.monarchinitiative.fenominal.model.MappedSentencePart;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

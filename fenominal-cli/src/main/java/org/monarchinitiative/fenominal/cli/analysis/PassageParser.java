@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.cli.analysis;
 
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TextToHpoMapper;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
+import org.monarchinitiative.fenominal.model.MappedSentencePart;
 import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

@@ -1,4 +1,4 @@
-package org.monarchinitiative.fenominal.json;
+package org.monarchinitiative.fenominal.core.json;
 
 import org.prefixcommons.CurieUtil;
 import org.slf4j.Logger;

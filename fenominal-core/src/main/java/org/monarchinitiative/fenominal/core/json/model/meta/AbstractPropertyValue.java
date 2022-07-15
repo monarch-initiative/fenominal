@@ -1,7 +1,7 @@
-package org.monarchinitiative.fenominal.json.model.meta;
+package org.monarchinitiative.fenominal.core.json.model.meta;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.monarchinitiative.fenominal.json.model.Meta;
+import org.monarchinitiative.fenominal.core.json.model.Meta;
 
 import java.util.List;
 

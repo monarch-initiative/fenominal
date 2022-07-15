@@ -1,6 +1,7 @@
-package org.monarchinitiative.fenominal.core.corenlp;
+package org.monarchinitiative.fenominal.model;
 
-import org.monarchinitiative.fenominal.core.MinedTerm;
+import org.monarchinitiative.fenominal.core.corenlp.SimpleToken;
+import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.core.decorators.Decorations;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 

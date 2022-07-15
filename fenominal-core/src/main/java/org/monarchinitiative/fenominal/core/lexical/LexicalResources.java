@@ -1,7 +1,7 @@
 package org.monarchinitiative.fenominal.core.lexical;
 
 import org.apache.commons.io.IOUtils;
-import org.monarchinitiative.fenominal.json.CurieUtilBuilder;
+import org.monarchinitiative.fenominal.core.json.CurieUtilBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
