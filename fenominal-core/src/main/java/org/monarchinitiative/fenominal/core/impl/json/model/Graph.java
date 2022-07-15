@@ -128,23 +128,6 @@ public class Graph {
             this.edges = edges;
             return this;
         }
-//        public Builder propertyChainAxioms(List<PropertyChainAxiom> propertyChainAxioms) {
-//            this.propertyChainAxioms = propertyChainAxioms;
-//            return this;
-//        }
-//        public Builder equivalentNodesSet(List<EquivalentNodesSet> equivalentNodesSets) {
-//            this.equivalentNodesSets = equivalentNodesSets;
-//            return this;
-//        }
-//        public Builder logicalDefinitionAxioms(List<LogicalDefinitionAxiom> logicalDefinitionAxioms) {
-//            this.logicalDefinitionAxioms = logicalDefinitionAxioms;
-//            return this;
-//        }
-//        public Builder domainRangeAxioms(List<DomainRangeAxiom> domainRangeAxioms) {
-//            this.domainRangeAxioms = domainRangeAxioms;
-//            return this;
-//        }
-
         @JsonCreator
         public Graph build() {
             return new Graph(this);

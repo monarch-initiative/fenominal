@@ -1,6 +1,7 @@
 package org.monarchinitiative.fenominal.core.impl;
 
 import org.monarchinitiative.fenominal.core.TermMiner;
+import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
@@ -54,7 +55,7 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      * @return collection of mined HPO terms to display in the GUI
      */
     @Override
-    public Collection<MinedTerm> doMining(String query) {
+    public Collection<MinedTerm> mineTerms(String query) {
         List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTerms (fuzzy).", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(DefaultMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
@@ -68,13 +69,16 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      * @return collection of mined HPO terms with metadata to display in the GUI
      */
     @Override
-    public Collection<MinedTermWithMetadata> doMiningWithMetadata(String query) {
+    public Collection<MinedTermWithMetadata> mineTermsWithMetadata(String query) {
         List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTermWithMetadata objects (fuzzy).", mappedSentenceParts.size());
         return Collections.unmodifiableList(mappedSentenceParts);
     }
 
-
+    @Override
+    public Collection<MinedSentence> mineSentences(String query) {
+        throw new UnsupportedOperationException("TODO implement mineSentences for fuzzy mapping");
+    }
 
 
 }

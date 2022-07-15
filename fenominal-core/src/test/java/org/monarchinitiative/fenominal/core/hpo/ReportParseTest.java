@@ -84,7 +84,7 @@ public class ReportParseTest {
                 XXX is a 5-year-old girl with a past medical history significant for an extreme premature birth
                 and resultant spastic diplegic cerebral palsy, function level GMFCS (gross motor function
                 classification system) III.""";
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
@@ -95,7 +95,7 @@ public class ReportParseTest {
     public void sentence2() {
         String sentence = "She is being seen for reevaluation, having last been seen by myself on\n" +
                 "10/10/2016. In the interim, she had botulinum toxin injections on 11/08/2016 under sedation.";
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         assertEquals(0, terms.size());
     }
     @Test
@@ -107,7 +107,7 @@ public class ReportParseTest {
                             3. Developmental delay.
                             4. Speech delay.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
@@ -130,7 +130,7 @@ public class ReportParseTest {
         String sentence = """
                 Microcephalic with open-mouth posture, spilling of saliva.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
@@ -143,7 +143,7 @@ public class ReportParseTest {
         String sentence = """
                 Spine is straight with no scoliosis.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             System.out.println(mt.getTermIdAsString());
         }

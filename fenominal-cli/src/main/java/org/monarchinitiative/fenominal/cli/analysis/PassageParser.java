@@ -2,6 +2,7 @@ package org.monarchinitiative.fenominal.cli.analysis;
 
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TermMiner;
+import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -33,9 +34,8 @@ public class PassageParser {
         this.mapper =  TermMiner.defaultNonFuzzyMapper(this.ontology);
     }
 
-
-    protected Collection<MinedTermWithMetadata> getMappedSentenceParts (String content) {
-        return mapper.doMiningWithMetadata(content);
+    private Collection<MinedSentence> getMappedSentences (String content) {
+        return mapper.mineSentences(content);
     }
 
 
@@ -47,18 +47,27 @@ public class PassageParser {
         }
         try {
             String content = new String(Files.readAllBytes(Paths.get(input)));
-            Collection<MinedTermWithMetadata> mappedSentenceParts = getMappedSentenceParts(content);
+            Collection<MinedSentence> mappedSentences = getMappedSentences(content);
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.output));
-            for (var mp : mappedSentenceParts) {
-                TermId tid = mp.getTermId();
-                var opt = ontology.getTermLabel(tid);
-                if (opt.isEmpty()) {
-                    // should never happen
-                    System.err.println("[ERROR] Could not find label for " + tid.getValue());
-                    continue;
+            for (var mp : mappedSentences) {
+                String sentence = mp.getText();
+                Collection<MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
+                for (var mt : minedTerms) {
+                    TermId tid = mt.getTermId();
+                    var opt = ontology.getTermLabel(tid);
+                    if (opt.isEmpty()) {
+                        // should never happen
+                        System.err.println("[ERROR] Could not find label for " + tid.getValue());
+                        continue;
+                    }
+                    String label = opt.get();
+                    String matching = mt.getMatchingString();
+                    int start = mt.getBegin();
+                    int end = mt.getEnd();
+                    String [] fields = {label, tid.getValue(), matching, String.valueOf(start),
+                        String.valueOf(end), sentence};
+                    writer.write(String.join("\t", fields) +  "\n");
                 }
-                String label = opt.get();
-                writer.write(tid.getValue() + "\t" + label + "\n");
             }
             writer.close();
         } catch (IOException e) {

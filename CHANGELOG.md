@@ -2,6 +2,10 @@
 
 ## latest
 
-## v0.1.1
+## 0.7.0
+- Migrating to modular architecture
 
-The initial release
+## v0.1.1
+- The initial release
+
+

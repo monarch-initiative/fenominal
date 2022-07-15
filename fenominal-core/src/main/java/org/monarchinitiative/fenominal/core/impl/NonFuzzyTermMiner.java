@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.core.impl;
 
+import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
@@ -31,17 +32,24 @@ public class NonFuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      * @return collection of mined HPO terms to display in the GUI
      */
     @Override
-    public Collection<MinedTerm> doMining(final String query) {
+    public Collection<MinedTerm> mineTerms(final String query) {
         List<DetailedMinedTerm> mappedSentenceParts = mapper.mapText(query, false);
         LOGGER.trace("Retrieved {} mapped sentence parts.", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(DefaultMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<MinedTermWithMetadata> doMiningWithMetadata(String query) {
+    public Collection<MinedTermWithMetadata> mineTermsWithMetadata(String query) {
         List<DetailedMinedTerm> mappedSentenceParts = mapper.mapText(query, false);
         LOGGER.trace("Retrieved {} mapped sentence parts.", mappedSentenceParts.size());
         return Collections.unmodifiableList(mappedSentenceParts);
+    }
+
+    @Override
+    public Collection<MinedSentence> mineSentences(String query) {
+        List<MinedSentence> sentences = mapper.mapSentences(query, false);
+        LOGGER.trace("Retrieved {} sentencess.", sentences.size());
+        return sentences;
     }
 
 

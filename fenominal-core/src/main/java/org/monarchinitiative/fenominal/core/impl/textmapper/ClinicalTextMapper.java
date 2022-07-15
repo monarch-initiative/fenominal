@@ -15,6 +15,8 @@ import org.monarchinitiative.fenominal.core.impl.hpo.HpoConceptHit;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerGenerator;
+import org.monarchinitiative.fenominal.model.MinedSentence;
+import org.monarchinitiative.fenominal.model.impl.DefaultMinedSentence;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -28,17 +30,10 @@ import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClinicalTextMapper.class);
-
     private final static int KMER_SIZE = 3;
-    private final static String KMER_DB_FILE = "/home/tudor/tmp/kmer.ser";
-
-
-
- 
     private final TokenDecoratorService tokenDecoratorService;
     private final DecorationProcessorService decorationProcessorService;
     private final HpoMatcher hpoMatcher;
-
     private final Map<Boolean, SentenceMapper> sentenceMappers;
 
     /**
@@ -51,7 +46,7 @@ public class ClinicalTextMapper {
         this.decorationProcessorService = new DecorationProcessorService();
         Optional<KmerDB> opt = KmerDB.loadKmerDB(kmerDbFile);
         if (opt.isEmpty()) {
-            throw new PhenolRuntimeException("Could not initialze KMer DB from " + kmerDbFile);
+            throw new PhenolRuntimeException("Could not initialize KMer DB from \"" + kmerDbFile + "\"");
         }
         KmerDB kmerDB = opt.get();
 
@@ -86,6 +81,19 @@ public class ClinicalTextMapper {
             mappedParts.addAll(sentenceParts);
         }
         return mappedParts;
+    }
+
+
+    public synchronized List<MinedSentence> mapSentences(String text, boolean fuzzy) {
+        FmCoreDocument coreDocument = new FmCoreDocument(text);
+        List<SimpleSentence> sentences = coreDocument.getSentences();
+        List<MinedSentence> minedSentenceList = new ArrayList<>();
+        for (var ss : sentences) {
+            List<DetailedMinedTerm> sentenceParts = mapSentence(ss);
+            var ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
+            minedSentenceList.add(ms);
+        }
+        return minedSentenceList;
     }
 
 

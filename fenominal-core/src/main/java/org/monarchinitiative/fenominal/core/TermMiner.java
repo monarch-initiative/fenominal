@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.core;
 
 import org.monarchinitiative.fenominal.core.impl.FuzzyTermMiner;
 import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
+import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
@@ -10,7 +11,6 @@ import org.monarchinitiative.phenol.ontology.data.Ontology;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Classes implementing this interface are able to mine a set of {@link MinedTerm}s from given <code>query</code>.
@@ -42,9 +42,11 @@ public interface TermMiner {
         return new FuzzyTermMiner(ontology);
     }
 
-    Collection<MinedTerm> doMining(final String query);
+    Collection<MinedTerm> mineTerms(final String query);
 
-    Collection<MinedTermWithMetadata> doMiningWithMetadata(final String query);
+    Collection<MinedTermWithMetadata> mineTermsWithMetadata(final String query);
+
+    Collection<MinedSentence> mineSentences(final String query);
 
     /**
      * Not sure if we want to just always do this on the fly, but let's expose this for test for right now
