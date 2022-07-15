@@ -2,6 +2,8 @@ package org.monarchinitiative.fenominal.core.corenlp;
 
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.TestBase;
+import org.monarchinitiative.fenominal.core.impl.corenlp.FmCoreDocument;
+import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleSentence;
 
 import java.util.List;
 

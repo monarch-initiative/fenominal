@@ -1,9 +1,14 @@
 package org.monarchinitiative.fenominal.core;
 
 
+import org.monarchinitiative.fenominal.core.impl.FuzzyTermMiner;
+import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
 import org.monarchinitiative.fenominal.model.MinedTerm;
-import org.monarchinitiative.fenominal.model.SimpleMinedTerm;
+import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
+import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
+import org.monarchinitiative.phenol.ontology.data.Ontology;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 
@@ -22,18 +27,31 @@ import java.util.Set;
 public interface TermMiner {
 
     /**
-     * Parse given <code>query</code> String and return set of {@link SimpleMinedTerm}s representing HPO terms identified
+     * Parse given <code>query</code> String and return set of {@link DefaultMinedTerm}s representing HPO terms identified
      * in the <code>query</code>.
      * <p>
      * The <em>mining</em> process might be blocking so it would be nice to perform the mining on another thread than the
      * event loop thread of a Gui.
-     *
-     * @param query {@link String} containing text about to be searched for HPO terms
-     * @return {@link Set} of {@link SimpleMinedTerm}s representing HPO terms and their positions in the
-     * <code>query</code> text
-
      */
+
+    static TermMiner defaultNonFuzzyMapper(Ontology ontology) {
+        return new NonFuzzyTermMiner(ontology);
+    }
+
+    static TermMiner defaultFuzzyMapper(Ontology ontology) {
+        return new FuzzyTermMiner(ontology);
+    }
+
     Collection<MinedTerm> doMining(final String query);
 
-    Collection<MinedTerm> doFuzzyMining(final String query);
+    Collection<MinedTermWithMetadata> doMiningWithMetadata(final String query);
+
+    /**
+     * Not sure if we want to just always do this on the fly, but let's expose this for test for right now
+     * @param ontology copy of HPO
+     * @param file write the serialized kmer data to this file
+     * @param k the length of the kmers to index
+     */
+    void serializeKmersToFile(Ontology ontology, File file, int k);
+
 }

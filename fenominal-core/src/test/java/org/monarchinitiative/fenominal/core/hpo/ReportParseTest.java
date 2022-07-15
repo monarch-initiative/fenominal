@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.fenominal.FenominalTermMiner;
+import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportParseTest {
 
-    private static FenominalTermMiner miner = null;
+    private static NonFuzzyTermMiner miner = null;
 
     private static String report1entireFileContents = null;
 
@@ -32,10 +32,10 @@ public class ReportParseTest {
 
     private String decode(MinedTerm smt, String text) {
         String sbs = text.substring(Math.max(0,smt.getBegin() -1), smt.getEnd());
-        TermId tid = TermId.of(smt.getTermId());
+        TermId tid = TermId.of(smt.getTermIdAsString());
         Optional<String> opt = hpo.getTermLabel(tid);
         String label = opt.orElse("n/a");
-        return String.format("%s [%s] - %s%s", label, smt.getTermId(), sbs, (smt.isPresent()?"":" (excluded)"));
+        return String.format("%s [%s] - %s%s", label, smt.getTermIdAsString(), sbs, (smt.isPresent()?"":" (excluded)"));
     }
 
     @BeforeAll
@@ -61,7 +61,7 @@ public class ReportParseTest {
             throw new FileNotFoundException("Could not get report1.txt from URL");
         }
         hpo = OntologyLoader.loadOntology(hpoFile);
-        miner = new FenominalTermMiner(hpo);
+        miner = new NonFuzzyTermMiner(hpo);
         Path fileName =report1.toPath();
 
         report1entireFileContents = Files.readString(fileName);
@@ -112,7 +112,7 @@ public class ReportParseTest {
             assertTrue(mt.isPresent());
         }
         // TermIds are represented as Strings
-        List<String> termIdList = terms.stream().map(MinedTerm::getTermId).toList();
+        List<String> termIdList = terms.stream().map(MinedTerm::getTermIdAsString).toList();
         assertEquals("HP:0032443", termIdList.get(0)); // HP:0032443 = Past medical history
         assertEquals("HP:0001622", termIdList.get(1)); // Premature birth HP:0001622
         assertEquals("HP:0100021", termIdList.get(2)); //Cerebral palsy HP:0100021
@@ -145,12 +145,12 @@ public class ReportParseTest {
                 """;
         Collection<MinedTerm> terms = miner.doMining(sentence);
         for (MinedTerm mt : terms) {
-            System.out.println(mt.getTermId());
+            System.out.println(mt.getTermIdAsString());
         }
         assertEquals(1,  terms.size());
         MinedTerm mt  = terms.iterator().next();
         assertFalse(mt.isPresent());
-        assertEquals("HP:0002650", mt.getTermId());
+        assertEquals("HP:0002650", mt.getTermIdAsString());
         //Scoliosis HP:0002650
     }
 

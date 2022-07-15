@@ -1,9 +1,9 @@
 package org.monarchinitiative.fenominal.cli.analysis;
 
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.core.TextToHpoMapper;
-import org.monarchinitiative.fenominal.model.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.hpo.HpoLoader;
+import org.monarchinitiative.fenominal.core.TermMiner;
+import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
+import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
@@ -15,11 +15,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Collection;
 
 public class PassageParser {
     Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
-    private final TextToHpoMapper mapper;
+    private final TermMiner mapper;
     protected final Ontology ontology;
 
     private final String input;
@@ -29,14 +29,13 @@ public class PassageParser {
     public PassageParser(String hpoJsonPath,String input, String output) {
         this.input = input;
         this.output = output;
-        HpoLoader hpoLoader = new HpoLoader(hpoJsonPath);
-        this.ontology = hpoLoader.getHpo();
-        this.mapper = new TextToHpoMapper(this.ontology);
+        this.ontology = OntologyLoader.loadOntology(new File(hpoJsonPath));
+        this.mapper =  TermMiner.defaultNonFuzzyMapper(this.ontology);
     }
 
 
-    protected List<MappedSentencePart> getMappedSentenceParts (String content) {
-        return mapper.mapText(content);
+    protected Collection<MinedTermWithMetadata> getMappedSentenceParts (String content) {
+        return mapper.doMiningWithMetadata(content);
     }
 
 
@@ -48,11 +47,10 @@ public class PassageParser {
         }
         try {
             String content = new String(Files.readAllBytes(Paths.get(input)));
-            List<MappedSentencePart> mappedSentenceParts = getMappedSentenceParts(content);
+            Collection<MinedTermWithMetadata> mappedSentenceParts = getMappedSentenceParts(content);
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.output));
             for (var mp : mappedSentenceParts) {
-                TermId tid = mp.getTid();
-             //   mp.
+                TermId tid = mp.getTermId();
                 var opt = ontology.getTermLabel(tid);
                 if (opt.isEmpty()) {
                     // should never happen
