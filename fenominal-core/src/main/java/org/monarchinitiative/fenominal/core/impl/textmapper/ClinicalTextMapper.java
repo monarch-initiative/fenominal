@@ -90,7 +90,7 @@ public class ClinicalTextMapper {
         List<MinedSentence> minedSentenceList = new ArrayList<>();
         for (var ss : sentences) {
             List<DetailedMinedTerm> sentenceParts = mapSentence(ss);
-            var ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
+            MinedSentence ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
             minedSentenceList.add(ms);
         }
         return minedSentenceList;
