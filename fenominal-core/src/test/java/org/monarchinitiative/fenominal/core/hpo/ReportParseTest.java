@@ -2,8 +2,10 @@ package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.monarchinitiative.fenominal.FenominalTermMiner;
-import org.monarchinitiative.fenominal.core.MinedTerm;
+import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
+import org.monarchinitiative.fenominal.model.MinedSentence;
+import org.monarchinitiative.fenominal.model.MinedTerm;
+import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportParseTest {
 
-    private static FenominalTermMiner miner = null;
+    private static NonFuzzyTermMiner miner = null;
 
     private static String report1entireFileContents = null;
 
@@ -32,10 +34,10 @@ public class ReportParseTest {
 
     private String decode(MinedTerm smt, String text) {
         String sbs = text.substring(Math.max(0,smt.getBegin() -1), smt.getEnd());
-        TermId tid = TermId.of(smt.getTermId());
+        TermId tid = TermId.of(smt.getTermIdAsString());
         Optional<String> opt = hpo.getTermLabel(tid);
         String label = opt.orElse("n/a");
-        return String.format("%s [%s] - %s%s", label, smt.getTermId(), sbs, (smt.isPresent()?"":" (excluded)"));
+        return String.format("%s [%s] - %s%s", label, smt.getTermIdAsString(), sbs, (smt.isPresent()?"":" (excluded)"));
     }
 
     @BeforeAll
@@ -61,7 +63,7 @@ public class ReportParseTest {
             throw new FileNotFoundException("Could not get report1.txt from URL");
         }
         hpo = OntologyLoader.loadOntology(hpoFile);
-        miner = new FenominalTermMiner(hpo);
+        miner = new NonFuzzyTermMiner(hpo);
         Path fileName =report1.toPath();
 
         report1entireFileContents = Files.readString(fileName);
@@ -84,7 +86,7 @@ public class ReportParseTest {
                 XXX is a 5-year-old girl with a past medical history significant for an extreme premature birth
                 and resultant spastic diplegic cerebral palsy, function level GMFCS (gross motor function
                 classification system) III.""";
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
@@ -95,7 +97,7 @@ public class ReportParseTest {
     public void sentence2() {
         String sentence = "She is being seen for reevaluation, having last been seen by myself on\n" +
                 "10/10/2016. In the interim, she had botulinum toxin injections on 11/08/2016 under sedation.";
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         assertEquals(0, terms.size());
     }
     @Test
@@ -107,12 +109,12 @@ public class ReportParseTest {
                             3. Developmental delay.
                             4. Speech delay.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
         // TermIds are represented as Strings
-        List<String> termIdList = terms.stream().map(MinedTerm::getTermId).toList();
+        List<String> termIdList = terms.stream().map(MinedTerm::getTermIdAsString).toList();
         assertEquals("HP:0032443", termIdList.get(0)); // HP:0032443 = Past medical history
         assertEquals("HP:0001622", termIdList.get(1)); // Premature birth HP:0001622
         assertEquals("HP:0100021", termIdList.get(2)); //Cerebral palsy HP:0100021
@@ -126,32 +128,71 @@ public class ReportParseTest {
      * so we expect to pick up one match with the current hp.json used in test/resources
      */
     @Test
-    public void sentence4() {
+    public void expectObservedOpenMouth() {
         String sentence = """
                 Microcephalic with open-mouth posture, spilling of saliva.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
-        for (MinedTerm mt : terms) {
-            assertTrue(mt.isPresent());
-        }
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         assertEquals(1,  terms.size());
+        MinedTerm mt = terms.iterator().next();
+        assertTrue(mt.isPresent());
+        assertEquals("HP:0000194", mt.getTermIdAsString());
+        //Open mouth HP:0000194
     }
 
 
     @Test
-    public void sentence5() {
+    public void expectExcludedScoliosisMinedTerm() {
         String sentence = """
                 Spine is straight with no scoliosis.
                 """;
-        Collection<MinedTerm> terms = miner.doMining(sentence);
-        for (MinedTerm mt : terms) {
-            System.out.println(mt.getTermId());
-        }
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
         assertEquals(1,  terms.size());
         MinedTerm mt  = terms.iterator().next();
         assertFalse(mt.isPresent());
-        assertEquals("HP:0002650", mt.getTermId());
+        assertEquals("HP:0002650", mt.getTermIdAsString());
         //Scoliosis HP:0002650
+    }
+
+
+    /**
+     * We expect NOT Fever HP:0001945
+     */
+    @Test
+    public void expectExcludedFeverMinedTerm() {
+        String sentence = "No symptoms, no fevers";
+        Collection<MinedTerm> terms = miner.mineTerms(sentence);
+        assertEquals(1,  terms.size());
+        MinedTerm mt  = terms.iterator().next();
+        assertFalse(mt.isPresent());
+        assertEquals("HP:0001945", mt.getTermIdAsString());
+        //Fever HP:0001945
+    }
+
+
+    @Test
+    public void expectExcludedFeverMinedTermWithMetadata() {
+        String sentence = "No symptoms, no fevers";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        assertEquals(1,  terms.size());
+        MinedTerm mt  = terms.iterator().next();
+        assertFalse(mt.isPresent());
+        assertEquals("HP:0001945", mt.getTermIdAsString());
+        //Fever HP:0001945
+    }
+
+    @Test
+    public void expectExcludedFeverSentence() {
+        String sentence = "No symptoms, no fevers";
+        Collection<MinedSentence> minedSentences = miner.mineSentences(sentence);
+        assertEquals(1,  minedSentences.size());
+        MinedSentence minedSentence  = minedSentences.iterator().next();
+        Collection<MinedTermWithMetadata> minedTerms = minedSentence.getMinedTerms();
+        assertEquals(1,  minedTerms.size());
+        MinedTermWithMetadata mt = minedTerms.iterator().next();
+        assertFalse(mt.isPresent());
+        assertEquals("HP:0001945", mt.getTermIdAsString());
+        //Fever HP:0001945
     }
 
 
@@ -159,8 +200,16 @@ public class ReportParseTest {
 
 
 
-
-
+    @Test
+    public void expectedExcludedSkinRashMinedTermWithMetadata() {
+        String sentence = "Skin: no rash or neurocutaneous stigmata on exposed skin.";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        assertEquals(1,  terms.size());
+        MinedTerm mt  = terms.iterator().next();
+        assertFalse(mt.isPresent());
+        assertEquals("HP:0000988", mt.getTermIdAsString());
+        //Skin rash HP:0000988
+    }
 
 
 

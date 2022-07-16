@@ -3,8 +3,9 @@ package org.monarchinitiative.fenominal.core.textmapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
-import org.monarchinitiative.fenominal.core.corenlp.MappedSentencePart;
-import org.monarchinitiative.fenominal.core.lexical.LexicalResources;
+import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
+import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
+import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
@@ -47,38 +48,38 @@ public class ClinicalTextMapperTest {
                 "head shape, broad nasal bridge, narrow palate, brachydactyly, see Fig. 1A) raised " +
                 "the suspicion of Sotos syndrome.";
         boolean doFuzzyMatch = false;
-        List<MappedSentencePart> mappedSentenceParts = mapper.mapText(query, false);
-        MappedSentencePart part1 = mappedSentenceParts.get(0);
+        List<DetailedMinedTerm> mappedSentenceParts = mapper.mapText(query, false);
+        DetailedMinedTerm part1 = mappedSentenceParts.get(0);
         assertEquals(47, part1.getBegin());
         assertEquals(66, part1.getEnd());
         assertEquals("developmental delay", part1.getMatchingString());
-        assertEquals("HP:0001263", part1.getTid().getValue());
+        assertEquals("HP:0001263", part1.getTermId().getValue());
         //intellectual impairment 68 91
         //intellectual impairment is synonym of Cognitive impairment HP:0100543
-        MappedSentencePart part2 = mappedSentenceParts.get(1);
+        DetailedMinedTerm part2 = mappedSentenceParts.get(1);
         assertEquals(68, part2.getBegin());
         assertEquals(91, part2.getEnd());
         assertEquals("intellectual impairment", part2.getMatchingString());
-        assertEquals("HP:0100543", part2.getTid().getValue());
+        assertEquals("HP:0100543", part2.getTermId().getValue());
         //macrocephaly (HP:0000256;101-113)
-        MappedSentencePart part3 = mappedSentenceParts.get(2);
+        DetailedMinedTerm part3 = mappedSentenceParts.get(2);
         assertEquals(101, part3.getBegin());
         assertEquals(113, part3.getEnd());
         assertEquals("macrocephaly", part3.getMatchingString());
-        assertEquals("HP:0000256", part3.getTid().getValue());
+        assertEquals("HP:0000256", part3.getTermId().getValue());
         assertEquals(6, mappedSentenceParts.size());
 
-        MappedSentencePart part4 = mappedSentenceParts.get(3);
+        DetailedMinedTerm part4 = mappedSentenceParts.get(3);
 
-        MappedSentencePart part5 = mappedSentenceParts.get(4);
-        System.out.println(part5.getMatchingString() +":"+ part5.getTid().getValue());
+        DetailedMinedTerm part5 = mappedSentenceParts.get(4);
+        System.out.println(part5.getMatchingString() +":"+ part5.getTermId().getValue());
 
         // brachydactyly 195 208  HP:0001156
-        MappedSentencePart part6 = mappedSentenceParts.get(5);
+        DetailedMinedTerm part6 = mappedSentenceParts.get(5);
         assertEquals(195, part6.getBegin());
         assertEquals(208, part6.getEnd());
         assertEquals("brachydactyly", part6.getMatchingString());
-        assertEquals("HP:0001156", part6.getTid().getValue());
+        assertEquals("HP:0001156", part6.getTermId().getValue());
         assertEquals(6, mappedSentenceParts.size());
 
     }

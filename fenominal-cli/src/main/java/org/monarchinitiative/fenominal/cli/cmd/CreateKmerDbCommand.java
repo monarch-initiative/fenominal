@@ -1,7 +1,7 @@
 package org.monarchinitiative.fenominal.cli.cmd;
 
 
-import org.monarchinitiative.fenominal.core.kmer.KmerGenerator;
+import org.monarchinitiative.fenominal.core.TermMiner;
 import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import picocli.CommandLine;
@@ -34,10 +34,10 @@ public class CreateKmerDbCommand implements Callable<Integer> {
             return 1;
         }
         Ontology hp = OntologyLoader.loadOntology(hpJson);
-        KmerGenerator kmerGenerator = new KmerGenerator(hp);
-        kmerGenerator.doKMers(kmer_k);
+        TermMiner miner = TermMiner.defaultNonFuzzyMapper(hp);
         String outfilename = datadir + File.separator + "kmer" + kmer_k + ".ser";
-        kmerGenerator.serialize(outfilename);
+        File file = new File(outfilename);
+        miner.serializeKmersToFile(hp, file, kmer_k);
         return 0;
     }
 }

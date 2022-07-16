@@ -8,8 +8,5 @@ module org.monarchinitiative.fenominal.core {
     requires org.apache.commons.io;
     requires org.monarchinitiative.phenol.io;
     exports org.monarchinitiative.fenominal.core;
-    exports org.monarchinitiative.fenominal.core.hpo;
-    exports org.monarchinitiative.fenominal.core.corenlp;
-    exports org.monarchinitiative.fenominal.core.kmer;
-    exports org.monarchinitiative.fenominal;
+    exports org.monarchinitiative.fenominal.model;
 }

@@ -3,6 +3,8 @@ package org.monarchinitiative.fenominal.core.corenlp;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TestBase;
+import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleSentence;
+import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 
 import java.util.List;
 

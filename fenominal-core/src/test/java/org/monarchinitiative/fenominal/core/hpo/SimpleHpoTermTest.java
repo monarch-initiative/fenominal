@@ -1,6 +1,8 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.fenominal.core.impl.hpo.HpoLoader;
+import org.monarchinitiative.fenominal.core.impl.hpo.SimpleHpoTerm;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
