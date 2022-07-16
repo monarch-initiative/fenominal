@@ -211,6 +211,17 @@ public class ReportParseTest {
         //Skin rash HP:0000988
     }
 
+    /**
+     * Myocardial infarction HP:0001658
+     * A synonym is MI and this was being falsely called from the word "Missed" in some contexts
+     */
+    @Test
+    public void doNotFalselyInferMyocardialInfarction() {
+        String sentence = "PT Missed Minutes";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        assertTrue(terms.isEmpty());
+    }
+
 
 
 

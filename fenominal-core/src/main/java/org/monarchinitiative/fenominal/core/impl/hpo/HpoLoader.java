@@ -29,6 +29,12 @@ public class HpoLoader {
         return hpo;
     }
 
+    /**
+     * A valid synonym needs to be at least 3 characters in length. This is needed because
+     * the synonym "MI" for myocardial infarction is leading to false-positive hits.
+     */
+    private final static int LENGTH_THRESHOLD = 3;
+
     public synchronized Map<String, TermId> textToTermMap() {
         List<SimpleHpoTerm> terms = loadSimpleHpoTerms();
         return textToTermMap(terms);
@@ -40,6 +46,9 @@ public class HpoLoader {
             TermId tid = sht.getId();
             termmap.put(sht.getName().toLowerCase(), tid);
             for (String synonym : sht.getSynonyms()) {
+                if (synonym.length() < LENGTH_THRESHOLD) {
+                    continue;
+                }
                 termmap.put(synonym.toLowerCase(), tid);
             }
         }
