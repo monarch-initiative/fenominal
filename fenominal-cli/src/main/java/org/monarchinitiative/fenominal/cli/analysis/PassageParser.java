@@ -64,7 +64,8 @@ public class PassageParser {
                     String matching = mt.getMatchingString();
                     int start = mt.getBegin();
                     int end = mt.getEnd();
-                    String [] fields = {label, tid.getValue(), matching, String.valueOf(start),
+                    String observed = mt.isPresent() ? "observed" : "excluded";
+                    String [] fields = {label, tid.getValue(), matching, observed, String.valueOf(start),
                         String.valueOf(end), sentence};
                     writer.write(String.join("\t", fields) +  "\n");
                 }
