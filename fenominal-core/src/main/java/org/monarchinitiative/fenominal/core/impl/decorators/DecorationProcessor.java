@@ -5,7 +5,7 @@ import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import java.util.List;
 
 public interface DecorationProcessor {
-    String getDecoration();
+    Decoration getDecoration();
 
     String getProcessedValue(List<SimpleToken> chunk, List<SimpleToken> nonStopWords);
 }

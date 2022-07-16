@@ -1,6 +1,6 @@
 package org.monarchinitiative.fenominal.model.impl;
 
-import org.monarchinitiative.fenominal.core.impl.decorators.Decorations;
+import org.monarchinitiative.fenominal.core.impl.decorators.Decoration;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -35,8 +35,8 @@ public class DefaultMinedTerm implements MinedTerm {
     }
 
     public static DefaultMinedTerm fromMappedSentencePart(DetailedMinedTerm msp) {
-        boolean observed = !msp.getDecorations().containsKey(Decorations.NEGATION.name()) ||
-                !msp.getDecorations().get(Decorations.NEGATION.name()).equals("true");
+        boolean observed = !msp.getDecorations().containsKey(Decoration.NEGATION) ||
+                !msp.getDecorations().get(Decoration.NEGATION).equals("true");
         return new DefaultMinedTerm(msp.getBegin(), msp.getEnd(), msp.getTermIdAsString(), observed);
     }
 

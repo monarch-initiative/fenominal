@@ -2,7 +2,7 @@ package org.monarchinitiative.fenominal.core.impl.decorators.impl;
 
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.decorators.DecorationProcessor;
-import org.monarchinitiative.fenominal.core.impl.decorators.Decorations;
+import org.monarchinitiative.fenominal.core.impl.decorators.Decoration;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ public class NegationDecorationProcessor implements DecorationProcessor {
     }
 
     @Override
-    public String getDecoration() {
-        return Decorations.NEGATION.name();
+    public Decoration getDecoration() {
+        return Decoration.NEGATION;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class NegationDecorationProcessor implements DecorationProcessor {
 
         int negPosition = Integer.MAX_VALUE;
         for (SimpleToken simpleToken : nonStopWords) {
-            if (simpleToken.hasDecoration(Decorations.NEGATION.name())) {
+            if (simpleToken.hasDecoration(Decoration.NEGATION.name())) {
                 negPosition = simpleToken.getStartpos();
                 break;
             }

@@ -33,7 +33,7 @@ public class DecorationProcessorService {
 
 // from develop    public MappedSentencePart process(List<SimpleToken> chunk, List<SimpleToken> nonStopWords, HpoConceptHit conceptHit) {
 
-        Map<String, String> decorations = new LinkedHashMap<>();
+        Map<Decoration, String> decorations = new LinkedHashMap<>();
         for (DecorationProcessor decorationProcessor : decorationProcessors) {
             decorations.put(decorationProcessor.getDecoration(), decorationProcessor.getProcessedValue(chunk, nonStopWords));
         }
