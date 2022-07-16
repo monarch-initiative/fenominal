@@ -18,7 +18,7 @@ public class ParseCommand implements Callable<Integer> {
     @CommandLine.Option(names = { "-o", "--output"}, description = "path to output file")
     private String output = "fenominal-mined.txt";
 
-    @CommandLine.Option(names = {"-k", "--kmer"}, required = false, description = "path to kmer file")
+    @CommandLine.Option(names = {"-k", "--kmer"}, description = "path to kmer file")
     private String kmerFile = "data/kmer5.ser";
 
     @Override

@@ -27,7 +27,7 @@ public class CreateKmerDbCommand implements Callable<Integer> {
     public CreateKmerDbCommand(){
     }
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         File hpJson = new File(datadir + File.separator + "hp.json");
         if (! hpJson.isFile()) {
             System.err.printf("[ERROR] Could not find hp.sjon file at %s\nRun Download command first.\n", hpJson);

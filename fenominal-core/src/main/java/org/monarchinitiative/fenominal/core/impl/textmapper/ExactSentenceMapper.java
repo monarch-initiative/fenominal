@@ -46,8 +46,6 @@ public class ExactSentenceMapper implements SentenceMapper {
                     TermId hpoId = opt.get().hpoConcept().getHpoId();
                     DetailedMinedTerm mappedSentencePart =
                             decorationProcessorService.process(chunk, nonStopWords, hpoId, 1.0);
-
-//                            new MappedSentencePart(chunk, opt.get().getHpoId());
                     candidates.putIfAbsent(mappedSentencePart.getBegin(), new ArrayList<>());
                     candidates.get(mappedSentencePart.getBegin()).add(mappedSentencePart);
                 }
