@@ -16,6 +16,7 @@ import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerGenerator;
 import org.monarchinitiative.fenominal.model.MinedSentence;
+import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedSentence;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
@@ -89,7 +90,7 @@ public class ClinicalTextMapper {
         List<SimpleSentence> sentences = coreDocument.getSentences();
         List<MinedSentence> minedSentenceList = new ArrayList<>();
         for (var ss : sentences) {
-            List<DetailedMinedTerm> sentenceParts = mapSentence(ss);
+            List<MinedTermWithMetadata> sentenceParts = mapSentence(ss);
             MinedSentence ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
             minedSentenceList.add(ms);
         }
@@ -97,13 +98,13 @@ public class ClinicalTextMapper {
     }
 
 
-    private List<DetailedMinedTerm> mapSentence(SimpleSentence ss) {
+    private List<MinedTermWithMetadata> mapSentence(SimpleSentence ss) {
         List<SimpleToken> nonStopWords = ss.getTokens().stream()
                 .filter(Predicate.not(token -> StopWords.isStop(token.getToken())))
                 .collect(Collectors.toList());
         nonStopWords = this.tokenDecoratorService.decorate(nonStopWords);
         // key -- sentence start position, value -- candidate matches.
-        Map<Integer, List<DetailedMinedTerm>> candidates = new HashMap<>();
+        Map<Integer, List<MinedTermWithMetadata>> candidates = new HashMap<>();
         int LEN = Math.min(10, nonStopWords.size()); // check for maximum of 10 words TODO -- what is best option here?
         for (int i = 1; i <= LEN; i++) {
             Partition<SimpleToken> partition = new Partition<>(nonStopWords, i);
@@ -116,7 +117,7 @@ public class ClinicalTextMapper {
                 if (opt.isPresent()) {
                     double TODO_DEFAULT_SIM = 1.0;
                     TermId hpoId = opt.get().hpoConcept().getHpoId();
-                    DetailedMinedTerm mappedSentencePart =
+                    MinedTermWithMetadata mappedSentencePart =
                             decorationProcessorService.process(chunk, nonStopWords, hpoId, TODO_DEFAULT_SIM);
 
 //                            new MappedSentencePart(chunk, opt.get().getHpoId());
@@ -131,13 +132,13 @@ public class ClinicalTextMapper {
         List<Integer> startPosList = new ArrayList<>(candidates.keySet());
         Collections.sort(startPosList);
         int currentSpan = -1;
-        List<DetailedMinedTerm> mappedSentencePartList = new ArrayList<>();
+        List<MinedTermWithMetadata> mappedSentencePartList = new ArrayList<>();
         for (int i : startPosList) {
             if (i < currentSpan) {
                 continue;
             }
-            List<DetailedMinedTerm> candidatesAtPositionI = candidates.get(i);
-            DetailedMinedTerm longest = getLongestPart(candidatesAtPositionI);
+            List<MinedTermWithMetadata> candidatesAtPositionI = candidates.get(i);
+            MinedTermWithMetadata longest = getLongestPart(candidatesAtPositionI);
             mappedSentencePartList.add(longest);
             // advance to the last position of the current match
             // note that this is String position convention, and so the next hist could start at
@@ -147,9 +148,9 @@ public class ClinicalTextMapper {
         return mappedSentencePartList;
     }
 
-    private DetailedMinedTerm getLongestPart(List<DetailedMinedTerm> candidatesAtPositionI) {
+    private MinedTermWithMetadata getLongestPart(List<MinedTermWithMetadata> candidatesAtPositionI) {
         // we should be guaranteed to have at least one list entry -- TODO do we need to check?
-        DetailedMinedTerm max = candidatesAtPositionI.get(0);
+        MinedTermWithMetadata max = candidatesAtPositionI.get(0);
         for (int i = 1; i < candidatesAtPositionI.size(); i++) {
             if (candidatesAtPositionI.get(i).getEnd() > max.getEnd()) {
                 max = candidatesAtPositionI.get(i);

@@ -10,8 +10,8 @@ public class DefaultMinedSentence implements MinedSentence {
     private final Collection<MinedTermWithMetadata> minedTerms;
     private final String sentence;
 
-    public DefaultMinedSentence(Collection<? extends MinedTermWithMetadata> terms, String sentence) {
-        this.minedTerms = (Collection<MinedTermWithMetadata>) terms;
+    public DefaultMinedSentence(Collection<MinedTermWithMetadata> terms, String sentence) {
+        this.minedTerms = terms;
         this.sentence = sentence;
     }
 

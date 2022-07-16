@@ -30,11 +30,7 @@ public class DetailedMinedTerm implements MinedTermWithMetadata {
             this.isPresent = true;
         } else {
             String value = decorations.get(Decoration.NEGATION);
-            if (value.equalsIgnoreCase("true")) {
-                this.isPresent = false;
-            } else {
-                this.isPresent = true;
-            }
+            this.isPresent = !value.equalsIgnoreCase("true");
         }
         this.decorations = decorations;
         this.startpos = tokens.get(0).getStartpos();
