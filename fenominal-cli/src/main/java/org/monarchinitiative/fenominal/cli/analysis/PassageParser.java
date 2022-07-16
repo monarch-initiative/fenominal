@@ -20,7 +20,7 @@ import java.util.Collection;
 
 public class PassageParser {
     Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
-    private final TermMiner mapper;
+    private final TermMiner miner;
     protected final Ontology ontology;
 
     private final String input;
@@ -31,11 +31,11 @@ public class PassageParser {
         this.input = input;
         this.output = output;
         this.ontology = OntologyLoader.loadOntology(new File(hpoJsonPath));
-        this.mapper =  TermMiner.defaultNonFuzzyMapper(this.ontology);
+        this.miner =  TermMiner.defaultNonFuzzyMapper(this.ontology);
     }
 
     private Collection<MinedSentence> getMappedSentences (String content) {
-        return mapper.mineSentences(content);
+        return miner.mineSentences(content);
     }
 
 
