@@ -6,7 +6,7 @@
 
     <groupId>org.monarchinitiative.fenominal</groupId>
     <artifactId>fenominal</artifactId>
-    <version>0.7.5</version>
+    <version>0.7.6</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

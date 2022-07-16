@@ -222,7 +222,16 @@ public class ReportParseTest {
         assertTrue(terms.isEmpty());
     }
 
-
+    @Test
+    public void weaknessShouldNotBeInferredAsAsthenia() {
+        String sentence = "reports of R side weakness per mother report";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        for (var m : terms) {
+            System.out.println(m.getTermId());
+            System.out.println(m.getMatchingString());
+        }
+        assertTrue(terms.isEmpty());
+    }
 
 
 }

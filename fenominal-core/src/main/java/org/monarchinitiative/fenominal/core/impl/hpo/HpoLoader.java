@@ -53,7 +53,7 @@ public class HpoLoader {
             }
         }
         // Remove a synonym of Asthenia HP:0025406 that leads to FP results
-        termmap.remove("Weakness");
+        termmap.remove("weakness");
         return Map.copyOf(termmap); // make immutable
     }
 
