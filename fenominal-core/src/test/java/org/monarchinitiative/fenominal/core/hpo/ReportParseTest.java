@@ -234,4 +234,14 @@ public class ReportParseTest {
     }
 
 
+    @Test
+    public void onlySpasticityNotAstheniaShouldBeInferred(){
+        String sentence = "He is nonambulatory and has weakness and spasticity throughout";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        assertEquals(1, terms.size());
+        MinedTermWithMetadata mt = terms.iterator().next();
+        //Spasticity HP:0001257
+        assertEquals("HP:0001257", mt.getTermIdAsString());
+        assertEquals("spasticity", mt.getMatchingString());
+    }
 }
