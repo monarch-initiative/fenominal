@@ -8,12 +8,10 @@ import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +27,6 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
 
     private final LexicalResources lexicalResources;
 
-    public FuzzyTermMiner(String pathToHpJson) {
-        Ontology hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
-        lexicalResources = new LexicalResources();
-        hpoMatcher = new ClinicalTextMapper(hpo, lexicalResources);
-    }
-
     public FuzzyTermMiner(Ontology ontology) {
         lexicalResources = new LexicalResources();
         hpoMatcher = new ClinicalTextMapper(ontology, lexicalResources);
@@ -46,8 +38,9 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
     }
 
     public static void main(String[] args) {
-        FuzzyTermMiner textToHpoMapper = new FuzzyTermMiner("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
-        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
+        // TODO - move this to cli or create a test
+//        FuzzyTermMiner textToHpoMapper = new FuzzyTermMiner("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
+//        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
     }
     /**
      * Do text mining with kmer-fuzzy match algorithm

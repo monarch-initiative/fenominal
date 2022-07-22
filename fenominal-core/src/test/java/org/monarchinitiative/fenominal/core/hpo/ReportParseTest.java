@@ -2,12 +2,12 @@ package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.fenominal.core.TestResources;
 import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
 import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -29,7 +29,7 @@ public class ReportParseTest {
 
     private static String report1entireFileContents = null;
 
-    private static Ontology hpo = null;
+    private static final Ontology hpo = TestResources.hpo();
 
 
     private String decode(MinedTerm smt, String text) {
@@ -54,15 +54,7 @@ public class ReportParseTest {
         if (! report1.isFile()) {
             throw new FileNotFoundException("Could not get report1.txt from URL");
         }
-        url = classLoader.getResource("hpo/hp.json");
-        if (url == null) {
-            throw new FileNotFoundException("Could not find hp.json for testing");
-        }
-        File hpoFile = new File(url.getFile());
-        if (! hpoFile.isFile()) {
-            throw new FileNotFoundException("Could not get report1.txt from URL");
-        }
-        hpo = OntologyLoader.loadOntology(hpoFile);
+
         miner = new NonFuzzyTermMiner(hpo);
         Path fileName =report1.toPath();
 

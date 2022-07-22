@@ -1,12 +1,11 @@
 package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.fenominal.core.TestResources;
 import org.monarchinitiative.fenominal.core.impl.hpo.HpoLoader;
 import org.monarchinitiative.fenominal.core.impl.hpo.SimpleHpoTerm;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleHpoTermTest {
 
-    private final static File smallHpo = Paths.get("src/test/resources/hpo/hp_head.json").toFile();
-    private final static HpoLoader loader = new HpoLoader(smallHpo.getAbsolutePath());
+    private final static HpoLoader loader = new HpoLoader(TestResources.smallHpo());
     private final List<SimpleHpoTerm> hpoTerms = loader.loadSimpleHpoTerms();
 
 

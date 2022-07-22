@@ -5,7 +5,7 @@
     <parent>
         <artifactId>fenominal</artifactId>
         <groupId>org.monarchinitiative.fenominal</groupId>
-        <version>0.7.6</version>
+        <version>0.7.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,9 +22,12 @@
             <artifactId>phenol-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.monarchinitiative.phenol</groupId>
+            <artifactId>phenol-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.monarchinitiative.biodownload</groupId>
