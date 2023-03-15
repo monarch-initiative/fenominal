@@ -1,76 +1,102 @@
 package org.monarchinitiative.fenominal.core.impl.kmer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.*;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class KmerDB implements Serializable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KmerDB.class);
+
     @Serial
     private static final long serialVersionUID = 2L;
 
-    private Map<Integer, KmerDBK> kmerDBKMap;
+    private final int kmerSize;
 
-    private final Map<String, List<String>> labelTokens;
+    private final Map<String, List<List<String>>> hpoLabels;
 
-    public KmerDB() {
-        kmerDBKMap = new TreeMap<>();
-        labelTokens = new HashMap<>();
+    private final Map<String, List<String>> tokensToHpo;
+
+    private final Map<String, List<String>> tokenToKmers;
+
+    private final Map<String, List<String>> kmerToTokens;
+
+    public KmerDB(int kmerSize) {
+        this.kmerSize = kmerSize;
+        hpoLabels = new LinkedHashMap<>();
+        tokensToHpo = new LinkedHashMap<>();
+        tokenToKmers = new LinkedHashMap<>();
+        kmerToTokens = new LinkedHashMap<>();
     }
 
-    public void add(int k, KmerDBK kmerDBK) {
-        this.kmerDBKMap.put(k, kmerDBK);
-    }
-
-    public void addLabel(String labelAsString, List<String> tokenList) {
-        if (!labelTokens.containsKey(labelAsString)) {
-            labelTokens.put(labelAsString, tokenList);
+    public void addLabel(String hpoId, List<String> tokenList) {
+        List<List<String>> lists = new ArrayList<>();
+        if (hpoLabels.containsKey(hpoId)) {
+            lists = hpoLabels.get(hpoId);
         }
+        lists.add(tokenList);
+        hpoLabels.put(hpoId, lists);
+
+
+        for (String token : tokenList) {
+            List<String> hpoList = new ArrayList<>();
+            if (tokensToHpo.containsKey(token)) {
+                hpoList = tokensToHpo.get(token);
+            }
+            if (!hpoList.contains(hpoId)) {
+                hpoList.add(hpoId);
+            }
+            tokensToHpo.put(token, hpoList);
+
+            if (token.length() < 5) {
+                continue;
+            }
+            List<String> kmers = TBlatUtil.kmers(token, kmerSize);
+            tokenToKmers.put(token, kmers);
+            for (String kmer : kmers) {
+                List<String> tokens = new ArrayList<>();
+                if (kmerToTokens.containsKey(kmer)) {
+                    tokens = kmerToTokens.get(kmer);
+                }
+                if (!tokens.contains(token)) {
+                    tokens.add(token);
+                }
+                kmerToTokens.put(kmer, tokens);
+            }
+        }
+
     }
 
-    public Map<String, List<String>> getHPOIds(String kmer, int kmerSize) {
-        if (this.kmerDBKMap.containsKey(kmerSize)) {
-            return this.kmerDBKMap.get(kmerSize).getKmerSet().get(kmer);
-        }
+    public boolean hasToken(String token) {
+        return this.tokensToHpo.containsKey(token);
+    }
+
+    public List<String> getKmers(String token) {
+        return this.tokenToKmers.get(token);
+    }
+
+    @Deprecated
+    public Map<String, List<String>> getHPOIds(String kmer) {
+        Map<String, List<String>> result = new LinkedHashMap<>();
         return Map.of();
     }
 
-    public Map<Integer, KmerDBK> getKmerDBKMap() {
-        return kmerDBKMap;
-    }
+    /**
+     * This is implemented in the worst possible way - highly inefficient. We need to think of a better way to do it.
+     */
+    public List<String> computeCandidateTokensForKmerList(Map<String, List<String>> kmerList) {
+        List<String> result = new ArrayList<>();
 
-    public void setKmerDBKMap(Map<Integer, KmerDBK> kmerDBKMap) {
-        this.kmerDBKMap = kmerDBKMap;
-    }
-
-    public int getLabelLength(String label) {
-        if (labelTokens.containsKey(label)) {
-            return labelTokens.get(label).size();
-        }
-        return -1;
-    }
-
-    public List<String> getLabelTokens(String label) {
-        if (labelTokens.containsKey(label)) {
-            return labelTokens.get(label);
+        for (String token : tokenToKmers.keySet()) {
+            for (String kmer : tokenToKmers.get(token)) {
+                if (kmerList.containsKey(kmer)) {
+                    result.add(token);
+                    break;
+                }
+            }
         }
 
-        return null;
-    }
-
-    public static Optional<KmerDB> loadKmerDB(String file) {
-        LOGGER.info("Loading K-mer DB from: {}", file);
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            KmerDB kmerDB = (KmerDB) objectInputStream.readObject();
-            objectInputStream.close();
-            return Optional.of(kmerDB);
-        } catch (IOException | ClassNotFoundException e) {
-            LOGGER.error("Unable to load K-mer DB file [{}]: {}", file, e.getMessage(), e);
-            return Optional.empty();
-        }
+        return result;
     }
 }

@@ -18,17 +18,6 @@ public class TextMapperUtil {
         return max;
     }
 
-    public static List<String> kmers(String token, int k) {
-        if (token.length() <= k) { // cannot extract kmers sice String is not more than k characters
-            return List.of(token);
-        }
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < token.length() - k + 1; i++) {
-            list.add(token.substring(i, i + k));
-        }
-        return list;
-    }
-
     public static double setBigramRatio(String str1, String str2) {
         List<String> pairs1 = toBigrams(str1);
         List<String> pairs2 = toBigrams(str2);

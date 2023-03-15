@@ -19,9 +19,57 @@ public class LexicalResources {
 
     private final Map<String, String> invertedIndex;
 
+    private final Map<Integer, Double> tblatOptimalThresholds;
+
+    private final Map<String, Map<String, Double>> trigramStates;
+
     public LexicalResources() {
         invertedIndex = new LinkedHashMap<>();
+        tblatOptimalThresholds = new LinkedHashMap<>();
+        trigramStates = new LinkedHashMap<>();
+
         loadLexicalClusters();
+        loadOptimalThresholds();
+        loadTrigramStates();
+    }
+
+    private void loadTrigramStates() {
+        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_trigram_states")) {
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String[] lines = text.split("\n");
+            for (String line : lines) {
+                line = line.trim();
+                if (!line.equalsIgnoreCase("")) {
+                    String[] splits = line.split("==");
+                    String head = splits[0];
+                    Map<String, Double> states = new LinkedHashMap<>();
+                    String[] values = splits[1].split("\\|");
+                    for (String value : values) {
+                        String[] actualValues = value.split("::");
+                        states.put(actualValues[0], Double.parseDouble(actualValues[1]));
+                    }
+                    trigramStates.put(head, states);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    private void loadOptimalThresholds() {
+        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_optimal_thresholds")) {
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String[] lines = text.split("\n");
+            for (String line : lines) {
+                line = line.trim();
+                if (!line.equalsIgnoreCase("")) {
+                    String[] splits = line.split(",");
+                    tblatOptimalThresholds.put(Integer.parseInt(splits[0]), Double.parseDouble(splits[1]));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     private void loadLexicalClusters() {
@@ -79,6 +127,18 @@ public class LexicalResources {
 
     public String getCluster(String word) {
         return invertedIndex.getOrDefault(word, word);
+    }
+
+    public Map<String, Map<String, Double>> getTrigramStates() {
+        return trigramStates;
+    }
+
+    public double getThresholdForLength(int length) {
+        if (this.tblatOptimalThresholds.containsKey(length)) {
+            return this.tblatOptimalThresholds.get(length);
+        }
+
+        return 0.0;
     }
 
     private static InputStream getResourceAsStream(String resourcePath) {

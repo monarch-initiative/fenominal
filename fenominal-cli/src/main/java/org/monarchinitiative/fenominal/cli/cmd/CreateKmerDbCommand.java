@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
  * Create kmer db files for testing purposes. Note that this goes so fast that we will
  * probably remove this feature from the final app and do everything in memory.
  */
+@Deprecated
 @CommandLine.Command(name = "kmer", aliases = {"K"},
         mixinStandardHelpOptions = true,
         description = "Create kmer DB files")

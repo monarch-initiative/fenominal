@@ -22,6 +22,8 @@ public class KmerGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KmerGenerator.class);
 
+    private final static int KMER_SIZE = 3;
+
     private Map<String, TermId> termMap;
 
     private final KmerDB kmerDB;
@@ -34,12 +36,13 @@ public class KmerGenerator {
         LOGGER.info("Loading ontology (term count: {})", ontology.countAllTerms());
         HpoLoader hpoLoader = new HpoLoader(ontology);
         this.termMap = hpoLoader.textToTermMap();
-        this.kmerDB = new KmerDB();
+        this.kmerDB = new KmerDB(KMER_SIZE);
+
+        this.doKMers();
     }
 
-    public void doKMers(int k) {
-        LOGGER.info("Generating k-mers: {}", k);
-        KmerDBK kmerDBK = new KmerDBK();
+    public void doKMers() {
+        LOGGER.info("Generating k-mers: {}", KMER_SIZE);
         double sTime = System.currentTimeMillis();
         for (String termText : termMap.keySet()) {
             String hpoId = termMap.get(termText).getId();
@@ -54,20 +57,14 @@ public class KmerGenerator {
                     .stream()
                     .filter(Predicate.not(token -> StopWords.isStop(token.getToken()))).toList();
             List<String> flattenedLabel = tokens.stream().map(SimpleToken::getLowerCaseToken).collect(Collectors.toList());
-            this.kmerDB.addLabel(termText, flattenedLabel);
-            for (SimpleToken simpleToken : tokens) {
-                List<String> kmers = TextMapperUtil.kmers(simpleToken.getLowerCaseToken(), k);
-                for (String kmer : kmers) {
-                    kmerDBK.add(kmer, hpoId, termText);
-                }
-            }
+            this.kmerDB.addLabel(hpoId, flattenedLabel);
         }
 
-        this.kmerDB.add(k, kmerDBK);
         double eTime = System.currentTimeMillis();
-        LOGGER.info("Done generating k-mers [{}]: {}s", k, (eTime - sTime) / 1000);
+        LOGGER.info("Done generating k-mers [{}]: {}s", KMER_SIZE, (eTime - sTime) / 1000);
     }
 
+    @Deprecated
     public void serialize(File fileName) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(fileName);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -80,6 +77,7 @@ public class KmerGenerator {
         LOGGER.info(this.kmerDB.toString());
     }
 
+    @Deprecated
     public static KmerGenerator loadKmerDB(String fileName) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(fileName);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);

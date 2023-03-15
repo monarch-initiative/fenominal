@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.core.impl.textmapper;
 
+import org.monarchinitiative.fenominal.core.impl.kmer.TBlatUtil;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleSentence;
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class FuzzySentenceMapper implements SentenceMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzySentenceMapper.class);
@@ -56,13 +58,14 @@ public class FuzzySentenceMapper implements SentenceMapper {
 
         Map<Integer, Map<String, List<String>>> kmerData = new LinkedHashMap<>();
         for (int i = 0; i < nonStopWords.size(); i++) {
-            List<String> kmers = TextMapperUtil.kmers(nonStopWords.get(i).getLowerCaseToken(), kmerSize);
+            List<String> kmers = TBlatUtil.kmers(nonStopWords.get(i).getLowerCaseToken(), kmerSize);
 
             Map<String, Map<String, Integer>> tokenLevel = new LinkedHashMap<>();
 
+            //TODO: FIX
             // For each k-mer retrieve HPO terms; keep count of HPO terms encountered in the context of this token
             for (String kmer : kmers) {
-                Map<String, List<String>> hpoIds = kmerDB.getHPOIds(kmer, kmerSize);
+                Map<String, List<String>> hpoIds = kmerDB.getHPOIds(kmer);
                 if (hpoIds != null) {
                     for (String hpoId : hpoIds.keySet()) {
                         Map<String, Integer> map = tokenLevel.containsKey(hpoId) ? tokenLevel.get(hpoId) : new HashMap<>();

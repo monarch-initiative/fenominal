@@ -26,6 +26,11 @@ public class KmerMatchingStrategy {
     }
 
     public Map<String, Map<List<SimpleToken>, Double>> process() {
+        return new HashMap<>();
+    }
+
+    /*
+    public Map<String, Map<List<SimpleToken>, Double>> process() {
         for (int idx : this.kmerData.keySet()) {
             for (String hpoId : this.kmerData.get(idx).keySet()) {
                 Map<Integer, List<String>> map = this.hpoDict.containsKey(hpoId) ? this.hpoDict.get(hpoId) : new HashMap<>();
@@ -99,6 +104,7 @@ public class KmerMatchingStrategy {
 
         return this.candidates;
     }
+*/
 
     private List<SimpleToken> getTokens(List<Integer> idxList) {
         List<SimpleToken> toks = new ArrayList<>();
