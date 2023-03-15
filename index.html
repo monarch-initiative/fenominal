@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fenominal: Phenomenal text mining for disease and phenotype concepts &mdash; fenominal v0.1.2-SNAPSHOT documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CLI fenominal application" href="cli-app.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            fenominal
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli-app.html">CLI fenominal application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">fenominal library</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">fenominal</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">fenominal: Phenomenal text mining for disease and phenotype concepts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fenominal-phenomenal-text-mining-for-disease-and-phenotype-concepts">
+<h1>fenominal: Phenomenal text mining for disease and phenotype concepts<a class="headerlink" href="#fenominal-phenomenal-text-mining-for-disease-and-phenotype-concepts" title="Permalink to this heading"></a></h1>
+<section id="fenominal">
+<h2>fenominal<a class="headerlink" href="#fenominal" title="Permalink to this heading"></a></h2>
+<p>Fenominal is a Java 17 library for text-mining
+<a class="reference external" href="http://www.human-phenotype-ontology.org">Human Phenotype Ontology (HPO)</a> terms from text. Fenominal is
+a multimodule project with a <code class="docutils literal notranslate"><span class="pre">core</span></code> module with the text-mining logic and a <code class="docutils literal notranslate"><span class="pre">cli</span></code> module for use from the
+command line. A graphical user interface (GUI) is available in a separate project
+called <a class="reference external" href="https://github.com/monarch-initiative/fenominal-gui">Fenominal-GUI</a>.</p>
+<p>Fenominal implements the T-BLAT algorithm, which is inspired by the BLAST algorithm for biosequence alignment.
+T-BLAT screens texts for potential matches on the basis of matching k-mer counts and scores candidates based on
+conformance to typical patterns of spelling errors derived from 2.9 million clinical notes. Fenominal also implements
+exact matching but matches also on multitoken HPO labels or synonyms that are permuted.</p>
+<p>Fenominal does not rely on external APIs and can be used in settings in which a firewall does not permit applications
+to access the internet.  Fenominal is intended for use as a software library and the CLI module only
+contains simple demo applications.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli-app.html">CLI fenominal application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">fenominal library</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli-app.html" class="btn btn-neutral float-right" title="CLI fenominal application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
