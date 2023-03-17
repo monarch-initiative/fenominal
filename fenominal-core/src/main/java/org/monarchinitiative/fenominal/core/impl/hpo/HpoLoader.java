@@ -1,5 +1,6 @@
 package org.monarchinitiative.fenominal.core.impl.hpo;
 
+import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -9,9 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO - the ontology loader belongs elsewhere, perhaps to IO, or CLI/GUI module, so that we can keep `fenominal-core`
-//  to depend only on `phenol-core`
+/**
+ * Load HPO terms that descend from the Phenotypic Abnormality subontology
+ */
 public class HpoLoader {
+
+
+    private static final TermId PHENOTYPIC_ABNORMALITY = TermId.of("HP:0000118");
 
     private final Ontology hpo;
 
@@ -54,8 +59,10 @@ public class HpoLoader {
     public synchronized List<SimpleHpoTerm> loadSimpleHpoTerms() {
         List<SimpleHpoTerm> termList = new ArrayList<>();
         for (TermId tid : this.hpo.getNonObsoleteTermIds()) {
-            Term term = this.hpo.getTermMap().get(tid);
-            termList.add(new SimpleHpoTerm(term));
+            if (OntologyAlgorithm.isSubclass(this.hpo, tid, PHENOTYPIC_ABNORMALITY)) {
+                Term term = this.hpo.getTermMap().get(tid);
+                termList.add(new SimpleHpoTerm(term));
+            }
         }
         return List.copyOf(termList); // make immutable
     }

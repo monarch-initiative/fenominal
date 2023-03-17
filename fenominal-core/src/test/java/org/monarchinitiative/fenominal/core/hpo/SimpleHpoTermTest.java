@@ -63,10 +63,11 @@ public class SimpleHpoTermTest {
      * grep \"id\" hp_head.json | grep HP | wc -l
      *       22
      *  But HP_0012374 is deprecated=true, so we expect 21
+     *  However, we are restricting to descendents of Phenotypic abnormality so we only get 10
      */
     @Test
     public void testRetrieveAllTerms() {
-        int expectedCount = 21;
+        int expectedCount = 10;
         assertEquals(expectedCount, hpoTerms.size());
     }
 

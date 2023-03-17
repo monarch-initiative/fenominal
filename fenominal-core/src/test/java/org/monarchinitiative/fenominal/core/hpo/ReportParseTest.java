@@ -82,7 +82,7 @@ public class ReportParseTest {
         for (MinedTerm mt : terms) {
             assertTrue(mt.isPresent());
         }
-        assertEquals(3, terms.size());
+        assertEquals(2, terms.size());
     }
 
     @Test
@@ -107,12 +107,14 @@ public class ReportParseTest {
         }
         // TermIds are represented as Strings
         List<String> termIdList = terms.stream().map(MinedTerm::getTermIdAsString).toList();
-        assertEquals("HP:0032443", termIdList.get(0)); // HP:0032443 = Past medical history
-        assertEquals("HP:0001622", termIdList.get(1)); // Premature birth HP:0001622
-        assertEquals("HP:0100021", termIdList.get(2)); //Cerebral palsy HP:0100021
-        assertEquals("HP:0001263", termIdList.get(3)); //Global developmental delay HP:0001263
-        assertEquals("HP:0000750", termIdList.get(4)); //Delayed speech and language development HP:0000750
-        assertEquals(5,  terms.size());
+        assertEquals(4,  terms.size());
+        // We do not expect to parse HP:0032443 = Past medical history because we are
+        // restricting parsing to descendents of Phenotypic abnormality
+        assertEquals("HP:0001622", termIdList.get(0)); // Premature birth HP:0001622
+        assertEquals("HP:0100021", termIdList.get(1)); //Cerebral palsy HP:0100021
+        assertEquals("HP:0001263", termIdList.get(2)); //Global developmental delay HP:0001263
+        assertEquals("HP:0000750", termIdList.get(3)); //Delayed speech and language development HP:0000750
+
     }
 
     /**
