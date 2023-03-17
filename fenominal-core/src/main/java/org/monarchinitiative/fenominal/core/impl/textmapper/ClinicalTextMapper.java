@@ -66,7 +66,8 @@ public class ClinicalTextMapper {
         List<SimpleSentence> sentences = coreDocument.getSentences();
         List<MinedSentence> minedSentenceList = new ArrayList<>();
         for (var ss : sentences) {
-            List<MinedTermWithMetadata> sentenceParts = mapSentence(ss);
+           // List<MinedTermWithMetadata> sentenceParts = mapSentence(ss);
+            List<DetailedMinedTerm> sentenceParts = sentenceMappers.get(fuzzy).mapSentence(ss);
             MinedSentence ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
             minedSentenceList.add(ms);
         }

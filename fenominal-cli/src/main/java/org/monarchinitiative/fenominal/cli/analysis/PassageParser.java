@@ -55,7 +55,7 @@ public class PassageParser {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.output));
             for (var mp : mappedSentences) {
                 String sentence = mp.getText();
-                Collection<MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
+                Collection<? extends MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
                 for (var mt : minedTerms) {
                     TermId tid = mt.getTermId();
                     var opt = ontology.getTermLabel(tid);

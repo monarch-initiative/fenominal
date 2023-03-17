@@ -4,6 +4,6 @@ import java.util.Collection;
 
 public interface MinedSentence {
 
-    Collection<MinedTermWithMetadata> getMinedTerms();
+    Collection<? extends MinedTermWithMetadata> getMinedTerms();
     String getText();
 }

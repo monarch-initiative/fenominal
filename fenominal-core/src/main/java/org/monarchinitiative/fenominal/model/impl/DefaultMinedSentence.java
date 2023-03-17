@@ -7,10 +7,10 @@ import java.util.Collection;
 
 public class DefaultMinedSentence implements MinedSentence {
 
-    private final Collection<MinedTermWithMetadata> minedTerms;
+    private final Collection<? extends MinedTermWithMetadata> minedTerms;
     private final String sentence;
 
-    public DefaultMinedSentence(Collection<MinedTermWithMetadata> terms, String sentence) {
+    public DefaultMinedSentence(Collection<? extends MinedTermWithMetadata> terms, String sentence) {
         this.minedTerms = terms;
         this.sentence = sentence;
     }
@@ -18,7 +18,7 @@ public class DefaultMinedSentence implements MinedSentence {
 
 
     @Override
-    public Collection<MinedTermWithMetadata> getMinedTerms() {
+    public Collection<? extends MinedTermWithMetadata> getMinedTerms() {
         return  minedTerms;
     }
 

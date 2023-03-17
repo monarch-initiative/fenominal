@@ -179,7 +179,7 @@ public class ReportParseTest {
         Collection<MinedSentence> minedSentences = miner.mineSentences(sentence);
         assertEquals(1,  minedSentences.size());
         MinedSentence minedSentence  = minedSentences.iterator().next();
-        Collection<MinedTermWithMetadata> minedTerms = minedSentence.getMinedTerms();
+        Collection<? extends MinedTermWithMetadata> minedTerms = minedSentence.getMinedTerms();
         assertEquals(1,  minedTerms.size());
         MinedTermWithMetadata mt = minedTerms.iterator().next();
         assertFalse(mt.isPresent());
