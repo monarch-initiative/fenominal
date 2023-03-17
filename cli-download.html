@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; fenominal v0.1.2-SNAPSHOT documentation</title>
+  <title>CLI fenominal app: Downloading the hpo file &mdash; fenominal v0.1.2-SNAPSHOT documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +15,7 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -61,8 +62,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Index</li>
+      <li class="breadcrumb-item active">CLI fenominal app: Downloading the hpo file</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cli-download.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -70,12 +72,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
+  <section id="cli-fenominal-app-downloading-the-hpo-file">
+<span id="rstclidownload"></span><h1>CLI fenominal app: Downloading the hpo file<a class="headerlink" href="#cli-fenominal-app-downloading-the-hpo-file" title="Permalink to this heading"></a></h1>
+<p>The fenominal command-line app requires a copy of <code class="docutils literal notranslate"><span class="pre">hp.json</span></code>, the main Human Phenotype Ontology file. The
+file can be manually downloaded from the <a class="reference external" href="https://hpo.jax.org/app/">HPO Website</a>.</p>
+<p>Alternatively, fenominal offers a convenience function to download all files to a local directory.
+By default, fenominal will download all four files into a newly created subdirectory
+called <code class="docutils literal notranslate"><span class="pre">data</span></code> in the current working directory. You can change this default with the <code class="docutils literal notranslate"><span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">--data</span></code> options
+(If you change this, then you will need to pass the location of your directory to all other fenominal commands
+using the <code class="docutils literal notranslate"><span class="pre">-d</span></code> flag). Download the files automatically as follows.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ java -jar fenominal.jar download
+</pre></div>
 </div>
+<p>fenominal will not download the files if they are already present unless the <code class="docutils literal notranslate"><span class="pre">--overwrite</span></code> argument is passed. For
+instance, the following command would download the four files to a directory called datafiles and would
+overwrite any previously downloaded files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ java -jar fenominal.jar download -d datafiles --overwrite
+</pre></div>
+</div>
+<p>If you download the hp.json file manually or use any non-default name for the directory in which the file is located,
+you need to indicate the path of the directory using the -d argument for the parse command.</p>
+</section>
 
 
            </div>

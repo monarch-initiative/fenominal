@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; fenominal v0.1.2-SNAPSHOT documentation</title>
+  <title>CLI fenominal app: Setup &mdash; fenominal v0.1.2-SNAPSHOT documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +15,7 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -61,8 +62,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Index</li>
+      <li class="breadcrumb-item active">CLI fenominal app: Setup</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cli-setup.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -70,12 +72,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
+  <section id="cli-fenominal-app-setup">
+<span id="rstclisetup"></span><h1>CLI fenominal app: Setup<a class="headerlink" href="#cli-fenominal-app-setup" title="Permalink to this heading"></a></h1>
+<p>This page describes how to build and use the
+cli application.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<p>fenominal was written with Java version 17. If you want to
+build fenominal from source, then the build process described below requires
+<a class="reference external" href="https://git-scm.com/book/en/v2">Git</a> and <a class="reference external" href="https://maven.apache.org/install.html">maven</a>.</p>
+</section>
+<section id="build">
+<h2>Build<a class="headerlink" href="#build" title="Permalink to this heading"></a></h2>
+<p>Go the GitHub page of <a class="reference external" href="https://github.com/monarch-initiative/fenominal">fenominal</a>, and clone the project.
+Build the executable from source with maven, and then test the build.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/monarch-initiative/fenominal
+$ cd fenominal
+$ ./mvnw package
+$ java -jar fenominal-cli/target/fenominal-cli-0.7.7.jar
+    Usage: fenominal [-hV] [COMMAND]
+    phenotype/disease NER
+        -h, --help      Show this help message and exit.
+        -V, --version   Print version information and exit.
+    Commands:
+        download, D  Download files for fenominal
+        parse, P     Parse text
+</pre></div>
 </div>
+</section>
+</section>
 
 
            </div>

@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="fenominal library" href="usage.html" />
-    <link rel="prev" title="fenominal: Phenomenal text mining for disease and phenotype concepts" href="index.html" /> 
+    <link rel="prev" title="Fenominal’s Matching Algorithms" href="matching.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,10 +45,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="matching.html">Fenominal’s Matching Algorithms</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CLI fenominal application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#build">Build</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-download-command">The download command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fenominal-s-matching">Fenominal’s Matching</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exact-matching">Exact matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t-blat-fuzzy-matching">T-BLAT (fuzzy) Matching</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">fenominal library</a></li>
@@ -81,53 +84,58 @@
   <section id="cli-fenominal-application">
 <span id="rstsetup"></span><h1>CLI fenominal application<a class="headerlink" href="#cli-fenominal-application" title="Permalink to this heading"></a></h1>
 <p>fenominal is a Java library written in Java 17. fenominal contains a command-line interface (cli) module
-that demonstrates some of the functionality of the library. This page describes how to build and use the
-cli application.</p>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
-<p>fenominal was written with Java version 17. If you want to
-build fenominal from source, then the build process described below requires
-<a class="reference external" href="https://git-scm.com/book/en/v2">Git</a> and <a class="reference external" href="https://maven.apache.org/install.html">maven</a>.</p>
-</section>
-<section id="build">
-<h2>Build<a class="headerlink" href="#build" title="Permalink to this heading"></a></h2>
-<p>Go the GitHub page of <a class="reference external" href="https://github.com/monarch-initiative/fenominal">fenominal</a>, and clone the project.
-Build the executable from source with maven, and then test the build.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/monarch-initiative/fenominal
-$ cd fenominal
-$ ./mvnw package
-$ java -jar fenominal-cli/target/fenominal-cli-0.7.3.jar
-    Usage: fenominal [-hV] [COMMAND]
-    phenotype/disease NER
-        -h, --help      Show this help message and exit.
-        -V, --version   Print version information and exit.
-    Commands:
-        download, D  Download files for fenominal
-        kmer, K      Create kmer DB files
-        parse, P     Parse text
+that demonstrates some of the functionality of the library.</p>
+<p>See <a class="reference internal" href="cli-setup.html#rstclisetup"><span class="std std-ref">CLI fenominal app: Setup</span></a> for instructions on building the application.</p>
+<p>See <a class="reference internal" href="cli-download.html#rstclidownload"><span class="std std-ref">CLI fenominal app: Downloading the hpo file</span></a> for instructions on how to download the <code class="docutils literal notranslate"><span class="pre">hp.json</span></code> file that is needed for the app.</p>
+<p>Once you have built the application, you should see this</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-jar<span class="w"> </span>fenominal-cli/target/fenominal.jar
+<span class="w">    </span>Usage:<span class="w"> </span>fenominal<span class="w"> </span><span class="o">[</span>-hV<span class="o">]</span><span class="w"> </span><span class="o">[</span>COMMAND<span class="o">]</span>
+<span class="w">    </span>phenotype/disease<span class="w"> </span>NER
+<span class="w">        </span>-h,<span class="w"> </span>--help<span class="w">      </span>Show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w">        </span>-V,<span class="w"> </span>--version<span class="w">   </span>Print<span class="w"> </span>version<span class="w"> </span>information<span class="w"> </span>and<span class="w"> </span>exit.
+<span class="w">    </span>Commands:
+<span class="w">        </span>download,<span class="w"> </span>D<span class="w">  </span>Download<span class="w"> </span>files<span class="w"> </span><span class="k">for</span><span class="w"> </span>fenominal
+<span class="w">        </span>parse,<span class="w"> </span>P<span class="w">     </span>Parse<span class="w"> </span>text
+</pre></div>
+</div>
+<p>in the following we will show only <code class="docutils literal notranslate"><span class="pre">fenominal.jar</span></code>. Adjust the path accordingly.</p>
+<section id="fenominal-s-matching">
+<h2>Fenominal’s Matching<a class="headerlink" href="#fenominal-s-matching" title="Permalink to this heading"></a></h2>
+<p>Fenominal can perform exact matching and fuzzy matching. See <a class="reference internal" href="matching.html#rstmatching"><span class="std std-ref">Fenominal’s Matching Algorithms</span></a> for an explanation.</p>
+<section id="exact-matching">
+<h3>Exact matching<a class="headerlink" href="#exact-matching" title="Permalink to this heading"></a></h3>
+<p>For this example, create a file called <code class="docutils literal notranslate"><span class="pre">text-exact.txt</span></code> with the following contents</p>
+<blockquote>
+<div><p>A 28-year-old woman who was diagnosed with Noonan syndrome at age 4 because of growth retardation, cardiomyopathy, and hypertelorism.</p>
+</div></blockquote>
+<p>Run fenominal as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-jar<span class="w"> </span>fenominal.jar<span class="w"> </span>parse<span class="w"> </span>--exact<span class="w"> </span>-i<span class="w"> </span>text-exact.txt<span class="w"> </span>--verbose
+<span class="o">(</span>...<span class="o">)</span>
+Growth<span class="w"> </span>delay<span class="w"> </span>HP:0001510<span class="w">      </span>growth<span class="w"> </span>retardation<span class="w">      </span>observed<span class="w">        </span><span class="m">79</span><span class="w">      </span><span class="m">97</span><span class="w">      </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retardation,<span class="w"> </span>cardiomyopathy,<span class="w"> </span>and<span class="w"> </span>hypertelorism.
+Cardiomyopathy<span class="w">       </span>HP:0001638<span class="w">      </span>cardiomyopathy<span class="w">  </span>observed<span class="w">        </span><span class="m">99</span><span class="w">      </span><span class="m">113</span><span class="w">     </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retardation,<span class="w"> </span>cardiomyopathy,<span class="w"> </span>and<span class="w"> </span>hypertelorism.
+Hypertelorism<span class="w">        </span>HP:0000316<span class="w">      </span>hypertelorism<span class="w">   </span>observed<span class="w">        </span><span class="m">119</span><span class="w">     </span><span class="m">132</span><span class="w">     </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retardation,<span class="w"> </span>cardiomyopathy,<span class="w"> </span>and<span class="w"> </span>hypertelorism.
 </pre></div>
 </div>
 </section>
-<section id="the-download-command">
-<h2>The download command<a class="headerlink" href="#the-download-command" title="Permalink to this heading"></a></h2>
-<p id="rstdownload">fenominal requires several files to run.</p>
-<ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">hp.json</span></code>. The main Human Phenotype Ontology file</p></li>
-</ol>
-<p>fenominal offers a convenience function to download all files to a local directory.
-By default, fenominal will download all four files into a newly created subdirectory
-called <code class="docutils literal notranslate"><span class="pre">data</span></code> in the current working directory. You can change this default with the <code class="docutils literal notranslate"><span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">--data</span></code> options
-(If you change this, then you will need to pass the location of your directory to all other fenominal commands
-using the <code class="docutils literal notranslate"><span class="pre">-d</span></code> flag). Download the files automatically as follows.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ java -jar fenominal-cli-0.7.3.jar download
+<section id="t-blat-fuzzy-matching">
+<h3>T-BLAT (fuzzy) Matching<a class="headerlink" href="#t-blat-fuzzy-matching" title="Permalink to this heading"></a></h3>
+<p>For this example, create a file called <code class="docutils literal notranslate"><span class="pre">text-errors.txt</span></code> with the following contents.</p>
+<blockquote>
+<div><p>A 28-year-old woman who was diagnosed with Noonan syndrome at age 4 because of growth retadation, cardiomyopathic, and hypertelorisn.</p>
+</div></blockquote>
+<p>Run fenominal as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>java<span class="w"> </span>-jar<span class="w"> </span>fenominal.jar<span class="w"> </span>parse<span class="w"> </span>-i<span class="w"> </span>text-errors.txt<span class="w"> </span>--verbose
+<span class="o">(</span>...<span class="o">)</span>
+<span class="w"> </span>Agnosia<span class="w">     </span>HP:0010524<span class="w">      </span>agnosia<span class="w"> </span>observed<span class="w">        </span><span class="m">28</span><span class="w">      </span><span class="m">37</span><span class="w">      </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retadation,<span class="w"> </span>cardiomyopathic,<span class="w"> </span>and<span class="w"> </span>hypertelorisn.
+<span class="w"> </span>Growth<span class="w"> </span>delay<span class="w">        </span>HP:0001510<span class="w">      </span>growth<span class="w"> </span>retardation<span class="w">      </span>observed<span class="w">        </span><span class="m">79</span><span class="w">      </span><span class="m">96</span><span class="w">      </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retadation,<span class="w"> </span>cardiomyopathic,<span class="w"> </span>and<span class="w"> </span>hypertelorisn.
+<span class="w"> </span>Cardiomyopathy<span class="w">      </span>HP:0001638<span class="w">      </span>cardiomyopathy<span class="w">  </span>observed<span class="w">        </span><span class="m">98</span><span class="w">      </span><span class="m">113</span><span class="w">     </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retadation,<span class="w"> </span>cardiomyopathic,<span class="w"> </span>and<span class="w"> </span>hypertelorisn.
+<span class="w"> </span>Hypertelorism<span class="w">       </span>HP:0000316<span class="w">      </span>hypertelorism<span class="w">   </span>observed<span class="w">        </span><span class="m">119</span><span class="w">     </span><span class="m">132</span><span class="w">     </span>A<span class="w"> </span><span class="m">28</span>-year-old<span class="w"> </span>woman<span class="w"> </span>who<span class="w"> </span>was<span class="w"> </span>diagnosed<span class="w"> </span>with<span class="w"> </span>Noonan<span class="w"> </span>syndrome<span class="w"> </span>at<span class="w"> </span>age<span class="w"> </span><span class="m">4</span><span class="w"> </span>because<span class="w"> </span>of<span class="w"> </span>growth<span class="w"> </span>retadation,<span class="w"> </span>cardiomyopathic,<span class="w"> </span>and<span class="w"> </span>hypertelorisn.
 </pre></div>
 </div>
-<p>fenominal will not download the files if they are already present unless the <code class="docutils literal notranslate"><span class="pre">--overwrite</span></code> argument is passed. For
-instance, the following command would download the four files to a directory called datafiles and would
-overwrite any previously downloaded files.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ java -jar fenominal-cli-0.7.3.jar download -d datafiles --overwrite
-</pre></div>
-</div>
+<p>Fenominal picks up four terms. Agnosia is false postion (from the word diagnosed). The remaining three terms are
+inferred correctly despite the presence of spelling errors or variants. Note that T-BLAT is the default
+approach, and exact matching is only performed if the <code class="docutils literal notranslate"><span class="pre">--exact</span></code> flag is passed.</p>
+</section>
 </section>
 </section>
 
@@ -135,7 +143,7 @@ overwrite any previously downloaded files.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="fenominal: Phenomenal text mining for disease and phenotype concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="matching.html" class="btn btn-neutral float-left" title="Fenominal’s Matching Algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="usage.html" class="btn btn-neutral float-right" title="fenominal library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
