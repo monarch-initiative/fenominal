@@ -31,6 +31,33 @@ Fenominal's Matching
 
 Fenominal can perform exact matching and fuzzy matching. See :ref:`rstmatching` for an explanation.
 
+To see the options, run ``java -jar fenominal.jar parse -h``.
+
+
+.. _tbl-grid:
+
++----------------+------------------+----------------------------------------------+
+|   Short option | Long option      | Explanation                                  |
++================+==================+==============================================+
+| -e             |  --exact         | Use exact matching algorithm                 |
++----------------+------------------+----------------------------------------------+
+| -h             |  --help          | Show this help message and exit.             |
++----------------+------------------+----------------------------------------------+
+|                |  --hp=<path>     | Path to HP json file (default data/hp.json)  |
++----------------+------------------+----------------------------------------------+
+|  -i            | --input=<path>   | Path to HP json file (default data/hp.json)  |
++----------------+------------------+----------------------------------------------+
+|  -0            | --output=<path>  | Path to output file                          |
++----------------+------------------+----------------------------------------------+
+|  -V            | --version        | Print version information and exit.          |
++----------------+------------------+----------------------------------------------+
+|                | --verbose        | Show parse results in shell                  |
++----------------+------------------+----------------------------------------------+
+
+
+
+
+
 Exact matching
 ^^^^^^^^^^^^^^
 
