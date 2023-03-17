@@ -28,5 +28,6 @@ contains simple demo applications.
 
    matching
    cli-app
-   usage
+   library
+
 
