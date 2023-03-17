@@ -21,7 +21,7 @@ public class ClinicalTextMapperTest {
     private static ClinicalTextMapper mapper;
 
     @BeforeAll
-    private static void init() {
+    public static void init() {
         ClassLoader loader = ClinicalTextMapper.class.getClassLoader();
         URL url = loader.getResource("hpo/hp.json");
         if (url == null) {
