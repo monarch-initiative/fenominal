@@ -4,7 +4,6 @@ import org.monarchinitiative.fenominal.core.impl.corenlp.FmCoreDocument;
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.impl.hpo.HpoLoader;
-import org.monarchinitiative.fenominal.core.impl.textmapper.TextMapperUtil;
 //import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;

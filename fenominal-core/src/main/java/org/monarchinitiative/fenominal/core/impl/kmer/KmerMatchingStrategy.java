@@ -2,10 +2,8 @@ package org.monarchinitiative.fenominal.core.impl.kmer;
 
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.textmapper.TextMapperUtil;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class KmerMatchingStrategy {
 

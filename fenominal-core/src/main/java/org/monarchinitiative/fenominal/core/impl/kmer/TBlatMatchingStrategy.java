@@ -73,7 +73,6 @@ public class TBlatMatchingStrategy {
         /**
          * Step 1: Find all and remove exact matches
          */
-
         int exactMatches = 0;
         List<String> to_remove = new ArrayList<>();
 
@@ -93,7 +92,7 @@ public class TBlatMatchingStrategy {
                 List<String> intersect = kmerIdxs.stream()
                         .filter(tokenIdxs::contains)
                         .distinct()
-                        .collect(Collectors.toList());
+                        .toList();
 
                 if (!intersect.isEmpty()) {
                     exactMatches += intersect.size();
@@ -216,10 +215,9 @@ public class TBlatMatchingStrategy {
             }
         }
 
-        /**
+        /*
          * Step 2: Match remaining kmers to left-overs from original string
          */
-
         Map<String, Integer> kmer_leftovers = new LinkedHashMap<>();
         if (originalTokenIdxs.isEmpty()) {
             for (String kmer : kmerTokenIdxs.keySet()) {
@@ -243,10 +241,9 @@ public class TBlatMatchingStrategy {
                 List<String> kmerIdxs = kmerTokenIdxs.get(kmer);
 
                 if (this.trigramStates.containsKey(kmer)) {
-                    /**
+                    /*
                      * There are state transitions
                      */
-
                     String found = null;
                     Map<String, Double> kmerData = this.trigramStates.get(kmer);
                     double currentScore = -1;
@@ -261,10 +258,9 @@ public class TBlatMatchingStrategy {
                     }
 
                     if (found != null) {
-                        /**
+                        /*
                          * An appropriate state transition was found
                          */
-
                         List<String> tokenIdxs = originalTokenIdxs.get(found);
                         List<String> intersect = kmerIdxs.stream()
                                 .filter(tokenIdxs::contains)
@@ -290,9 +286,8 @@ public class TBlatMatchingStrategy {
                             to_remove.add(kmer);
                         }
                     } else {
-                        /**
+                        /*
                          * No appropriate state transition was found
-                         *
                          * Find best matching pair based on transition type
                          * Assign value of a self-transition * probability of transition type
                          */
@@ -326,7 +321,7 @@ public class TBlatMatchingStrategy {
                             List<String> intersect = kmerIdxs.stream()
                                     .filter(tokenIdxs::contains)
                                     .distinct()
-                                    .collect(Collectors.toList());
+                                    .toList();
                             if (!intersect.isEmpty()) {
                                 score += currentScore * intersect.size();
                                 for (String idx : intersect) {
@@ -350,9 +345,8 @@ public class TBlatMatchingStrategy {
 
                 } else {
 
-                    /**
+                    /*
                      * There are NO state transitions
-                     *
                      * Find best matching pair based on transition type
                      * Assign value of a self-transition * probability of transition type
                      */
@@ -419,9 +413,8 @@ public class TBlatMatchingStrategy {
             }
         }
 
-        /**
+        /*
          * Check if there are left-over terms in originalTokenIdxs
-         *
          * - Penalty: the value of a self-transition for each kmer + (?) 1 / len(originalTokenIdxs) * value of self-transition
          */
 
@@ -438,9 +431,8 @@ public class TBlatMatchingStrategy {
             score = score - originalTokenIdxs.get(el).size() * value;
         }
 
-        /**
+        /*
          * Check if there are left-over terms in kmerTokenIdxs
-         *
          * - Penalty: the value of a self-transition for each kmer + (?) 1 / len(originalTokenIdxs) * value of self-transition
          */
 
