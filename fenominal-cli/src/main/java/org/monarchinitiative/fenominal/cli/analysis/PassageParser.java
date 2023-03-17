@@ -27,11 +27,15 @@ public class PassageParser {
     protected final String output;
 
 
-    public PassageParser(String hpoJsonPath,String input, String output) {
+    public PassageParser(String hpoJsonPath,String input, String output, boolean exact) {
         this.input = input;
         this.output = output;
         this.ontology = OntologyLoader.loadOntology(new File(hpoJsonPath));
-        this.miner =  TermMiner.defaultNonFuzzyMapper(this.ontology);
+        if (exact) {
+            this.miner = TermMiner.defaultNonFuzzyMapper(this.ontology);
+        } else {
+            this.miner = TermMiner.defaultFuzzyMapper(this.ontology);
+        }
     }
 
     private Collection<MinedSentence> getMappedSentences (String content) {
@@ -39,7 +43,7 @@ public class PassageParser {
     }
 
 
-    public void parse() {
+    public void parse(boolean verbose) {
         LOGGER.info("Parsing {} and writing results to {}", input, output);
         File f = new File(input);
         if (!f.isFile()) {
@@ -51,7 +55,7 @@ public class PassageParser {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.output));
             for (var mp : mappedSentences) {
                 String sentence = mp.getText();
-                Collection<MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
+                Collection<? extends MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
                 for (var mt : minedTerms) {
                     TermId tid = mt.getTermId();
                     var opt = ontology.getTermLabel(tid);
@@ -68,6 +72,9 @@ public class PassageParser {
                     String [] fields = {label, tid.getValue(), matching, observed, String.valueOf(start),
                         String.valueOf(end), sentence};
                     writer.write(String.join("\t", fields) +  "\n");
+                    if (verbose) {
+                        System.out.println(String.join("\t", fields));
+                    }
                 }
             }
             writer.close();

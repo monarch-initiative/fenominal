@@ -1,11 +1,9 @@
 package org.monarchinitiative.fenominal.core.impl.hpo;
 
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +14,6 @@ import java.util.Map;
 public class HpoLoader {
 
     private final Ontology hpo;
-
-    public HpoLoader(String pathToHpJson) {
-        this.hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
-    }
 
     public HpoLoader(Ontology ontology) {
         this.hpo = ontology;
@@ -52,6 +46,8 @@ public class HpoLoader {
                 termmap.put(synonym.toLowerCase(), tid);
             }
         }
+        // Remove a synonym of Asthenia HP:0025406 that leads to FP results
+        termmap.remove("weakness");
         return Map.copyOf(termmap); // make immutable
     }
 

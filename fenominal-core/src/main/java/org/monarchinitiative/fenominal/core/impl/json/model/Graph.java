@@ -8,12 +8,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.List;
 
 /**
- * A graph object holds a collection of nodes and edges
- * 
+ * A graph object holds a collection of nodes and edges.
  * Corresponds to a Named Graph in RDF, and an Ontology in OWL
- * 
+ * <p></p>
  * Note: there is no assumption that either nodes or edges are unique to a graph
- * 
  * ## Basic OBO Graphs
  * @author cjm
  *

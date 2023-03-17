@@ -2,12 +2,12 @@ package org.monarchinitiative.fenominal.core.hpo;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.monarchinitiative.fenominal.core.TestResources;
 import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
 import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
@@ -29,7 +29,7 @@ public class ReportParseTest {
 
     private static String report1entireFileContents = null;
 
-    private static Ontology hpo = null;
+    private static final Ontology hpo = TestResources.hpo();
 
 
     private String decode(MinedTerm smt, String text) {
@@ -54,15 +54,7 @@ public class ReportParseTest {
         if (! report1.isFile()) {
             throw new FileNotFoundException("Could not get report1.txt from URL");
         }
-        url = classLoader.getResource("hpo/hp.json");
-        if (url == null) {
-            throw new FileNotFoundException("Could not find hp.json for testing");
-        }
-        File hpoFile = new File(url.getFile());
-        if (! hpoFile.isFile()) {
-            throw new FileNotFoundException("Could not get report1.txt from URL");
-        }
-        hpo = OntologyLoader.loadOntology(hpoFile);
+
         miner = new NonFuzzyTermMiner(hpo);
         Path fileName =report1.toPath();
 
@@ -187,7 +179,7 @@ public class ReportParseTest {
         Collection<MinedSentence> minedSentences = miner.mineSentences(sentence);
         assertEquals(1,  minedSentences.size());
         MinedSentence minedSentence  = minedSentences.iterator().next();
-        Collection<MinedTermWithMetadata> minedTerms = minedSentence.getMinedTerms();
+        Collection<? extends MinedTermWithMetadata> minedTerms = minedSentence.getMinedTerms();
         assertEquals(1,  minedTerms.size());
         MinedTermWithMetadata mt = minedTerms.iterator().next();
         assertFalse(mt.isPresent());
@@ -222,7 +214,26 @@ public class ReportParseTest {
         assertTrue(terms.isEmpty());
     }
 
+    @Test
+    public void weaknessShouldNotBeInferredAsAsthenia() {
+        String sentence = "reports of R side weakness per mother report";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        for (var m : terms) {
+            System.out.println(m.getTermId());
+            System.out.println(m.getMatchingString());
+        }
+        assertTrue(terms.isEmpty());
+    }
 
 
-
+    @Test
+    public void onlySpasticityNotAstheniaShouldBeInferred(){
+        String sentence = "He is nonambulatory and has weakness and spasticity throughout";
+        Collection<MinedTermWithMetadata> terms = miner.mineTermsWithMetadata(sentence);
+        assertEquals(1, terms.size());
+        MinedTermWithMetadata mt = terms.iterator().next();
+        //Spasticity HP:0001257
+        assertEquals("HP:0001257", mt.getTermIdAsString());
+        assertEquals("spasticity", mt.getMatchingString());
+    }
 }

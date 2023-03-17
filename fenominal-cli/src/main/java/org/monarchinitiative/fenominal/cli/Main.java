@@ -1,6 +1,5 @@
 package org.monarchinitiative.fenominal.cli;
 
-import org.monarchinitiative.fenominal.cli.cmd.CreateKmerDbCommand;
 import org.monarchinitiative.fenominal.cli.cmd.DownloadCommand;
 import org.monarchinitiative.fenominal.cli.cmd.ParseCommand;
 import picocli.CommandLine;
@@ -20,7 +19,6 @@ public class Main implements Callable<Integer> {
         }
         CommandLine cline = new CommandLine(new Main())
                 .addSubcommand("download", new DownloadCommand())
-                .addSubcommand("kmer", new CreateKmerDbCommand())
                 .addSubcommand("parse", new ParseCommand());
         cline.setToggleBooleanFlags(false);
         int exitCode = cline.execute(args);

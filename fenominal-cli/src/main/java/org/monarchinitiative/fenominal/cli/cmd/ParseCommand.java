@@ -18,8 +18,15 @@ public class ParseCommand implements Callable<Integer> {
     @CommandLine.Option(names = { "-o", "--output"}, description = "path to output file")
     private String output = "fenominal-mined.txt";
 
-    @CommandLine.Option(names = {"-k", "--kmer"}, required = false, description = "path to kmer file")
-    private String kmerFile = "data/kmer5.ser";
+    @CommandLine.Option(names = {"-e", "--exact"}, description = "exact matching algorithm")
+    private boolean useExactMatching = false;
+
+
+
+
+    @CommandLine.Option(names = {"--verbose"}, description = "show results in shell (default is to just write to file)")
+    private boolean verbose;
+
 
     @Override
     public Integer call() {
@@ -27,8 +34,8 @@ public class ParseCommand implements Callable<Integer> {
         if (! f.isFile()) {
             System.out.printf("[ERROR] Could not find hp.json file at %s\nRun download command first\n", hpoJsonPath);
         }
-        PassageParser parser = new PassageParser(hpoJsonPath, input, output);
-        parser.parse();
+        PassageParser parser = new PassageParser(hpoJsonPath, input, output, useExactMatching);
+        parser.parse(verbose);
         return 0;
     }
 }

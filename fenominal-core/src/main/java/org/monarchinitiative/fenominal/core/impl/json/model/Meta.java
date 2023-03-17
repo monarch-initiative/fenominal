@@ -14,19 +14,18 @@ import java.util.stream.Collectors;
 
 /**
  * A holder for metadata
- * 
+ * <p>
  * The information in a Meta object consists sets of {@link PropertyValue} objects,
  * which associate the Meta object holder with some value via some property.
- * 
+ * </p>
+ * <p>
  * The set of PropertyValue objects can be partitioned into two subsets:
- * 
- *  1. PropertyValues corresponding to a specific explicitly modeled property type (e.g synonym)
- *  2. generic {@link BasicPropertyValue}s - anything property not explicitly modeled
- *  
- * 
- * 
+ * </p>
+ * <ol>
+ *     <li>PropertyValues corresponding to a specific explicitly modeled property type (e.g synonym)</li>
+ *     <li>generic {@link BasicPropertyValue}s - anything property not explicitly modeled</li>
+ * </ol>
  * @author cjm
- *
  */
 @JsonDeserialize(builder = Meta.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

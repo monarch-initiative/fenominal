@@ -6,15 +6,12 @@ import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.impl.decorators.DecorationProcessorService;
 import org.monarchinitiative.fenominal.core.impl.decorators.TokenDecoratorService;
-
-import org.monarchinitiative.fenominal.core.impl.hpo.HpoMatcher;
-
 import org.monarchinitiative.fenominal.core.impl.hpo.DefaultHpoMatcher;
 import org.monarchinitiative.fenominal.core.impl.hpo.HpoConceptHit;
-
-import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
+import org.monarchinitiative.fenominal.core.impl.hpo.HpoMatcher;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerDB;
 import org.monarchinitiative.fenominal.core.impl.kmer.KmerGenerator;
+import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedSentence;
@@ -31,30 +28,10 @@ import java.util.stream.Collectors;
 
 public class ClinicalTextMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClinicalTextMapper.class);
-    private final static int KMER_SIZE = 3;
     private final TokenDecoratorService tokenDecoratorService;
     private final DecorationProcessorService decorationProcessorService;
     private final HpoMatcher hpoMatcher;
     private final Map<Boolean, SentenceMapper> sentenceMappers;
-
-    /**
-     * TODO: Add k-mer DB file to the constructor + k-mer size !
-     */
-    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources, String kmerDbFile) {
-        LOGGER.trace("Initializing ClinicalTextMapper with kmer file at {}", kmerDbFile);
-        this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
-        this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
-        this.decorationProcessorService = new DecorationProcessorService();
-        Optional<KmerDB> opt = KmerDB.loadKmerDB(kmerDbFile);
-        if (opt.isEmpty()) {
-            throw new PhenolRuntimeException("Could not initialize KMer DB from \"" + kmerDbFile + "\"");
-        }
-        KmerDB kmerDB = opt.get();
-
-        FuzzySentenceMapper fuzzySentenceMapper = new FuzzySentenceMapper(kmerDB, KMER_SIZE, tokenDecoratorService, decorationProcessorService);
-        this.sentenceMappers = Map.of(false, new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService),
-                true, fuzzySentenceMapper.isValid() ? fuzzySentenceMapper : new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService));
-    }
 
     public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
         LOGGER.trace("Initializing ClinicalTextMapper without kmer file (kmer resources will be generated on the fly)");
@@ -62,15 +39,14 @@ public class ClinicalTextMapper {
         this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);
         this.decorationProcessorService = new DecorationProcessorService();
         KmerGenerator kmerGenerator = new KmerGenerator(ontology);
-        kmerGenerator.doKMers(KMER_SIZE);
         Optional<KmerDB> opt = kmerGenerator.getKmerDB();
         if (opt.isEmpty()) {
             throw new PhenolRuntimeException("Could not initialze KMer DB on the fly");
         }
         KmerDB kmerDB = opt.get();
-        FuzzySentenceMapper fuzzySentenceMapper = new FuzzySentenceMapper(kmerDB, KMER_SIZE, tokenDecoratorService, decorationProcessorService);
+        TBlatSentenceMapper tBlatSentenceMapper = new TBlatSentenceMapper(kmerDB, lexicalResources, hpoMatcher, tokenDecoratorService, decorationProcessorService);
         this.sentenceMappers = Map.of(false, new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService),
-                true, fuzzySentenceMapper.isValid() ? fuzzySentenceMapper : new ExactSentenceMapper(hpoMatcher, tokenDecoratorService, decorationProcessorService));
+                true, tBlatSentenceMapper);
     }
 
     public synchronized List<DetailedMinedTerm> mapText(String text, boolean fuzzy) {
@@ -90,7 +66,7 @@ public class ClinicalTextMapper {
         List<SimpleSentence> sentences = coreDocument.getSentences();
         List<MinedSentence> minedSentenceList = new ArrayList<>();
         for (var ss : sentences) {
-            List<MinedTermWithMetadata> sentenceParts = mapSentence(ss);
+            List<DetailedMinedTerm> sentenceParts = sentenceMappers.get(fuzzy).mapSentence(ss);
             MinedSentence ms = new DefaultMinedSentence(sentenceParts, ss.getSentence());
             minedSentenceList.add(ms);
         }

@@ -8,12 +8,10 @@ import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
-import org.monarchinitiative.phenol.io.OntologyLoader;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -25,29 +23,24 @@ import java.util.stream.Collectors;
  */
 public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzyTermMiner.class);
-    private final ClinicalTextMapper hpoMatcher;
+    private final ClinicalTextMapper hpoMapper;
 
     private final LexicalResources lexicalResources;
 
-    public FuzzyTermMiner(String pathToHpJson) {
-        Ontology hpo = OntologyLoader.loadOntology(new File(pathToHpJson));
-        lexicalResources = new LexicalResources();
-        hpoMatcher = new ClinicalTextMapper(hpo, lexicalResources);
-    }
-
     public FuzzyTermMiner(Ontology ontology) {
         lexicalResources = new LexicalResources();
-        hpoMatcher = new ClinicalTextMapper(ontology, lexicalResources);
+        hpoMapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
 
     public synchronized List<DetailedMinedTerm> mapText(String text) {
         // TODO: Decide where to put the fuzzy flag !!!
-        return hpoMatcher.mapText(text, true);
+        return hpoMapper.mapText(text, true);
     }
 
     public static void main(String[] args) {
-        FuzzyTermMiner textToHpoMapper = new FuzzyTermMiner("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
-        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
+        // TODO - move this to cli or create a test
+//        FuzzyTermMiner textToHpoMapper = new FuzzyTermMiner("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
+//        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
     }
     /**
      * Do text mining with kmer-fuzzy match algorithm
@@ -56,7 +49,7 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> mineTerms(String query) {
-        List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
+        List<DetailedMinedTerm> mappedSentenceParts = hpoMapper.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTerms (fuzzy).", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(DefaultMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
@@ -70,14 +63,16 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTermWithMetadata> mineTermsWithMetadata(String query) {
-        List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
+        List<DetailedMinedTerm> mappedSentenceParts = hpoMapper.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTermWithMetadata objects (fuzzy).", mappedSentenceParts.size());
         return Collections.unmodifiableList(mappedSentenceParts);
     }
 
     @Override
     public Collection<MinedSentence> mineSentences(String query) {
-        throw new UnsupportedOperationException("TODO implement mineSentences for fuzzy mapping");
+        List<MinedSentence> sentences = hpoMapper.mapSentences(query, true);
+        LOGGER.trace("Retrieved {} sentencess.", sentences.size());
+        return sentences;
     }
 
 

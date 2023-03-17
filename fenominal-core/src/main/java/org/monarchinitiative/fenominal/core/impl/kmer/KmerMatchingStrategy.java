@@ -2,10 +2,8 @@ package org.monarchinitiative.fenominal.core.impl.kmer;
 
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.textmapper.TextMapperUtil;
-import org.monarchinitiative.phenol.base.PhenolRuntimeException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class KmerMatchingStrategy {
 
@@ -25,6 +23,11 @@ public class KmerMatchingStrategy {
         this.candidates = new LinkedHashMap<>();
     }
 
+    public Map<String, Map<List<SimpleToken>, Double>> process() {
+        return new HashMap<>();
+    }
+
+    /*
     public Map<String, Map<List<SimpleToken>, Double>> process() {
         for (int idx : this.kmerData.keySet()) {
             for (String hpoId : this.kmerData.get(idx).keySet()) {
@@ -99,6 +102,7 @@ public class KmerMatchingStrategy {
 
         return this.candidates;
     }
+*/
 
     private List<SimpleToken> getTokens(List<Integer> idxList) {
         List<SimpleToken> toks = new ArrayList<>();

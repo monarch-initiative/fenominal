@@ -6,11 +6,11 @@
 
     <groupId>org.monarchinitiative.fenominal</groupId>
     <artifactId>fenominal</artifactId>
-    <version>0.7.4</version>
+    <version>0.7.8-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <version>3.0.4</version>
     </parent>
     <modules>
         <module>fenominal-core</module>
@@ -30,12 +30,12 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <javafx.version>${java.version}</javafx.version>
-        <phenol.version>2.0.0-RC4</phenol.version>
+        <phenol.version>2.0.0-RC5</phenol.version>
         <phenopacket.version>1.0.0</phenopacket.version>
         <protobuf.version>3.14.0</protobuf.version>
         <phenopacket-schema.version>2.0.1</phenopacket-schema.version>
         <jackson.fasterxml.version>2.13.3</jackson.fasterxml.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <slf4j.version>2.0.6</slf4j.version>
         <commons.io>2.8.0</commons.io>
     </properties>
 
@@ -55,6 +55,11 @@
             <dependency>
                 <groupId>org.monarchinitiative.phenol</groupId>
                 <artifactId>phenol-core</artifactId>
+                <version>${phenol.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.monarchinitiative.phenol</groupId>
+                <artifactId>phenol-io</artifactId>
                 <version>${phenol.version}</version>
             </dependency>
 
@@ -78,12 +83,11 @@
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java-util</artifactId>
                 <version>${protobuf.version}</version>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>com.google.guava</groupId>
-                            <artifactId>guava</artifactId>
-                        </exclusion>
-                    </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>31.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -99,6 +103,17 @@
                 <groupId>org.monarchinitiative.biodownload</groupId>
                 <artifactId>biodownload</artifactId>
                 <version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.7.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -9,9 +9,6 @@ import java.util.List;
 /**
  * Holds a collection of graphs, plus document-level metadata
  * 
- * ## Model
- *
- * 
  * @author cjm
  *
  */
