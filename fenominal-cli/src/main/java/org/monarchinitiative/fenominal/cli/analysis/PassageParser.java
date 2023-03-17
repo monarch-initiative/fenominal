@@ -27,7 +27,7 @@ public class PassageParser {
     protected final String output;
 
 
-    public PassageParser(String hpoJsonPath,String input, String output, boolean exact) {
+    public PassageParser(String hpoJsonPath, String input, String output, boolean exact) {
         this.input = input;
         this.output = output;
         this.ontology = OntologyLoader.loadOntology(new File(hpoJsonPath));

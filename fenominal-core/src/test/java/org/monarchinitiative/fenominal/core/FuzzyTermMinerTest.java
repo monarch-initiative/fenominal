@@ -3,6 +3,7 @@ package org.monarchinitiative.fenominal.core;
 import org.junit.jupiter.api.Test;
 import org.monarchinitiative.fenominal.core.impl.FuzzyTermMiner;
 import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
+import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FuzzyTermMinerTest {
 
@@ -50,7 +52,17 @@ public class FuzzyTermMinerTest {
         var result3 = resultList.get(3);
         TermId hypertelorism = TermId.of("HP:0000316"); // Hypertelorism
         assertEquals(hypertelorism, result3.getTermId());
+    }
 
+
+    @Test
+    public void testDoNotParseNegative() {
+        Collection<MinedTerm>  results = exactTermMiner.mineTerms("negative test result");
+        for (var x : results) {
+            System.out.println(x);
+        }
+        // TODO Fix this
+       // assertTrue(results.isEmpty());
     }
 
 }

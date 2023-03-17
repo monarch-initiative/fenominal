@@ -11,14 +11,14 @@ import java.util.concurrent.Callable;
         mixinStandardHelpOptions = true,
         description = "Parse text")
 public class ParseCommand implements Callable<Integer> {
-    @CommandLine.Option(names = {"--hp"}, description = "path to HP json file")
+    @CommandLine.Option(names = {"--hp"}, description = "Path to HP json file")
     private String hpoJsonPath="data/hp.json";
-    @CommandLine.Option(names = {"-i","--input"}, description = "path to input file", required = true)
+    @CommandLine.Option(names = {"-i","--input"}, description = "Path to input file", required = true)
     public String input;
-    @CommandLine.Option(names = { "-o", "--output"}, description = "path to output file")
+    @CommandLine.Option(names = { "-o", "--output"}, description = "Path to output file (default: ${DEFAULT-VALUE})")
     private String output = "fenominal-mined.txt";
 
-    @CommandLine.Option(names = {"-e", "--exact"}, description = "exact matching algorithm")
+    @CommandLine.Option(names = {"-e", "--exact"}, description = "Use exact matching algorithm")
     private boolean useExactMatching = false;
 
 
