@@ -48,12 +48,5 @@ public interface TermMiner {
 
     Collection<MinedSentence> mineSentences(final String query);
 
-    /**
-     * Not sure if we want to just always do this on the fly, but let's expose this for test for right now
-     * @param ontology copy of HPO
-     * @param file write the serialized kmer data to this file
-     * @param k the length of the kmers to index
-     */
-    void serializeKmersToFile(Ontology ontology, File file, int k);
 
 }
