@@ -26,6 +26,7 @@ contains simple demo applications.
    :maxdepth: 1
    :caption: Contents:
 
+   matching
    cli-app
    usage
 
