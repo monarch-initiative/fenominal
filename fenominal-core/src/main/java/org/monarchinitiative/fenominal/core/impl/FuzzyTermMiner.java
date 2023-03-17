@@ -23,18 +23,18 @@ import java.util.stream.Collectors;
  */
 public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzyTermMiner.class);
-    private final ClinicalTextMapper hpoMatcher;
+    private final ClinicalTextMapper hpoMapper;
 
     private final LexicalResources lexicalResources;
 
     public FuzzyTermMiner(Ontology ontology) {
         lexicalResources = new LexicalResources();
-        hpoMatcher = new ClinicalTextMapper(ontology, lexicalResources);
+        hpoMapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
 
     public synchronized List<DetailedMinedTerm> mapText(String text) {
         // TODO: Decide where to put the fuzzy flag !!!
-        return hpoMatcher.mapText(text, true);
+        return hpoMapper.mapText(text, true);
     }
 
     public static void main(String[] args) {
@@ -49,7 +49,7 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTerm> mineTerms(String query) {
-        List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
+        List<DetailedMinedTerm> mappedSentenceParts = hpoMapper.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTerms (fuzzy).", mappedSentenceParts.size());
         return mappedSentenceParts.stream().map(DefaultMinedTerm::fromMappedSentencePart).collect(Collectors.toList());
     }
@@ -63,14 +63,16 @@ public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
      */
     @Override
     public Collection<MinedTermWithMetadata> mineTermsWithMetadata(String query) {
-        List<DetailedMinedTerm> mappedSentenceParts = hpoMatcher.mapText(query, true);
+        List<DetailedMinedTerm> mappedSentenceParts = hpoMapper.mapText(query, true);
         LOGGER.trace("Retrieved {} MinedTermWithMetadata objects (fuzzy).", mappedSentenceParts.size());
         return Collections.unmodifiableList(mappedSentenceParts);
     }
 
     @Override
     public Collection<MinedSentence> mineSentences(String query) {
-        throw new UnsupportedOperationException("TODO implement mineSentences for fuzzy mapping");
+        List<MinedSentence> sentences = hpoMapper.mapSentences(query, true);
+        LOGGER.trace("Retrieved {} sentencess.", sentences.size());
+        return sentences;
     }
 
 
