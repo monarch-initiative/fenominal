@@ -18,10 +18,27 @@
     </modules>
     <packaging>pom</packaging>
 
-
-
     <name>fenominal</name>
     <url>https://github.com/monarch-initiative/fenominal</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License version 3</name>
+            <url>https://opensource.org/license/gpl-3-0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Tudor Groza</name>
+            <email>tudor@ebi.ac.uk</email>
+        </developer>
+        <developer>
+            <name>Peter N Robinson</name>
+            <email>peter.robinson@jax.org</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,6 +66,20 @@
         <url>https://github.com/monarch-initiative/fenominal</url>
         <tag>v@{project.version}</tag>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <inceptionYear>2021</inceptionYear>
+    <description>Named entity recognition for Human Phenotype Ontology</description>
 
     <dependencyManagement>
         <dependencies>
@@ -154,6 +185,24 @@
                             <phase>verify</phase>
                             <goals>
                                 <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <!-- Generate javadocs -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <javadocVersion>${java.version}</javadocVersion>
+                        <doclint>none</doclint>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
                             </goals>
                         </execution>
                     </executions>
