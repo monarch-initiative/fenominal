@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * This class performs fuzzy matching
  * // TODO Tudor -- do something like this with the new algorithm
  */
-public class FuzzyTermMiner extends AbstractTermMiner implements TermMiner {
+public class FuzzyTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzyTermMiner.class);
     private final ClinicalTextMapper hpoMapper;
 
