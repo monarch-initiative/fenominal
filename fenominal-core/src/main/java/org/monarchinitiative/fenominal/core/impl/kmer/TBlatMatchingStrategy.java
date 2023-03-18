@@ -137,7 +137,7 @@ public class TBlatMatchingStrategy {
             if (!originalTokenIdxs.containsKey(kmer)) {
                 to_remove_idx.add(idx);
             } else {
-                if (!originalTokenIdxs.get(kmer).contains(idx)) {
+                if (!originalTokenIdxs.get(kmer).contains(Integer.toString(idx))) {
                     to_remove_idx.add(idx);
                 }
             }
