@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TBlatMatchingStrategy {
 
@@ -69,8 +68,7 @@ public class TBlatMatchingStrategy {
         Map<String, List<String>> kmerTokenIdxs = res.getSecond();
 
         double sum = this.scoreForSet(this.targetKmers);
-
-        /**
+        /*
          * Step 1: Find all and remove exact matches
          */
         int exactMatches = 0;
@@ -187,7 +185,7 @@ public class TBlatMatchingStrategy {
 
             for (int idx2 : to_remove_idx) {
                 List<String> tokenIdxs = kmerTokenIdxs.get(kmerTokenSet.get(idx2));
-                tokenIdxs.remove(tokenIdxs.indexOf(Integer.toString(idx2)));
+                tokenIdxs.remove(Integer.toString(idx2));
                 if (tokenIdxs.isEmpty()) {
                     kmerTokenIdxs.remove(kmerTokenSet.get(idx2));
                     kmerTokenSet.remove(idx2);
@@ -265,7 +263,7 @@ public class TBlatMatchingStrategy {
                         List<String> intersect = kmerIdxs.stream()
                                 .filter(tokenIdxs::contains)
                                 .distinct()
-                                .collect(Collectors.toList());
+                                .toList();
 
                         if (!intersect.isEmpty()) {
                             score += currentScore * intersect.size();
@@ -382,7 +380,7 @@ public class TBlatMatchingStrategy {
                         List<String> intersect = kmerIdxs.stream()
                                 .filter(tokenIdxs::contains)
                                 .distinct()
-                                .collect(Collectors.toList());
+                                .toList();
 
                         if (!intersect.isEmpty()) {
                             score += currentScore * intersect.size();
@@ -443,7 +441,7 @@ public class TBlatMatchingStrategy {
             }
         }
 
-        double min = 0.0;
+        double min;
         if (this.targetKmers.size() % 2 == 0) {
             min = this.targetKmers.size() / 2;
         } else {

@@ -22,14 +22,11 @@ public final class Partition<T> extends AbstractList<List<T>> {
 
     @Override
     public List<T> get(int index) {
-        int start = index;
-        int end = Math.min(start + chunkSize, list.size());
-
-        if (start > end) {
+        int end = Math.min(index + chunkSize, list.size());
+        if (index > end) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of the list range <0," + (size() - 1) + ">");
         }
-
-        return new ArrayList<>(list.subList(start, end));
+        return new ArrayList<>(list.subList(index, end));
     }
 
     @Override

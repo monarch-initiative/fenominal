@@ -32,16 +32,6 @@ public class FuzzyTermMiner implements TermMiner {
         hpoMapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
 
-    public synchronized List<DetailedMinedTerm> mapText(String text) {
-        // TODO: Decide where to put the fuzzy flag !!!
-        return hpoMapper.mapText(text, true);
-    }
-
-    public static void main(String[] args) {
-        // TODO - move this to cli or create a test
-//        FuzzyTermMiner textToHpoMapper = new FuzzyTermMiner("/home/tudor/dev/fenominal/fenominal-core/src/test/resources/hpo/hp.json");
-//        textToHpoMapper.mapText("Short finger and toes with trident hands, macrocephaly with prominent forehead frontal bossing.");
-    }
     /**
      * Do text mining with kmer-fuzzy match algorithm
      * @param query Query string for mining HPO terms (for instance, text that was pasted into the GUI window for mining).

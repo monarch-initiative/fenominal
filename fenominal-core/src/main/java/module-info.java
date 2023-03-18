@@ -3,7 +3,6 @@ module org.monarchinitiative.fenominal.core {
 
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
-    requires org.yaml.snakeyaml;
     requires org.apache.commons.io;
     requires org.slf4j;
 
