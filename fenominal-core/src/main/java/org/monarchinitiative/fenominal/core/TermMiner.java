@@ -9,7 +9,6 @@ import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 
-import java.io.File;
 import java.util.Collection;
 
 /**

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NonFuzzyTermMiner extends AbstractTermMiner implements TermMiner {
+public class NonFuzzyTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(NonFuzzyTermMiner.class);
     private final ClinicalTextMapper mapper;
 
