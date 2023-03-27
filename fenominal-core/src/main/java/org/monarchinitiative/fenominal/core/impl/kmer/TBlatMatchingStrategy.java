@@ -130,7 +130,11 @@ public class TBlatMatchingStrategy {
         for (String kmer : to_remove) {
             kmerTokenIdxs.remove(kmer);
         }
-
+        /*
+         If the inner list is of integers, then later on list.remove(idx) has an ambiguous meaning:
+         it can be remove by value or remove by index. Hence, the objects are converted to String -
+         to ensure they are not removed by index.
+         */
         List<Integer> to_remove_idx = new ArrayList<>();
         for (int idx : originalTokenSet.keySet()) {
             String kmer = originalTokenSet.get(idx);
