@@ -35,7 +35,7 @@ public class LexicalResources {
 
     private void loadTrigramStates() {
         try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_trigram_states")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8);
             String[] lines = text.split("\n");
             for (String line : lines) {
                 line = line.trim();
@@ -58,7 +58,7 @@ public class LexicalResources {
 
     private void loadOptimalThresholds() {
         try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_optimal_thresholds")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8);
             String[] lines = text.split("\n");
             for (String line : lines) {
                 line = line.trim();
@@ -74,7 +74,7 @@ public class LexicalResources {
 
     private void loadLexicalClusters() {
         try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "clusters")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8);
             String[] lines = text.split("\n");
             int id = 1;
             for (String line : lines) {
@@ -95,7 +95,7 @@ public class LexicalResources {
     public Map<String, String> getNegationClues() {
         final Map<String, String> negationClues = new LinkedHashMap<>();
         try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "negation.clues")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
+            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8);
             String[] lines = text.split("\n");
             for (String line : lines) {
                 line = line.trim();

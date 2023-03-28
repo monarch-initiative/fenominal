@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 public class PassageParser {
-    Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
     private final TermMiner miner;
     protected final Ontology ontology;
 

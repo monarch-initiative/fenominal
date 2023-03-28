@@ -5,6 +5,7 @@ import org.monarchinitiative.fenominal.core.impl.textmapper.TextMapperUtil;
 
 import java.util.*;
 
+@Deprecated(forRemoval = true)
 public class KmerMatchingStrategy {
 
     private final KmerDB kmerDB;
