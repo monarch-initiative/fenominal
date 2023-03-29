@@ -76,12 +76,6 @@ public class KmerDB implements Serializable {
         return this.tokenToKmers.get(token);
     }
 
-    @Deprecated
-    public Map<String, List<String>> getHPOIds(String kmer) {
-        Map<String, List<String>> result = new LinkedHashMap<>();
-        return Map.of();
-    }
-
     /**
      * This is implemented in the worst possible way - highly inefficient. We need to think of a better way to do it.
      */

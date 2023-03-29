@@ -4,13 +4,11 @@ import org.monarchinitiative.fenominal.core.impl.corenlp.FmCoreDocument;
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.impl.hpo.HpoLoader;
-//import org.monarchinitiative.fenominal.json.JsonHpoParser;
 import org.monarchinitiative.phenol.ontology.data.Ontology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,10 +24,6 @@ public class KmerGenerator {
     private Map<String, TermId> termMap;
 
     private final KmerDB kmerDB;
-
-    public KmerGenerator(KmerDB kmerDB) {
-        this.kmerDB = kmerDB;
-    }
 
     public KmerGenerator(Ontology ontology) {
         LOGGER.info("Loading ontology (term count: {})", ontology.countAllTerms());
@@ -63,26 +57,8 @@ public class KmerGenerator {
         LOGGER.info("Done generating k-mers [{}]: {}s", KMER_SIZE, (eTime - sTime) / 1000);
     }
 
-    @Deprecated
-    public void serialize(File fileName) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(this.kmerDB);
-        objectOutputStream.flush();
-        objectOutputStream.close();
-    }
-
     public void print() {
         LOGGER.info(this.kmerDB.toString());
-    }
-
-    @Deprecated
-    public static KmerGenerator loadKmerDB(String fileName) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(fileName);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        KmerDB kmerDB = (KmerDB) objectInputStream.readObject();
-        objectInputStream.close();
-        return new KmerGenerator(kmerDB);
     }
 
     public Optional<KmerDB> getKmerDB() {
