@@ -20,6 +20,7 @@ public class SimpleSentence {
     /** Match words with optional non-initial apostrophe/dash. */
     private final static Pattern wordpattern = Pattern.compile("[a-zA-Z]+('-[a-zA-Z]+)?");
 
+
     public SimpleSentence(String text, int start, int end) {
         this.sentence = text;
         this.start = start;

@@ -21,7 +21,7 @@ public class KmerGenerator {
 
     private final static int KMER_SIZE = 3;
 
-    private Map<String, TermId> termMap;
+    private final Map<String, TermId> termMap;
 
     private final KmerDB kmerDB;
 
