@@ -6,6 +6,5 @@ module org.monarchinitiative.fenominal.cli {
     requires info.picocli;
     requires org.slf4j;
 
-    exports org.monarchinitiative.fenominal.cli.cmd to info.picocli;
     opens org.monarchinitiative.fenominal.cli.cmd to info.picocli;
 }
