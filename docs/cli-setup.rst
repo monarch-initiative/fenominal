@@ -23,7 +23,7 @@ Build the executable from source with maven, and then test the build. ::
     $ git clone https://github.com/monarch-initiative/fenominal
     $ cd fenominal
     $ ./mvnw package
-    $ java -jar fenominal-cli/target/fenominal-cli-0.7.7.jar
+    $ java -jar fenominal-cli/target/fenominal-cli-0.7.10.jar
         Usage: fenominal [-hV] [COMMAND]
         phenotype/disease NER
             -h, --help      Show this help message and exit.
