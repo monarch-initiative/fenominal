@@ -4,8 +4,9 @@ import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.TermMiner;
 import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,9 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 public class PassageParser {
-    Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PassageParser.class);
     private final TermMiner miner;
-    protected final Ontology ontology;
+    protected final MinimalOntology ontology;
 
     private final String input;
     protected final String output;
@@ -30,7 +31,7 @@ public class PassageParser {
     public PassageParser(String hpoJsonPath, String input, String output, boolean exact) {
         this.input = input;
         this.output = output;
-        this.ontology = OntologyLoader.loadOntology(new File(hpoJsonPath));
+        this.ontology = MinimalOntologyLoader.loadOntology(new File(hpoJsonPath));
         if (exact) {
             this.miner = TermMiner.defaultNonFuzzyMapper(this.ontology);
         } else {
@@ -58,7 +59,8 @@ public class PassageParser {
                 Collection<? extends MinedTermWithMetadata> minedTerms = mp.getMinedTerms();
                 for (var mt : minedTerms) {
                     TermId tid = mt.getTermId();
-                    var opt = ontology.getTermLabel(tid);
+                    var opt = ontology.termForTermId(tid)
+                            .map(Term::getName);
                     if (opt.isEmpty()) {
                         // should never happen
                         System.err.println("[ERROR] Could not find label for " + tid.getValue());

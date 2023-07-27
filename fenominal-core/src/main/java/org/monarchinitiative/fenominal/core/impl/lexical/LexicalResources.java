@@ -1,11 +1,13 @@
 package org.monarchinitiative.fenominal.core.impl.lexical;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -16,6 +18,7 @@ public class LexicalResources {
     private static final Logger LOGGER = LoggerFactory.getLogger(LexicalResources.class);
 
     private static final String LEXICAL_RESOURCE_PATH = "org/monarchinitiative/fenominal/core/impl/lexical/";
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private final Map<String, String> invertedIndex;
 
@@ -34,10 +37,9 @@ public class LexicalResources {
     }
 
     private void loadTrigramStates() {
-        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_trigram_states")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
-            String[] lines = text.split("\n");
-            for (String line : lines) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "tblat_trigram_states")) {
+            String line;
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!line.equalsIgnoreCase("")) {
                     String[] splits = line.split("==");
@@ -57,10 +59,9 @@ public class LexicalResources {
     }
 
     private void loadOptimalThresholds() {
-        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "tblat_optimal_thresholds")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
-            String[] lines = text.split("\n");
-            for (String line : lines) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "tblat_optimal_thresholds")) {
+            String line;
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!line.equalsIgnoreCase("")) {
                     String[] splits = line.split(",");
@@ -73,11 +74,10 @@ public class LexicalResources {
     }
 
     private void loadLexicalClusters() {
-        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "clusters")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
-            String[] lines = text.split("\n");
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "clusters")) {
+            String line;
             int id = 1;
-            for (String line : lines) {
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!"".equals(line)) {
                     String[] clusters = line.split(",");
@@ -94,10 +94,9 @@ public class LexicalResources {
 
     public Map<String, String> getNegationClues() {
         final Map<String, String> negationClues = new LinkedHashMap<>();
-        try (InputStream inputStream = getResourceAsStream(LEXICAL_RESOURCE_PATH + "negation.clues")) {
-            String text = IOUtils.toString(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8.name());
-            String[] lines = text.split("\n");
-            for (String line : lines) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "negation.clues")) {
+            String line;
+            while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!"".equals(line)) {
                     negationClues.put(line, "");
@@ -141,26 +140,30 @@ public class LexicalResources {
         return 0.0;
     }
 
-    private static InputStream getResourceAsStream(String resourcePath) {
+    private static BufferedReader getResourceAsBufferedReader(String resourcePath) {
         InputStream is = LexicalResources.class.getResourceAsStream(resourcePath);
         if (is != null)
-            return is;
+            return wrapInBufferedReader(is);
 
         is = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
         if (is != null)
-            return is;
+            return wrapInBufferedReader(is);
 
         // load from the module path
         Optional<Module> fenominalCoreOptional = ModuleLayer.boot().findModule("org.monarchinitiative.fenominal.core");
         if (fenominalCoreOptional.isPresent()) {
             Module fenominal = fenominalCoreOptional.get();
             try {
-                return fenominal.getResourceAsStream(resourcePath);
+                return wrapInBufferedReader(fenominal.getResourceAsStream(resourcePath));
             } catch (IOException e) {
                 // swallow
             }
         }
 
         throw new IllegalStateException("Unable to load resource " + resourcePath);
+    }
+
+    private static BufferedReader wrapInBufferedReader(InputStream is) {
+        return new BufferedReader(new InputStreamReader(is, CHARSET));
     }
 }

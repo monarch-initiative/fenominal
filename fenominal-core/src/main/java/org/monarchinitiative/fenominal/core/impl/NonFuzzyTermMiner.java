@@ -8,7 +8,7 @@ import org.monarchinitiative.fenominal.core.TermMiner;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class NonFuzzyTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(NonFuzzyTermMiner.class);
     private final ClinicalTextMapper mapper;
 
-    public NonFuzzyTermMiner(Ontology ontology) {
+    public NonFuzzyTermMiner(MinimalOntology ontology) {
         LexicalResources lexicalResources = new LexicalResources();
         this.mapper = new ClinicalTextMapper(ontology, lexicalResources);
     }

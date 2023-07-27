@@ -17,7 +17,7 @@ import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedSentence;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class ClinicalTextMapper {
     private final HpoMatcher hpoMatcher;
     private final Map<Boolean, SentenceMapper> sentenceMappers;
 
-    public ClinicalTextMapper(Ontology ontology, LexicalResources lexicalResources) {
+    public ClinicalTextMapper(MinimalOntology ontology, LexicalResources lexicalResources) {
         LOGGER.trace("Initializing ClinicalTextMapper without kmer file (kmer resources will be generated on the fly)");
         this.hpoMatcher = new DefaultHpoMatcher(ontology, lexicalResources);
         this.tokenDecoratorService = new TokenDecoratorService(lexicalResources);

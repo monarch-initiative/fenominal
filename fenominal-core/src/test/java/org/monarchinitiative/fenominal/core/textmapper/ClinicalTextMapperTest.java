@@ -6,8 +6,8 @@ import org.monarchinitiative.fenominal.core.FenominalRunTimeException;
 import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 
 import java.io.File;
 import java.net.URL;
@@ -28,7 +28,7 @@ public class ClinicalTextMapperTest {
             throw new FenominalRunTimeException("Could not find hp.json file");
         }
         File file = new File(url.getFile());
-        Ontology ontology = OntologyLoader.loadOntology(file);
+        MinimalOntology ontology = MinimalOntologyLoader.loadOntology(file);
         LexicalResources lexicalResources = new LexicalResources();
         mapper = new ClinicalTextMapper(ontology, lexicalResources);
     }

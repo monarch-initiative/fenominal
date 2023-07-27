@@ -5,7 +5,7 @@ import org.monarchinitiative.fenominal.core.impl.FuzzyTermMiner;
 import org.monarchinitiative.fenominal.core.impl.NonFuzzyTermMiner;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FuzzyTermMinerTest {
 
-    private static final Ontology hpo = TestResources.hpo();
+    private static final MinimalOntology hpo = TestResources.hpo();
     private static final TermMiner fuzzyTermMiner = new FuzzyTermMiner(hpo);
 
     private static final TermMiner exactTermMiner = new NonFuzzyTermMiner(hpo);

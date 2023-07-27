@@ -3,8 +3,8 @@ package org.monarchinitiative.fenominal.json;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.monarchinitiative.phenol.io.OntologyLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.io.MinimalOntologyLoader;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonHpoParserTest {
     private final static File smallHpo = Paths.get("src/test/resources/hpo/hp_head.json").toFile();
-    private final static Ontology ontology = OntologyLoader.loadOntology(smallHpo);
+    private final static MinimalOntology ontology = MinimalOntologyLoader.loadOntology(smallHpo);
 
 
     private static Stream<Arguments> shouldReturnExpectedResultWhenGivenRightInput() {
@@ -52,7 +52,7 @@ public class JsonHpoParserTest {
     @MethodSource
     void shouldReturnExpectedResultWhenGivenRightInput(TermId input, boolean expected) {
         // When
-        boolean result = ontology.containsTerm(input);
+        boolean result = ontology.termForTermId(input).isPresent();
         // Then
         assertEquals(expected, result);
     }

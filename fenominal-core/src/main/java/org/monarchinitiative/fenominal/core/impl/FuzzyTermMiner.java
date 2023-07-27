@@ -8,7 +8,7 @@ import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
 import org.monarchinitiative.fenominal.model.impl.DetailedMinedTerm;
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
 import org.monarchinitiative.fenominal.core.impl.textmapper.ClinicalTextMapper;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 /**
  * This class performs fuzzy matching
- * // TODO Tudor -- do something like this with the new algorithm
  */
 public class FuzzyTermMiner implements TermMiner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FuzzyTermMiner.class);
@@ -27,7 +26,7 @@ public class FuzzyTermMiner implements TermMiner {
 
     private final LexicalResources lexicalResources;
 
-    public FuzzyTermMiner(Ontology ontology) {
+    public FuzzyTermMiner(MinimalOntology ontology) {
         lexicalResources = new LexicalResources();
         hpoMapper = new ClinicalTextMapper(ontology, lexicalResources);
     }
