@@ -1,7 +1,7 @@
 package org.monarchinitiative.fenominal.core.impl.hpo;
 
 import org.monarchinitiative.fenominal.core.impl.lexical.LexicalResources;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,21 +17,7 @@ public class DefaultHpoMatcher implements HpoMatcher {
     private final LexicalResources lexicalResources;
     private final Map<Integer, HpoConceptMapper> wordCountToMatcherMap;
 
-    private final static TermId PHENOTYPIC_ABN = TermId.of("HP:0000118");
-    private final static TermId CLINICAL_MODIFIER = TermId.of("HP:0012823");
-    /** Note that Clinical course is a subterm of Clinical modifier. */
-    private final static TermId CLINICAL_COURSE = TermId.of("HP:0031797");
-
-    private final Ontology phenotypicAbnormality;
-    private final Ontology clinicalModifierOntology;
-    private final Ontology clinicalCourseOntology;
-
-
-
-    public DefaultHpoMatcher(Ontology ontology, LexicalResources lexicalResources) {
-        this.phenotypicAbnormality = ontology.subOntology(PHENOTYPIC_ABN);
-        this.clinicalModifierOntology = ontology.subOntology(CLINICAL_MODIFIER);
-        this.clinicalCourseOntology = ontology.subOntology(CLINICAL_COURSE);
+    public DefaultHpoMatcher(MinimalOntology ontology, LexicalResources lexicalResources) {
         this.lexicalResources = lexicalResources;
         HpoLoader loader = new HpoLoader(ontology);
         Map<String, TermId> textToTermMap = loader.textToTermMap();
@@ -78,7 +64,4 @@ public class DefaultHpoMatcher implements HpoMatcher {
         return Optional.empty();
     }
 
-    public Ontology getHpoPhenotypicAbnormality() {
-        return this.phenotypicAbnormality;
-    }
 }

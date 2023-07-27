@@ -67,8 +67,7 @@ public class SimpleHpoTermTest {
      */
     @Test
     public void testRetrieveAllTerms() {
-        int expectedCount = 10;
-        assertEquals(expectedCount, hpoTerms.size());
+        assertEquals(9, hpoTerms.size());
     }
 
 
