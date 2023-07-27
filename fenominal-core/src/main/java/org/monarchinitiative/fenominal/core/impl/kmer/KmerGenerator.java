@@ -4,7 +4,7 @@ import org.monarchinitiative.fenominal.core.impl.corenlp.FmCoreDocument;
 import org.monarchinitiative.fenominal.core.impl.corenlp.SimpleToken;
 import org.monarchinitiative.fenominal.core.impl.corenlp.StopWords;
 import org.monarchinitiative.fenominal.core.impl.hpo.HpoLoader;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +21,12 @@ public class KmerGenerator {
 
     private final static int KMER_SIZE = 3;
 
-    private Map<String, TermId> termMap;
+    private final Map<String, TermId> termMap;
 
     private final KmerDB kmerDB;
 
-    public KmerGenerator(Ontology ontology) {
-        LOGGER.info("Loading ontology (term count: {})", ontology.countAllTerms());
+    public KmerGenerator(MinimalOntology ontology) {
+        LOGGER.info("Loading ontology (term count: {})", ontology.getTerms().size());
         HpoLoader hpoLoader = new HpoLoader(ontology);
         this.termMap = hpoLoader.textToTermMap();
         this.kmerDB = new KmerDB(KMER_SIZE);

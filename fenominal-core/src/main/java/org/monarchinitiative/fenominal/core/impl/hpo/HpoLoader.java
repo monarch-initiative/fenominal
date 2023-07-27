@@ -1,9 +1,9 @@
 package org.monarchinitiative.fenominal.core.impl.hpo;
 
-import org.monarchinitiative.phenol.ontology.algo.OntologyAlgorithm;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
-import org.monarchinitiative.phenol.ontology.data.Term;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 import org.monarchinitiative.phenol.ontology.data.TermId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -12,10 +12,17 @@ import java.util.*;
  */
 public class HpoLoader {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HpoLoader.class);
 
     private static final TermId PHENOTYPIC_ABNORMALITY = TermId.of("HP:0000118");
 
-    private final Ontology hpo;
+    /**
+     * A valid synonym needs to be at least 3 characters in length. This is needed because
+     * the synonym "MI" for myocardial infarction is leading to false-positive hits.
+     */
+    private final static int LENGTH_THRESHOLD = 3;
+
+    private final MinimalOntology hpo;
 
     /** There are some synonyms that make sense in the HPO but that in the context of text mining
      * commonly lead to false positive results. For instance, 'negative' is used to state that
@@ -24,19 +31,9 @@ public class HpoLoader {
      */
     private final Set<String> SYNONYMS_TO_OMIT = Set.of("negative");
 
-    public HpoLoader(Ontology ontology) {
+    public HpoLoader(MinimalOntology ontology) {
         this.hpo = ontology;
     }
-
-    public Ontology getHpo() {
-        return hpo;
-    }
-
-    /**
-     * A valid synonym needs to be at least 3 characters in length. This is needed because
-     * the synonym "MI" for myocardial infarction is leading to false-positive hits.
-     */
-    private final static int LENGTH_THRESHOLD = 3;
 
     public synchronized Map<String, TermId> textToTermMap() {
         List<SimpleHpoTerm> terms = loadSimpleHpoTerms();
@@ -64,10 +61,13 @@ public class HpoLoader {
 
     public synchronized List<SimpleHpoTerm> loadSimpleHpoTerms() {
         List<SimpleHpoTerm> termList = new ArrayList<>();
-        for (TermId tid : this.hpo.getNonObsoleteTermIds()) {
-            if (OntologyAlgorithm.isSubclass(this.hpo, tid, PHENOTYPIC_ABNORMALITY)) {
-                Term term = this.hpo.getTermMap().get(tid);
-                termList.add(new SimpleHpoTerm(term));
+
+        for (TermId tid : hpo.nonObsoleteTermIds()) {
+            if (hpo.graph().isAncestorOf(PHENOTYPIC_ABNORMALITY, tid)) {
+                hpo.termForTermId(tid)
+                        .map(SimpleHpoTerm::new)
+                        .ifPresentOrElse(termList::add,
+                                () -> LOGGER.warn("Term for {} not in ontology!", tid.getValue()));
             }
         }
         return List.copyOf(termList); // make immutable

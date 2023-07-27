@@ -7,7 +7,7 @@ import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.fenominal.model.impl.DefaultMinedTerm;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
 
 import java.util.Collection;
 
@@ -33,11 +33,11 @@ public interface TermMiner {
      * event loop thread of a Gui.
      */
 
-    static TermMiner defaultNonFuzzyMapper(Ontology ontology) {
+    static TermMiner defaultNonFuzzyMapper(MinimalOntology ontology) {
         return new NonFuzzyTermMiner(ontology);
     }
 
-    static TermMiner defaultFuzzyMapper(Ontology ontology) {
+    static TermMiner defaultFuzzyMapper(MinimalOntology ontology) {
         return new FuzzyTermMiner(ontology);
     }
 

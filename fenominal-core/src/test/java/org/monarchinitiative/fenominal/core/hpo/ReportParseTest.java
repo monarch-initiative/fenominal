@@ -8,7 +8,8 @@ import org.monarchinitiative.fenominal.model.MinedSentence;
 import org.monarchinitiative.fenominal.model.MinedTerm;
 import org.monarchinitiative.fenominal.model.MinedTermWithMetadata;
 import org.monarchinitiative.phenol.base.PhenolRuntimeException;
-import org.monarchinitiative.phenol.ontology.data.Ontology;
+import org.monarchinitiative.phenol.ontology.data.MinimalOntology;
+import org.monarchinitiative.phenol.ontology.data.Term;
 import org.monarchinitiative.phenol.ontology.data.TermId;
 
 import java.io.File;
@@ -29,14 +30,15 @@ public class ReportParseTest {
 
     private static String report1entireFileContents = null;
 
-    private static final Ontology hpo = TestResources.hpo();
+    private static final MinimalOntology hpo = TestResources.hpo();
 
 
     private String decode(MinedTerm smt, String text) {
         String sbs = text.substring(Math.max(0,smt.getBegin() -1), smt.getEnd());
         TermId tid = TermId.of(smt.getTermIdAsString());
-        Optional<String> opt = hpo.getTermLabel(tid);
-        String label = opt.orElse("n/a");
+        String label = hpo.termForTermId(tid)
+                .map(Term::getName)
+                .orElse("n/a");
         return String.format("%s [%s] - %s%s", label, smt.getTermIdAsString(), sbs, (smt.isPresent()?"":" (excluded)"));
     }
 
