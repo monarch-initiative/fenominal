@@ -17,6 +17,7 @@ public class LexicalResources {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LexicalResources.class);
 
+    private static final String LEXICAL_RESOURCE_PATH = "/org/monarchinitiative/fenominal/core/impl/lexical/";
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private final Map<String, String> invertedIndex;
@@ -36,7 +37,7 @@ public class LexicalResources {
     }
 
     private void loadTrigramStates() {
-        try (BufferedReader reader = getResourceAsBufferedReader("tblat_trigram_states")) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "tblat_trigram_states")) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
@@ -58,7 +59,7 @@ public class LexicalResources {
     }
 
     private void loadOptimalThresholds() {
-        try (BufferedReader reader = getResourceAsBufferedReader("tblat_optimal_thresholds")) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "tblat_optimal_thresholds")) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
@@ -73,7 +74,7 @@ public class LexicalResources {
     }
 
     private void loadLexicalClusters() {
-        try (BufferedReader reader = getResourceAsBufferedReader("clusters")) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "clusters")) {
             String line;
             int id = 1;
             while ((line = reader.readLine()) != null) {
@@ -93,7 +94,7 @@ public class LexicalResources {
 
     public Map<String, String> getNegationClues() {
         final Map<String, String> negationClues = new LinkedHashMap<>();
-        try (BufferedReader reader = getResourceAsBufferedReader("negation.clues")) {
+        try (BufferedReader reader = getResourceAsBufferedReader(LEXICAL_RESOURCE_PATH + "negation.clues")) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
