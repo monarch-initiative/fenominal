@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fenominal’s Matching Algorithms &mdash; fenominal v0.7.10 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7f44dfda"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -81,19 +83,19 @@
            <div itemprop="articleBody">
              
   <section id="fenominal-s-matching-algorithms">
-<span id="rstmatching"></span><h1>Fenominal’s Matching Algorithms<a class="headerlink" href="#fenominal-s-matching-algorithms" title="Permalink to this heading"></a></h1>
+<span id="rstmatching"></span><h1>Fenominal’s Matching Algorithms<a class="headerlink" href="#fenominal-s-matching-algorithms" title="Link to this heading"></a></h1>
 <p>Fenominal performs both exact and fuzzy (T-BLAT) matching. In both cases, the order of the tokens of each HPO term
 can be present in any order and stop words are ignored. For instance,
 <a class="reference external" href="https://hpo.jax.org/app/browse/term/HP:0030771">Mallet finger HP:0030771</a> will be inferred from both <code class="docutils literal notranslate"><span class="pre">mallet</span> <span class="pre">finger</span></code>
 and <code class="docutils literal notranslate"><span class="pre">finger</span> <span class="pre">mallet</span></code>. For the term <a class="reference external" href="https://hpo.jax.org/app/browse/term/HP:0032181">Anomalous hepatic venous drainage into the left atrium HP:0032181</a>,
 the stopwords <code class="docutils literal notranslate"><span class="pre">the</span></code> and <code class="docutils literal notranslate"><span class="pre">into</span></code> are not considered.</p>
 <section id="exact-matching">
-<h2>Exact matching<a class="headerlink" href="#exact-matching" title="Permalink to this heading"></a></h2>
+<h2>Exact matching<a class="headerlink" href="#exact-matching" title="Link to this heading"></a></h2>
 <p>The exact matching algorithm searches for exact matches to term or synonym labels, ignoriing stop words, whereby the
 tokens can be present in any order in the text.</p>
 </section>
 <section id="t-blat-fuzzy-matching">
-<h2>T-BLAT (fuzzy) matching<a class="headerlink" href="#t-blat-fuzzy-matching" title="Permalink to this heading"></a></h2>
+<h2>T-BLAT (fuzzy) matching<a class="headerlink" href="#t-blat-fuzzy-matching" title="Link to this heading"></a></h2>
 <p>TODO – short description</p>
 </section>
 </section>

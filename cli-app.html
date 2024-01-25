@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CLI fenominal application &mdash; fenominal v0.7.10 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7f44dfda"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -84,7 +86,7 @@
            <div itemprop="articleBody">
              
   <section id="cli-fenominal-application">
-<span id="rstsetup"></span><h1>CLI fenominal application<a class="headerlink" href="#cli-fenominal-application" title="Permalink to this heading"></a></h1>
+<span id="rstsetup"></span><h1>CLI fenominal application<a class="headerlink" href="#cli-fenominal-application" title="Link to this heading"></a></h1>
 <p>fenominal is a Java library written in Java 17. fenominal contains a command-line interface (cli) module
 that demonstrates some of the functionality of the library.</p>
 <p>See <a class="reference internal" href="cli-setup.html#rstclisetup"><span class="std std-ref">CLI fenominal app: Setup</span></a> for instructions on building the application.</p>
@@ -102,7 +104,7 @@ that demonstrates some of the functionality of the library.</p>
 </div>
 <p>in the following we will show only <code class="docutils literal notranslate"><span class="pre">fenominal.jar</span></code>. Adjust the path accordingly.</p>
 <section id="fenominal-s-matching">
-<h2>Fenominal’s Matching<a class="headerlink" href="#fenominal-s-matching" title="Permalink to this heading"></a></h2>
+<h2>Fenominal’s Matching<a class="headerlink" href="#fenominal-s-matching" title="Link to this heading"></a></h2>
 <p>Fenominal can perform exact matching and fuzzy matching. See <a class="reference internal" href="matching.html#rstmatching"><span class="std std-ref">Fenominal’s Matching Algorithms</span></a> for an explanation.</p>
 <p>To see the options, run <code class="docutils literal notranslate"><span class="pre">java</span> <span class="pre">-jar</span> <span class="pre">fenominal.jar</span> <span class="pre">parse</span> <span class="pre">-h</span></code>.</p>
 <table class="docutils align-default" id="tbl-grid">
@@ -144,7 +146,7 @@ that demonstrates some of the functionality of the library.</p>
 </tbody>
 </table>
 <section id="exact-matching">
-<h3>Exact matching<a class="headerlink" href="#exact-matching" title="Permalink to this heading"></a></h3>
+<h3>Exact matching<a class="headerlink" href="#exact-matching" title="Link to this heading"></a></h3>
 <p>For this example, create a file called <code class="docutils literal notranslate"><span class="pre">text-exact.txt</span></code> with the following contents</p>
 <blockquote>
 <div><p>A 28-year-old woman who was diagnosed with Noonan syndrome at age 4 because of growth retardation, cardiomyopathy, and hypertelorism.</p>
@@ -159,7 +161,7 @@ Hypertelorism<span class="w">        </span>HP:0000316<span class="w">      </sp
 </div>
 </section>
 <section id="t-blat-fuzzy-matching">
-<h3>T-BLAT (fuzzy) Matching<a class="headerlink" href="#t-blat-fuzzy-matching" title="Permalink to this heading"></a></h3>
+<h3>T-BLAT (fuzzy) Matching<a class="headerlink" href="#t-blat-fuzzy-matching" title="Link to this heading"></a></h3>
 <p>For this example, create a file called <code class="docutils literal notranslate"><span class="pre">text-errors.txt</span></code> with the following contents.</p>
 <blockquote>
 <div><p>A 28-year-old woman who was diagnosed with Noonan syndrome at age 4 because of growth retadation, cardiomyopathic, and hypertelorisn.</p>
