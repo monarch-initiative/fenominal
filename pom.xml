@@ -6,11 +6,11 @@
 
     <groupId>org.monarchinitiative.fenominal</groupId>
     <artifactId>fenominal</artifactId>
-    <version>0.7.10</version>
+    <version>0.7.11</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.4</version>
+        <version>3.2.0</version>
     </parent>
     <modules>
         <module>fenominal-core</module>
@@ -46,7 +46,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <phenol.version>2.0.2</phenol.version>
+        <phenol.version>2.0.5</phenol.version>
         <slf4j.version>2.0.7</slf4j.version>
     </properties>
 
@@ -140,7 +140,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.12.1</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -149,7 +149,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>3.2.3</version>
                         <configuration>
                             <useModulePath>false</useModulePath>  <!-- tests use classpath -->
                         </configuration>
