@@ -17,7 +17,7 @@ public class LexicalResources {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LexicalResources.class);
 
-    private static final String LEXICAL_RESOURCE_PATH = "org/monarchinitiative/fenominal/core/impl/lexical/";
+    private static final String LEXICAL_RESOURCE_PATH = "/org/monarchinitiative/fenominal/core/impl/lexical/";
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private final Map<String, String> invertedIndex;
