@@ -13,13 +13,11 @@
     <artifactId>fenominal-core</artifactId>
 
 
-
     <dependencies>
         <dependency>
             <groupId>org.monarchinitiative.phenol</groupId>
             <artifactId>phenol-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.monarchinitiative.phenol</groupId>
             <artifactId>phenol-io</artifactId>
