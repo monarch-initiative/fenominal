@@ -15,6 +15,8 @@ public class FmCoreDocument {
     private final List<SimpleSentence> sentences;
 
     private final static Set<Character> sentenceEndPunctuation = Set.of('.', '!', '?');
+    /** We call these punctuation marks "breaking" because we do not want to match text across such marks to one HPO term.*/
+    private final static Set<Character> breakingPunctuation = Set.of(';', ':', '.', '!', '?');
 
     public FmCoreDocument(String text) {
         this.originalText = text;
@@ -43,7 +45,7 @@ public class FmCoreDocument {
         List<Integer> positions = new ArrayList<>();
         int i = 0;
         while (i<len) {
-            if (sentenceEndPunctuation.contains(this.originalText.charAt(i))) {
+            if (breakingPunctuation.contains(this.originalText.charAt(i))) {
                 positions.add(i+1); // add position after punctuation, to include it in substring
             }
             i++;
